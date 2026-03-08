@@ -1,107 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kris Pearcey</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
-:root {
-  --bg: #243126;
-  --text: #f5f5f0;
-  --muted: rgba(245, 245, 240, 0.9);
-  --soft: rgba(245, 245, 240, 0.62);
-  --accent: #ff4d73;
-  --accent-hover: #ff6b8a;
-  --button-text: #ffffff;
-  --toggle-border: rgba(245, 245, 240, 0.16);
+:root{
+  --bg:#243126;
+  --text:#f5f5f0;
+  --muted:rgba(245,245,240,0.9);
+  --soft:rgba(245,245,240,0.62);
+  --accent:#ff4d73;
+  --accent-hover:#ff6b8a;
+  --button-text:#ffffff;
+  --toggle-border:rgba(245,245,240,0.16);
 }
 
-body.light {
-  --bg: #ececec;
-  --text: #131313;
-  --muted: rgba(19, 19, 19, 0.9);
-  --soft: rgba(19, 19, 19, 0.48);
-  --accent: #ff4d73;
-  --accent-hover: #ff355f;
-  --button-text: #ffffff;
-  --toggle-border: rgba(19, 19, 19, 0.14);
+body.light{
+  --bg:#ececec;
+  --text:#131313;
+  --muted:rgba(19,19,19,0.9);
+  --soft:rgba(19,19,19,0.48);
+  --accent:#ff4d73;
+  --accent-hover:#ff355f;
+  --button-text:#ffffff;
+  --toggle-border:rgba(19,19,19,0.14);
 }
 
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-html, body {
-  margin: 0;
-  min-height: 100%;
+html,body{
+  margin:0;
+  min-height:100%;
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Georgia, serif;
-  transition: background-color 0.22s ease, color 0.22s ease;
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Georgia,serif;
+  transition:background-color .22s ease,color .22s ease;
 }
 
-.page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
+/* toggle */
+
+.theme-toggle{
+  position:fixed;
+  top:22px;
+  right:22px;
+  width:42px;
+  height:42px;
+  border:1px solid var(--toggle-border);
+  background:transparent;
+  color:var(--text);
+  border-radius:999px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  transition:opacity .18s ease,border-color .18s ease,color .18s ease;
 }
 
-.content {
-  width: min(100%, 570px);
-  transform: translateY(-1.5vh);
+.theme-toggle:hover{
+  opacity:.8;
 }
 
-/* HERO TITLE */
+/* layout */
 
-h1 {
-  margin: 0 0 8px;
-  font-family: Georgia, serif;
-  font-size: clamp(2.4rem, 3vw, 3rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+.page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 24px;
 }
 
-/* INTRO TEXT */
+.content{
+  width:min(100%,570px);
+  transform:translateY(-1.5vh);
+}
+
+/* hero */
+
+h1{
+  margin:0 0 8px;
+  font-family:Georgia,serif;
+  font-size:clamp(2.4rem,3vw,3rem);
+  font-weight:600;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+}
+
+/* text */
 
 .intro,
 .recent-label,
-.build-line,
-.activity-list li {
-  font-family: Georgia, serif;
-  font-size: clamp(0.95rem, 1vw, 1rem);
-  line-height: 1.45;
+.build-line{
+  font-family:Georgia,serif;
+  font-size:clamp(.95rem,1vw,1rem);
+  line-height:1.45;
 }
 
 .intro,
-.build-line {
-  margin: 0;
-  color: var(--muted);
+.build-line{
+  margin:0;
+  color:var(--muted);
 }
 
-.recent-label {
-  margin: 0;
-  color: var(--text);
+.recent-label{
+  margin:0;
+  color:var(--text);
 }
 
-.activity-list {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 22px;
+/* list */
+
+.activity-list{
+  list-style:none;
+  padding:0;
+  margin:8px 0 22px;
 }
 
-.activity-list li {
-  position: relative;
-  padding-left: 22px;
-  margin: 0 0 10px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  color: var(--text);
+.activity-list li{
+  position:relative;
+  padding-left:22px;
+  margin:0 0 10px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:clamp(.95rem,1vw,1rem);
+  line-height:1.45;
+  color:var(--text);
 }
 
-.activity-list li::before {
-  content: ">";
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--soft);
+.activity-list li::before{
+  content:">";
+  position:absolute;
+  left:0;
+  top:0;
+  color:var(--soft);
+}
+
+a{
+  color:var(--accent);
+  text-decoration:none;
+}
+
+a:hover{
+  color:var(--accent-hover);
+}
+
+/* buttons */
+
+.buttons{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+
+.btn{
+  min-width:150px;
+  padding:13px 22px;
+  border:1px solid var(--accent);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.98rem;
+  line-height:1;
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn.primary{
+  background:var(--accent);
+  color:var(--button-text);
+}
+
+.btn.primary:hover{
+  background:var(--accent-hover);
+}
+
+.btn.secondary{
+  background:transparent;
+  color:var(--accent);
+}
+
+.btn.secondary:hover{
+  background:rgba(255,77,115,.08);
+}
+
+/* mobile */
+
+@media (max-width:640px){
+
+.page{
+  align-items:flex-start;
+  padding-top:100px;
+}
+
+.content{
+  transform:none;
+}
+
+.buttons{
+  flex-direction:column;
+}
+
+.btn{
+  width:100%;
+}
+
 }
 </style>
+</head>
+
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle color mode">
+<i id="themeIcon" class="fa-regular fa-moon"></i>
+</button>
+
+<main class="page">
+
+<section class="content">
+
+<h1>Hey, I'm Kris.</h1>
+
+<p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+
+<p class="recent-label">Recently, I’ve -</p>
+
+<ul class="activity-list">
+
+<li>
+Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">“my own personal chess bot”</a>
+</li>
+
+<li>
+Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a>
+</li>
+
+<li>
+Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a>
+</li>
+
+<li>
+Read <a id="goodreadsLink" href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a>
+</li>
+
+<li id="chessGameLine">
+Played against <span id="chessOpponent">loading…</span>
+</li>
+
+</ul>
+
+<p class="build-line">I’m currently building at <a href="#">this</a>.</p>
+
+<div class="buttons">
+
+<a class="btn primary" href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">
+krispearcey.com
+</a>
+
+<a class="btn secondary" href="mailto:me@krispearcey.com">
+Contact Me
+</a>
+
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+const body=document.body
+const themeToggle=document.getElementById("themeToggle")
+const themeIcon=document.getElementById("themeIcon")
+
+const savedTheme=localStorage.getItem("kris-theme")
+
+if(savedTheme==="light"){
+body.classList.add("light")
+}
+
+syncThemeButton()
+
+themeToggle.addEventListener("click",()=>{
+
+body.classList.toggle("light")
+
+localStorage.setItem(
+"kris-theme",
+body.classList.contains("light")?"light":"dark"
+)
+
+syncThemeButton()
+
+})
+
+function syncThemeButton(){
+
+const isLight=body.classList.contains("light")
+
+themeIcon.className=isLight
+?"fa-regular fa-sun"
+:"fa-regular fa-moon"
+
+themeToggle.setAttribute(
+"aria-label",
+isLight?"Switch to dark mode":"Switch to light mode"
+)
+
+themeToggle.title=isLight?"Dark mode":"Light mode"
+
+}
+
+async function loadLatestChessGame(){
+
+try{
+
+const archivesRes=await fetch("https://api.chess.com/pub/player/krisper/games/archives")
+const archives=await archivesRes.json()
+
+const latestArchive=archives.archives[archives.archives.length-1]
+
+const gamesRes=await fetch(latestArchive)
+const gamesData=await gamesRes.json()
+
+const games=(gamesData.games||[]).filter(g=>g.end_time)
+
+const lastGame=games[games.length-1]
+
+if(!lastGame)return
+
+const opponent=
+lastGame.white.username.toLowerCase()==="krisper"
+?lastGame.black.username
+:lastGame.white.username
+
+document.getElementById("chessOpponent").innerHTML=
+`<a href="${lastGame.url}" target="_blank" rel="noopener noreferrer">${opponent}</a>`
+
+}catch(error){
+
+document.getElementById("chessOpponent").textContent="a recent opponent"
+
+}
+
+}
+
+loadLatestChessGame()
+
+</script>
+
+</body>
+</html>
