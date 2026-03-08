@@ -204,7 +204,7 @@ h1{
   color:var(--soft);
 }
 
-/* chess expandable line */
+/* expandable lines */
 
 .expandable-line{
   padding-left:0 !important;
@@ -217,17 +217,7 @@ h1{
 .expandable-line .line-row{
   display:flex;
   align-items:flex-start;
-  gap:0;
   min-height:1.48em;
-  transition:
-    transform .3s cubic-bezier(.22,1,.36,1),
-    padding-left .3s cubic-bezier(.22,1,.36,1);
-  will-change:transform,padding-left;
-  padding-left:0;
-}
-
-.expandable-line.expanded .line-row{
-  padding-left:18px;
 }
 
 .chevron-toggle{
@@ -268,58 +258,55 @@ h1{
 }
 
 .line-content{
-  display:inline;
+  display:inline-block;
   min-width:0;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  transform:translateX(0);
 }
 
-.recent-games{
+.expandable-line.expanded .line-content{
+  transform:translateX(18px);
+}
+
+.expand-panel{
   overflow:hidden;
   max-height:0;
   opacity:0;
+  margin-left:36px;
+  margin-top:0;
   transition:
     max-height .34s cubic-bezier(.22,1,.36,1),
     opacity .22s ease,
     margin-top .22s ease;
-  margin-left:18px;
-  margin-top:0;
 }
 
-.expandable-line.expanded .recent-games{
+.expandable-line.expanded .expand-panel{
   max-height:320px;
   opacity:1;
   margin-top:6px;
 }
 
-.recent-games-list{
+.expand-list{
   list-style:none;
   margin:0;
-  padding:0 0 0 18px;
+  padding:0;
 }
 
-.recent-games-list li{
-  position:relative;
+.expand-list li{
   margin:0 0 8px;
-  padding-left:18px;
+  padding:0;
   color:var(--text);
   opacity:0;
   transform:translateY(6px);
-  animation:recentGameIn .28s ease forwards;
+  animation:expandItemIn .28s ease forwards;
 }
 
-.recent-games-list li::before{
-  content:">";
-  position:absolute;
-  left:0;
-  top:0;
-  color:var(--soft);
-}
+.expand-list li:nth-child(1){ animation-delay:.03s; }
+.expand-list li:nth-child(2){ animation-delay:.07s; }
+.expand-list li:nth-child(3){ animation-delay:.11s; }
+.expand-list li:nth-child(4){ animation-delay:.15s; }
 
-.recent-games-list li:nth-child(1){ animation-delay:.03s; }
-.recent-games-list li:nth-child(2){ animation-delay:.07s; }
-.recent-games-list li:nth-child(3){ animation-delay:.11s; }
-.recent-games-list li:nth-child(4){ animation-delay:.15s; }
-
-@keyframes recentGameIn{
+@keyframes expandItemIn{
   from{
     opacity:0;
     transform:translateY(6px);
@@ -515,16 +502,34 @@ a:hover{
       <li>written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">The Hag</a></li>
       <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">Woolly Buggers</a></li>
 
-      <li id="goodreadsLine">
-        <span id="goodreadsLabel">been reading</span>
-        <a
-          id="goodreadsBookLink"
-          href="https://www.goodreads.com/user/show/134250743"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span id="goodreadsBookText">loading…</span>
-        </a>
+      <li id="goodreadsLine" class="expandable-line">
+        <div class="line-row">
+          <button
+            id="goodreadsExpandToggle"
+            class="chevron-toggle"
+            type="button"
+            aria-label="Show recent books"
+            aria-expanded="false"
+          >
+            <span class="chevron-glyph">&gt;</span>
+          </button>
+
+          <div class="line-content">
+            <span id="goodreadsLabel">been reading</span>
+            <a
+              id="goodreadsBookLink"
+              href="https://www.goodreads.com/user/show/134250743"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span id="goodreadsBookText">loading…</span>
+            </a>
+          </div>
+        </div>
+
+        <div id="goodreadsExpandPanel" class="expand-panel" aria-hidden="true">
+          <ul id="goodreadsExpandList" class="expand-list"></ul>
+        </div>
       </li>
 
       <li id="chessGameLine" class="expandable-line">
@@ -552,8 +557,8 @@ a:hover{
           </div>
         </div>
 
-        <div id="recentGamesWrap" class="recent-games" aria-hidden="true">
-          <ul id="recentGamesList" class="recent-games-list"></ul>
+        <div id="chessExpandPanel" class="expand-panel" aria-hidden="true">
+          <ul id="chessExpandList" class="expand-list"></ul>
         </div>
       </li>
     </ul>
@@ -584,12 +589,17 @@ const themeIcon = document.getElementById("themeIcon");
 
 const chessGameLine = document.getElementById("chessGameLine");
 const chessExpandToggle = document.getElementById("chessExpandToggle");
-const recentGamesWrap = document.getElementById("recentGamesWrap");
-const recentGamesList = document.getElementById("recentGamesList");
+const chessExpandPanel = document.getElementById("chessExpandPanel");
+const chessExpandList = document.getElementById("chessExpandList");
 
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
 const chessResultLabel = document.getElementById("chessResultLabel");
+
+const goodreadsLine = document.getElementById("goodreadsLine");
+const goodreadsExpandToggle = document.getElementById("goodreadsExpandToggle");
+const goodreadsExpandPanel = document.getElementById("goodreadsExpandPanel");
+const goodreadsExpandList = document.getElementById("goodreadsExpandList");
 
 const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
@@ -599,6 +609,7 @@ const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 
 let recentChessGames = [];
+let recentReadBooks = [];
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -623,6 +634,39 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
+/* ---------- generic expand ---------- */
+
+function setExpandedState(container, button, panel, expanded, openLabel, closedLabel){
+  container.classList.toggle("expanded", expanded);
+  button.setAttribute("aria-expanded", String(expanded));
+  button.setAttribute("aria-label", expanded ? openLabel : closedLabel);
+  panel.setAttribute("aria-hidden", String(!expanded));
+}
+
+goodreadsExpandToggle.addEventListener("click", () => {
+  const isExpanded = goodreadsLine.classList.contains("expanded");
+  setExpandedState(
+    goodreadsLine,
+    goodreadsExpandToggle,
+    goodreadsExpandPanel,
+    !isExpanded,
+    "Hide recent books",
+    "Show recent books"
+  );
+});
+
+chessExpandToggle.addEventListener("click", () => {
+  const isExpanded = chessGameLine.classList.contains("expanded");
+  setExpandedState(
+    chessGameLine,
+    chessExpandToggle,
+    chessExpandPanel,
+    !isExpanded,
+    "Hide recent chess games",
+    "Show recent chess games"
+  );
+});
+
 /* ---------- CHESS ---------- */
 
 function setFallbackChessLine(){
@@ -630,7 +674,7 @@ function setFallbackChessLine(){
   chessOpponent.textContent = "someone";
   chessOpponentLink.href = "https://www.chess.com/member/krisper";
   recentChessGames = [];
-  renderRecentGames([]);
+  renderChessGames([]);
 }
 
 function getResultLabel(game, usernameLower){
@@ -673,8 +717,8 @@ function getOpponentName(game, usernameLower){
     : whiteName;
 }
 
-function renderRecentGames(games){
-  recentGamesList.innerHTML = "";
+function renderChessGames(games){
+  chessExpandList.innerHTML = "";
 
   games.forEach(game => {
     const item = document.createElement("li");
@@ -690,24 +734,9 @@ function renderRecentGames(games){
 
     item.appendChild(label);
     item.appendChild(link);
-    recentGamesList.appendChild(item);
+    chessExpandList.appendChild(item);
   });
 }
-
-function setExpandedState(expanded){
-  chessGameLine.classList.toggle("expanded", expanded);
-  chessExpandToggle.setAttribute("aria-expanded", String(expanded));
-  chessExpandToggle.setAttribute(
-    "aria-label",
-    expanded ? "Hide recent chess games" : "Show recent chess games"
-  );
-  recentGamesWrap.setAttribute("aria-hidden", String(!expanded));
-}
-
-chessExpandToggle.addEventListener("click", () => {
-  const isExpanded = chessGameLine.classList.contains("expanded");
-  setExpandedState(!isExpanded);
-});
 
 async function loadLatestFinishedGame(){
   const username = "krisper";
@@ -775,7 +804,7 @@ async function loadLatestFinishedGame(){
       url: game.url || `https://www.chess.com/member/${username}`
     }));
 
-    renderRecentGames(recentChessGames);
+    renderChessGames(recentChessGames);
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
@@ -788,11 +817,13 @@ function setFallbackGoodreadsLine(){
   goodreadsLabel.textContent = "read";
   goodreadsBookText.textContent = "Maynard's House by Herman Raucher";
   goodreadsBookLink.href = GOODREADS_FALLBACK_BOOK_URL;
+  recentReadBooks = [];
+  renderGoodreadsBooks([]);
 }
 
 function formatBookText(title, author){
   if(title && author) return `${title} by ${author}`;
-  if(title) return `${title}`;
+  if(title) return title;
   return "something good";
 }
 
@@ -853,27 +884,61 @@ async function fetchShelf(userId, shelf){
   return parseShelfItems(xmlText);
 }
 
+function renderGoodreadsBooks(books){
+  goodreadsExpandList.innerHTML = "";
+
+  books.forEach(book => {
+    const item = document.createElement("li");
+    const link = document.createElement("a");
+
+    link.href = book.link || GOODREADS_PROFILE_URL;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = formatBookText(book.title, book.author);
+
+    item.appendChild(link);
+    goodreadsExpandList.appendChild(item);
+  });
+}
+
 async function loadGoodreadsBook(){
   const userId = "134250743";
 
   try{
-    const currentlyReading = await fetchShelf(userId, "currently-reading");
+    const [currentlyReading, readShelf] = await Promise.all([
+      fetchShelf(userId, "currently-reading").catch(() => []),
+      fetchShelf(userId, "read").catch(() => [])
+    ]);
 
     if(currentlyReading.length > 0){
       const currentBook = currentlyReading[0];
       goodreadsLabel.textContent = "been reading";
       goodreadsBookText.textContent = formatBookText(currentBook.title, currentBook.author);
       goodreadsBookLink.href = currentBook.link || GOODREADS_PROFILE_URL;
+
+      recentReadBooks = readShelf.slice(0, 4).map(book => ({
+        title: book.title,
+        author: book.author,
+        link: book.link || GOODREADS_PROFILE_URL
+      }));
+
+      renderGoodreadsBooks(recentReadBooks);
       return;
     }
-
-    const readShelf = await fetchShelf(userId, "read");
 
     if(readShelf.length > 0){
       const latestRead = readShelf[0];
       goodreadsLabel.textContent = "read";
       goodreadsBookText.textContent = formatBookText(latestRead.title, latestRead.author);
       goodreadsBookLink.href = latestRead.link || GOODREADS_PROFILE_URL;
+
+      recentReadBooks = readShelf.slice(1, 5).map(book => ({
+        title: book.title,
+        author: book.author,
+        link: book.link || GOODREADS_PROFILE_URL
+      }));
+
+      renderGoodreadsBooks(recentReadBooks);
       return;
     }
 
