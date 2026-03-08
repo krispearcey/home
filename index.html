@@ -6,11 +6,11 @@
 
 <title>krispearcey.com</title>
 
-<!-- Inter (UI font) -->
+<!-- Inter -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-<!-- Merriweather (content font) -->
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
+<!-- Merriweather -->
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;500&display=swap" rel="stylesheet">
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -21,129 +21,162 @@
   --bg-dark:#0e0e0e;
   --text-dark:#e6e6e6;
 
-  --bg-light:#f7f7f7;
+  --bg-light:#fafafa;
   --text-light:#111;
 
   --accent:#cfcfcf;
 }
 
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  font-family:"Inter", sans-serif;
-  background:var(--bg-dark);
-  color:var(--text-dark);
-  transition:background .25s,color .25s;
+margin:0;
+font-family:"Inter",sans-serif;
+background:var(--bg-dark);
+color:var(--text-dark);
+transition:background .25s,color .25s;
 }
 
 body.light{
-  background:var(--bg-light);
-  color:var(--text-light);
+background:var(--bg-light);
+color:var(--text-light);
 }
 
 /* NAV */
 
 nav{
-  width:100%;
-  padding:28px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:14px;
+width:100%;
+padding:28px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:14px;
 }
 
 .nav-left a{
-  margin-right:26px;
-  text-decoration:none;
-  color:inherit;
-  opacity:.7;
+margin-right:26px;
+text-decoration:none;
+color:inherit;
+opacity:.7;
 }
 
 .nav-left a:hover{
-  opacity:1;
+opacity:1;
 }
 
 .nav-right{
-  display:flex;
-  align-items:center;
-  gap:18px;
+display:flex;
+align-items:center;
+gap:20px;
 }
 
 .nav-right a{
-  color:inherit;
-  font-size:16px;
-  opacity:.7;
+color:inherit;
+font-size:16px;
+opacity:.7;
 }
 
 .nav-right a:hover{
-  opacity:1;
+opacity:1;
 }
 
 .toggle{
-  cursor:pointer;
-  font-size:16px;
-  opacity:.7;
+cursor:pointer;
+font-size:16px;
+opacity:.7;
 }
 
-/* HERO */
+/* HERO LAYOUT */
 
 .hero{
-  max-width:1100px;
-  margin:0 auto;
-  padding:120px 40px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:60px;
+max-width:1050px;
+margin:0 auto;
+padding:120px 40px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:70px;
 }
 
-/* TEXT */
+/* TEXT AREA */
 
 .hero-text{
-  max-width:520px;
+max-width:520px;
 }
+
+/* HEADLINE */
 
 .hero-text h1{
-  font-family:"Merriweather", serif;
-  font-size:46px;
-  font-weight:500;
-  margin:0 0 30px 0;
+font-family:"Merriweather",serif;
+font-weight:400;
+font-size:46px;
+margin:0 0 28px 0;
+
+letter-spacing:-0.02em;
+line-height:1.2;
+
+text-rendering:optimizeLegibility;
 }
 
+/* BODY TEXT */
+
 .hero-text p{
-  font-family:"Merriweather", serif;
-  font-size:18px;
-  line-height:1.9;
-  letter-spacing:.04em;
-  margin-bottom:40px;
+font-family:"Merriweather",serif;
+font-weight:300;
+font-size:18px;
+
+line-height:1.9;
+letter-spacing:.045em;
+
+margin-bottom:42px;
 }
 
 /* BUTTON */
 
 .hero-text button{
-  font-family:"Merriweather", serif;
-  font-size:16px;
-  letter-spacing:.06em;
-  padding:12px 26px;
-  background:none;
-  border:1px solid var(--accent);
-  color:inherit;
-  cursor:pointer;
+font-family:"Merriweather",serif;
+font-weight:400;
+font-size:16px;
+
+letter-spacing:.08em;
+
+padding:12px 28px;
+background:none;
+border:1px solid var(--accent);
+color:inherit;
+cursor:pointer;
+
+transition:.2s;
 }
 
 .hero-text button:hover{
-  background:rgba(255,255,255,0.05);
+background:rgba(255,255,255,0.06);
 }
 
 /* IMAGE */
 
 .hero-img img{
-  width:420px;
-  max-width:100%;
-  display:block;
+width:420px;
+max-width:100%;
+display:block;
+}
+
+/* MOBILE */
+
+@media (max-width:900px){
+
+.hero{
+flex-direction:column;
+padding:90px 30px;
+text-align:center;
+}
+
+.hero-img img{
+width:300px;
+}
+
 }
 
 </style>
@@ -178,7 +211,6 @@ nav{
 
 </nav>
 
-
 <section class="hero">
 
 <div class="hero-text">
@@ -200,22 +232,21 @@ Recently, I’ve —
 
 </section>
 
-
 <script>
 
 const toggle = document.getElementById("themeToggle")
 
-toggle.addEventListener("click", () => {
+toggle.onclick = () => {
 
 document.body.classList.toggle("light")
 
 if(document.body.classList.contains("light")){
-toggle.innerHTML = `<i class="fa-regular fa-sun"></i>`
+toggle.innerHTML='<i class="fa-regular fa-sun"></i>'
 }else{
-toggle.innerHTML = `<i class="fa-regular fa-moon"></i>`
+toggle.innerHTML='<i class="fa-regular fa-moon"></i>'
 }
 
-})
+}
 
 </script>
 
