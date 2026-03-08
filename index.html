@@ -47,6 +47,8 @@ font-family:Georgia,serif;
 transition:background-color .22s ease,color .22s ease;
 }
 
+/* top icons */
+
 .top-actions{
 position:fixed;
 top:22px;
@@ -80,6 +82,8 @@ opacity:.9;
 transform:translateY(-1px);
 }
 
+/* layout */
+
 .page{
 min-height:100vh;
 display:flex;
@@ -93,10 +97,10 @@ width:min(100%,570px);
 transform:translateY(-1.5vh);
 }
 
-/* HERO */
+/* hero */
 
 h1{
-margin:0 0 8px;
+margin:0 0 10px;
 font-family:Georgia,serif;
 font-size:clamp(2rem,2.6vw,2.6rem);
 font-weight:500;
@@ -104,46 +108,45 @@ letter-spacing:-0.02em;
 line-height:1.1;
 }
 
-/* TEXT */
+/* intro text */
 
 .intro,
 .recent-label,
 .build-line{
 font-family:Georgia,serif;
 font-size:clamp(.95rem,1vw,1rem);
-line-height:1.32;
+line-height:1.45;
 letter-spacing:.02em;
 word-spacing:.04em;
-text-wrap: pretty;
 }
 
 .intro{
-margin:0 0 2px;
+margin:0 0 6px;
 color:var(--muted);
 }
 
 .recent-label{
-margin:0;
+margin:0 0 10px;
 color:var(--text);
 }
 
 .build-line{
-margin:0;
+margin-top:18px;
 color:var(--muted);
 }
 
-/* LIST */
+/* activity list */
 
 .activity-list{
 list-style:none;
 padding:0;
-margin:8px 0 22px;
+margin:10px 0 0;
 }
 
 .activity-list li{
 position:relative;
 padding-left:22px;
-margin:0 0 10px;
+margin:0 0 12px;
 font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 font-size:clamp(.95rem,1vw,1rem);
 line-height:1.45;
@@ -158,6 +161,8 @@ top:0;
 color:var(--soft);
 }
 
+/* links */
+
 a{
 color:var(--accent);
 text-decoration:none;
@@ -167,13 +172,13 @@ a:hover{
 color:var(--accent-hover);
 }
 
-/* BUTTONS */
+/* buttons */
 
 .buttons{
 display:flex;
 gap:12px;
 flex-wrap:wrap;
-margin-top:24px;
+margin-top:26px;
 }
 
 .btn{
@@ -200,7 +205,6 @@ color:var(--button-text);
 
 .btn.primary:hover{
 background:var(--accent-hover);
-color:var(--button-text);
 }
 
 .btn.secondary{
@@ -212,7 +216,7 @@ color:var(--accent);
 background:rgba(255,77,115,.08);
 }
 
-/* MOBILE */
+/* mobile */
 
 @media (max-width:640px){
 
@@ -255,18 +259,14 @@ width:100%;
 <div class="top-actions">
 
 <a class="icon-link"
-href="https://www.goodreads.com/user/show/134250743?ref=nav_profile_l"
-target="_blank"
-rel="noopener noreferrer"
-title="Goodreads">
+href="https://www.goodreads.com/user/show/134250743"
+target="_blank">
 <i class="fa-brands fa-goodreads-g"></i>
 </a>
 
 <a class="icon-link"
 href="https://www.chess.com/member/krisper"
-target="_blank"
-rel="noopener noreferrer"
-title="Chess.com">
+target="_blank">
 <i class="fa-solid fa-chess-rook"></i>
 </a>
 
@@ -277,30 +277,24 @@ title="Chess.com">
 </div>
 
 <main class="page">
+
 <section class="content">
 
 <h1>Hi, I'm Kris.</h1>
 
 <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+
 <p class="recent-label">Recently, I’ve -</p>
 
 <ul class="activity-list">
 
-<li>
-Created <a href="https://krispearcey.github.io/chess/" target="_blank">“my own personal chess bot”</a>
-</li>
+<li>Created <a href="https://krispearcey.github.io/chess/" target="_blank">“my own personal chess bot”</a></li>
 
-<li>
-Written <a href="https://krispearcey.com" target="_blank">“The Hag”</a>
-</li>
+<li>Written <a href="https://krispearcey.com" target="_blank">“The Hag”</a></li>
 
-<li>
-Blogged <a href="https://krispearcey.com" target="_blank">“Woolly Buggers”</a>
-</li>
+<li>Blogged <a href="https://krispearcey.com" target="_blank">“Woolly Buggers”</a></li>
 
-<li>
-Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank">“Maynard's House” by Herman Raucher</a>
-</li>
+<li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank">“Maynard's House” by Herman Raucher</a></li>
 
 <li id="chessGameLine">
 Played against <span id="chessOpponent">loading…</span>
@@ -326,6 +320,7 @@ Contact Me
 </div>
 
 </section>
+
 </main>
 
 <script>
@@ -363,44 +358,7 @@ themeIcon.className=isLight
 
 }
 
-async function loadLatestChessGame(){
-
-try{
-
-const archivesRes=await fetch("https://api.chess.com/pub/player/krisper/games/archives")
-const archives=await archivesRes.json()
-
-const latestArchive=archives.archives[archives.archives.length-1]
-
-const gamesRes=await fetch(latestArchive)
-const gamesData=await gamesRes.json()
-
-const games=(gamesData.games||[]).filter(g=>g.end_time)
-
-const lastGame=games[games.length-1]
-
-if(!lastGame)return
-
-const opponent=
-lastGame.white.username.toLowerCase()==="krisper"
-?lastGame.black.username
-:lastGame.white.username
-
-document.getElementById("chessOpponent").innerHTML=
-`<a href="${lastGame.url}" target="_blank">${opponent}</a>`
-
-}catch{
-
-document.getElementById("chessOpponent").textContent="a recent opponent"
-
-}
-
-}
-
-loadLatestChessGame()
-
 </script>
 
 </body>
 </html>
-
