@@ -6,109 +6,106 @@
 <title>Kris Pearcey</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<!-- Merriweather -->
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-
 :root{
---bg:#243126;
---text:#f5f5f0;
---muted:rgba(245,245,240,0.9);
---soft:rgba(245,245,240,0.62);
---accent:#ff4d73;
---accent-hover:#ff6b8a;
---button-text:#ffffff;
---toggle-border:rgba(245,245,240,0.16);
+  --bg:#243126;
+  --text:#f5f5f0;
+  --muted:rgba(245,245,240,0.9);
+  --soft:rgba(245,245,240,0.62);
+  --accent:#ff4d73;
+  --accent-hover:#ff6b8a;
+  --button-text:#ffffff;
+  --toggle-border:rgba(245,245,240,0.16);
 }
 
 body.light{
---bg:#ececec;
---text:#131313;
---muted:rgba(19,19,19,0.9);
---soft:rgba(19,19,19,0.48);
---accent:#ff4d73;
---accent-hover:#ff355f;
---button-text:#ffffff;
---toggle-border:rgba(19,19,19,0.14);
+  --bg:#ececec;
+  --text:#131313;
+  --muted:rgba(19,19,19,0.9);
+  --soft:rgba(19,19,19,0.48);
+  --accent:#ff4d73;
+  --accent-hover:#ff355f;
+  --button-text:#ffffff;
+  --toggle-border:rgba(19,19,19,0.14);
 }
 
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 html,body{
-margin:0;
-min-height:100%;
+  margin:0;
+  min-height:100%;
 }
 
 body{
-background:var(--bg);
-color:var(--text);
-font-family:Georgia,serif;
-transition:background-color .22s ease,color .22s ease;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Georgia,serif;
+  transition:background-color .22s ease,color .22s ease;
 }
 
 /* top icons */
 
 .top-actions{
-position:fixed;
-top:22px;
-right:22px;
-display:flex;
-align-items:center;
-gap:10px;
-z-index:10;
+  position:fixed;
+  top:22px;
+  right:22px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  z-index:10;
 }
 
 .icon-link,
 .theme-toggle{
-width:42px;
-height:42px;
-border:1px solid var(--toggle-border);
-background:transparent;
-color:var(--text);
-border-radius:999px;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-size:1rem;
-text-decoration:none;
-cursor:pointer;
-transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+  width:42px;
+  height:42px;
+  border:1px solid var(--toggle-border);
+  background:transparent;
+  color:var(--text);
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  text-decoration:none;
+  cursor:pointer;
+  transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
 }
 
 .icon-link:hover,
 .theme-toggle:hover{
-opacity:.9;
-transform:translateY(-1px);
+  opacity:.9;
+  transform:translateY(-1px);
 }
 
 /* layout */
 
 .page{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:48px 24px;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 24px;
 }
 
 .content{
-width:min(100%,570px);
-transform:translateY(-1.5vh);
+  width:min(100%,570px);
+  transform:translateY(-1.5vh);
 }
 
 /* hero */
 
 h1{
-margin:0 0 10px;
-font-family:'Merriweather',serif;
-font-size:clamp(2rem,2.6vw,2.6rem);
-font-weight:500;
-letter-spacing:-0.02em;
-line-height:1.1;
+  margin:0 0 10px;
+  font-family:"Merriweather",serif;
+  font-size:clamp(2rem,2.6vw,2.6rem);
+  font-weight:500;
+  letter-spacing:-0.02em;
+  line-height:1.1;
 }
 
 /* intro text */
@@ -116,144 +113,321 @@ line-height:1.1;
 .intro,
 .recent-label,
 .build-line{
-font-family:'Merriweather',serif;
-font-size:clamp(.95rem,1vw,1rem);
-line-height:1.45;
-letter-spacing:.02em;
-word-spacing:.04em;
+  font-family:"Merriweather",serif;
+  font-size:clamp(.95rem,1vw,1rem);
+  line-height:1.45;
+  letter-spacing:.02em;
+  word-spacing:.04em;
 }
 
 .intro{
-margin:0 0 6px;
-color:var(--muted);
+  margin:0 0 6px;
+  color:var(--muted);
 }
 
 .recent-label{
-margin:0 0 10px;
-color:var(--text);
+  margin:0 0 10px;
+  color:var(--text);
 }
 
 .build-line{
-margin-top:18px;
-color:var(--muted);
+  margin-top:18px;
+  color:var(--muted);
 }
 
 /* activity list */
 
 .activity-list{
-list-style:none;
-padding:0;
-margin:10px 0 0;
+  list-style:none;
+  padding:0;
+  margin:10px 0 0;
 }
 
 .activity-list li{
-position:relative;
-padding-left:22px;
-margin:0 0 12px;
-font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-font-size:clamp(.95rem,1vw,1rem);
-line-height:1.45;
-color:var(--text);
+  position:relative;
+  padding-left:22px;
+  margin:0 0 12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:clamp(.95rem,1vw,1rem);
+  line-height:1.45;
+  color:var(--text);
 }
 
 .activity-list li::before{
-content:">";
-position:absolute;
-left:0;
-top:0;
-color:var(--soft);
+  content:">";
+  position:absolute;
+  left:0;
+  top:0;
+  color:var(--soft);
 }
 
 /* links */
 
 a{
-color:var(--accent);
-text-decoration:none;
+  color:var(--accent);
+  text-decoration:none;
 }
 
 a:hover{
-color:var(--accent-hover);
+  color:var(--accent-hover);
 }
 
 /* buttons */
 
 .buttons{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin-top:26px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:26px;
 }
 
 .btn{
-min-width:150px;
-padding:13px 22px;
-border:1px solid var(--accent);
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-size:.98rem;
-line-height:1;
-letter-spacing:.04em;
-font-family:'Merriweather',serif;
-transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+  min-width:150px;
+  padding:13px 22px;
+  border:1px solid var(--accent);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.98rem;
+  line-height:1;
+  letter-spacing:.04em;
+  font-family:"Merriweather",serif;
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
 }
 
 .btn:hover{
-transform:translateY(-1px);
+  transform:translateY(-1px);
 }
 
 .btn.primary{
-background:var(--accent);
-color:var(--button-text);
+  background:var(--accent);
+  color:var(--button-text);
 }
 
 .btn.primary:hover{
-background:var(--accent-hover);
+  background:var(--accent-hover);
 }
 
 .btn.secondary{
-background:transparent;
-color:var(--accent);
+  background:transparent;
+  color:var(--accent);
 }
 
 .btn.secondary:hover{
-background:rgba(255,77,115,.08);
+  background:rgba(255,77,115,.08);
 }
 
 /* mobile */
 
 @media (max-width:640px){
+  .top-actions{
+    top:18px;
+    right:18px;
+    gap:8px;
+  }
 
-.top-actions{
-top:18px;
-right:18px;
-gap:8px;
+  .icon-link,
+  .theme-toggle{
+    width:40px;
+    height:40px;
+  }
+
+  .page{
+    align-items:flex-start;
+    padding-top:100px;
+  }
+
+  .content{
+    transform:none;
+  }
+
+  .buttons{
+    flex-direction:column;
+  }
+
+  .btn{
+    width:100%;
+  }
 }
-
-.icon-link,
-.theme-toggle{
-width:40px;
-height:40px;
-}
-
-.page{
-align-items:flex-start;
-padding-top:100px;
-}
-
-.content{
-transform:none;
-}
-
-.buttons{
-flex-direction:column;
-}
-
-.btn{
-width:100%;
-}
-
-}
-
 </style>
 </head>
+
+<body>
+
+<div class="top-actions">
+  <a
+    class="icon-link"
+    href="https://www.goodreads.com/user/show/134250743"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Goodreads profile"
+  >
+    <i class="fa-brands fa-goodreads-g"></i>
+  </a>
+
+  <a
+    class="icon-link"
+    href="https://www.chess.com/member/krisper"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chess.com profile"
+  >
+    <i class="fa-solid fa-chess-rook"></i>
+  </a>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+    <i id="themeIcon" class="fa-regular fa-moon"></i>
+  </button>
+</div>
+
+<main class="page">
+  <section class="content">
+    <h1>Hi, I'm Kris.</h1>
+
+    <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+
+    <p class="recent-label">Recently, I’ve -</p>
+
+    <ul class="activity-list">
+      <li>Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">“my own personal chess bot”</a></li>
+
+      <li>Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a></li>
+
+      <li>Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a></li>
+
+      <li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a></li>
+
+      <li id="chessGameLine">
+        Played against <span id="chessOpponent">loading…</span>
+      </li>
+    </ul>
+
+    <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
+
+    <div class="buttons">
+      <a
+        class="btn primary"
+        href="https://krispearcey.com"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        krispearcey.com
+      </a>
+
+      <a class="btn secondary" href="mailto:me@krispearcey.com">
+        Contact Me
+      </a>
+    </div>
+  </section>
+</main>
+
+<script>
+const body = document.body;
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const chessOpponent = document.getElementById("chessOpponent");
+
+const savedTheme = localStorage.getItem("kris-theme");
+if(savedTheme === "light"){
+  body.classList.add("light");
+}
+
+syncThemeButton();
+
+themeToggle.addEventListener("click", () => {
+  body.classList.toggle("light");
+
+  localStorage.setItem(
+    "kris-theme",
+    body.classList.contains("light") ? "light" : "dark"
+  );
+
+  syncThemeButton();
+});
+
+function syncThemeButton(){
+  const isLight = body.classList.contains("light");
+  themeIcon.className = isLight
+    ? "fa-regular fa-sun"
+    : "fa-regular fa-moon";
+}
+
+/* chess.com latest finished game */
+
+async function loadLatestFinishedGame(){
+  const username = "krisper";
+  const usernameLower = username.toLowerCase();
+
+  try{
+    const archivesRes = await fetch(`https://api.chess.com/pub/player/${username}/games/archives`, {
+      headers: { "Accept": "application/json" }
+    });
+
+    if(!archivesRes.ok){
+      throw new Error("Could not load archive list");
+    }
+
+    const archivesData = await archivesRes.json();
+    const archives = Array.isArray(archivesData.archives) ? archivesData.archives : [];
+
+    if(!archives.length){
+      chessOpponent.textContent = "someone";
+      return;
+    }
+
+    const archiveUrlsToCheck = archives.slice(-3).reverse();
+    let latestGame = null;
+
+    for(const archiveUrl of archiveUrlsToCheck){
+      const gamesRes = await fetch(archiveUrl, {
+        headers: { "Accept": "application/json" }
+      });
+
+      if(!gamesRes.ok){
+        continue;
+      }
+
+      const gamesData = await gamesRes.json();
+      const games = Array.isArray(gamesData.games) ? gamesData.games : [];
+
+      const finishedGames = games
+        .filter(game => {
+          const whiteUser = game?.white?.username?.toLowerCase?.() || "";
+          const blackUser = game?.black?.username?.toLowerCase?.() || "";
+          const involvesPlayer = whiteUser === usernameLower || blackUser === usernameLower;
+          const hasEndTime = typeof game?.end_time === "number";
+          return involvesPlayer && hasEndTime;
+        })
+        .sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
+
+      if(finishedGames.length){
+        latestGame = finishedGames[0];
+        break;
+      }
+    }
+
+    if(!latestGame){
+      chessOpponent.textContent = "someone";
+      return;
+    }
+
+    const whiteName = latestGame?.white?.username || "";
+    const blackName = latestGame?.black?.username || "";
+
+    const opponent =
+      whiteName.toLowerCase() === usernameLower
+        ? blackName
+        : whiteName;
+
+    chessOpponent.textContent = opponent || "someone";
+  }catch(error){
+    console.error("Chess.com game fetch failed:", error);
+    chessOpponent.textContent = "someone";
+  }
+}
+
+loadLatestFinishedGame();
+</script>
+
+</body>
+</html>
