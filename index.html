@@ -6,32 +6,32 @@
   <title>Kris Pearcey</title>
   <style>
     :root {
-      --bg: #1f2a22;
-      --bg-soft: #243128;
-      --panel: rgba(255, 255, 255, 0.03);
-      --text: #f5f5f1;
-      --muted: #d7dbd2;
+      --bg: #243126;
+      --text: #f5f5f0;
+      --muted: rgba(245, 245, 240, 0.9);
+      --soft: rgba(245, 245, 240, 0.72);
       --accent: #ff4d73;
-      --accent-strong: #ff355f;
-      --border: rgba(255, 255, 255, 0.15);
-      --shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
-      --bullet: rgba(255, 255, 255, 0.28);
+      --accent-hover: #ff6b8a;
+      --button-text: #ffffff;
+      --toggle-bg: transparent;
+      --toggle-border: rgba(245, 245, 240, 0.18);
     }
 
     body.light {
       --bg: #ececec;
-      --bg-soft: #f5f5f5;
-      --panel: rgba(0, 0, 0, 0.02);
-      --text: #101010;
-      --muted: #2f2f2f;
+      --text: #121212;
+      --muted: rgba(18, 18, 18, 0.9);
+      --soft: rgba(18, 18, 18, 0.68);
       --accent: #ff4d73;
-      --accent-strong: #ff355f;
-      --border: rgba(0, 0, 0, 0.14);
-      --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-      --bullet: rgba(0, 0, 0, 0.18);
+      --accent-hover: #ff355f;
+      --button-text: #ffffff;
+      --toggle-bg: transparent;
+      --toggle-border: rgba(18, 18, 18, 0.14);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html, body {
       margin: 0;
@@ -39,13 +39,32 @@
     }
 
     body {
-      font-family: Georgia, "Times New Roman", serif;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.035), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(255,255,255,0.03), transparent 24%),
-        linear-gradient(180deg, var(--bg-soft), var(--bg));
+      background: var(--bg);
       color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
+      font-family: Georgia, "Times New Roman", Times, serif;
+      transition: background-color 0.22s ease, color 0.22s ease;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-toggle:hover {
+      opacity: 0.85;
     }
 
     .page {
@@ -54,82 +73,48 @@
       align-items: center;
       justify-content: center;
       padding: 48px 24px;
-      position: relative;
-    }
-
-    .theme-toggle {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.06);
-      color: var(--text);
-      border-radius: 999px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      font: inherit;
-    }
-
-    body.light .theme-toggle {
-      background: rgba(255, 255, 255, 0.72);
-    }
-
-    .theme-toggle:hover {
-      transform: translateY(-1px);
     }
 
     .content {
-      width: min(100%, 620px);
-      padding: 8px;
-    }
-
-    .card {
-      background: transparent;
+      width: min(100%, 590px);
+      transform: translateY(-1.5vh);
     }
 
     h1 {
-      margin: 0 0 14px;
-      font-size: clamp(2.5rem, 5vw, 4.25rem);
-      line-height: 0.98;
-      font-weight: 700;
+      margin: 0 0 12px;
+      font-size: clamp(2.6rem, 4.1vw, 4rem);
+      line-height: 1.03;
       letter-spacing: -0.03em;
+      font-weight: 700;
     }
 
     .intro,
+    .recent-label,
     .build-line {
       margin: 0;
-      font-size: clamp(1.15rem, 2vw, 1.6rem);
-      line-height: 1.55;
+      font-size: clamp(1.18rem, 1.7vw, 1.55rem);
+      line-height: 1.42;
       color: var(--muted);
     }
 
     .recent-label {
-      margin: 18px 0 10px;
-      font-size: clamp(1.1rem, 1.8vw, 1.45rem);
-      line-height: 1.5;
+      margin-top: 2px;
       color: var(--text);
     }
 
     .activity-list {
       list-style: none;
       padding: 0;
-      margin: 0 0 28px;
-      display: grid;
-      gap: 12px;
+      margin: 10px 0 22px;
     }
 
     .activity-list li {
       position: relative;
-      padding-left: 20px;
+      padding-left: 22px;
+      margin: 0 0 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: clamp(0.95rem, 1.4vw, 1.08rem);
-      line-height: 1.5;
+      font-size: clamp(0.94rem, 1.05vw, 1rem);
+      line-height: 1.45;
       color: var(--text);
     }
 
@@ -138,7 +123,7 @@
       position: absolute;
       left: 0;
       top: 0;
-      color: var(--bullet);
+      color: var(--soft);
     }
 
     a {
@@ -147,29 +132,40 @@
     }
 
     a:hover {
-      color: var(--accent-strong);
+      color: var(--accent-hover);
     }
 
     .buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 12px;
-      margin-top: 26px;
+      flex-wrap: wrap;
+      margin-top: 24px;
     }
 
     .btn {
       min-width: 150px;
-      padding: 14px 22px;
+      padding: 13px 22px;
       border: 1px solid var(--accent);
-      text-align: center;
-      font-size: 1.05rem;
-      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-      box-shadow: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.02rem;
+      line-height: 1;
+      transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
     }
 
     .btn.primary {
       background: var(--accent);
-      color: white;
+      color: var(--button-text);
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-hover);
+      color: var(--button-text);
     }
 
     .btn.secondary {
@@ -177,35 +173,18 @@
       color: var(--accent);
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 22px rgba(255, 77, 115, 0.18);
-    }
-
     .btn.secondary:hover {
       background: rgba(255, 77, 115, 0.08);
-    }
-
-    .inline-accent {
-      color: var(--accent);
-    }
-
-    .note {
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: var(--muted);
-      opacity: 0.85;
     }
 
     @media (max-width: 640px) {
       .page {
         align-items: flex-start;
-        padding-top: 96px;
+        padding-top: 110px;
       }
 
-      .theme-toggle {
-        top: 16px;
-        right: 16px;
+      .content {
+        transform: none;
       }
 
       .buttons {
@@ -219,13 +198,12 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
-    <span id="themeIcon">☾</span>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle color mode">
     <span id="themeText">Light mode</span>
   </button>
 
   <main class="page">
-    <section class="content card">
+    <section class="content">
       <h1>Hey, I'm Kris.</h1>
 
       <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
@@ -242,21 +220,19 @@
           Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a>
         </li>
         <li>
-          Read <a id="goodreadsLink" href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“currently reading on Goodreads”</a>
+          Read <a id="goodreadsLink" href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a>
         </li>
         <li id="chessGameLine">
           Played against <span id="chessOpponent">loading…</span>
         </li>
       </ul>
 
-      <p class="build-line">I’m currently building at <a href="#" class="inline-accent">this</a>.</p>
+      <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
 
       <div class="buttons">
         <a class="btn primary" href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">krispearcey.com</a>
         <a class="btn secondary" href="mailto:me@krispearcey.com">Contact Me</a>
       </div>
-
-      <p class="note">Single-file HTML/CSS/JS, ready for GitHub Pages.</p>
     </section>
   </main>
 
@@ -264,7 +240,6 @@
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
     const themeText = document.getElementById('themeText');
-    const themeIcon = document.getElementById('themeIcon');
 
     const savedTheme = localStorage.getItem('kris-theme');
     if (savedTheme === 'light') {
@@ -281,39 +256,32 @@
     function syncThemeButton() {
       const isLight = body.classList.contains('light');
       themeText.textContent = isLight ? 'Dark mode' : 'Light mode';
-      themeIcon.textContent = isLight ? '☀' : '☾';
     }
-  
 
-    async function loadLatestChessGame(){
-      try{
+    async function loadLatestChessGame() {
+      try {
         const archivesRes = await fetch('https://api.chess.com/pub/player/krisper/games/archives');
         const archives = await archivesRes.json();
-
         const latestArchive = archives.archives[archives.archives.length - 1];
+
         const gamesRes = await fetch(latestArchive);
         const gamesData = await gamesRes.json();
 
-        const games = gamesData.games.filter(g => g.end_time);
+        const games = (gamesData.games || []).filter(game => game.end_time);
         const lastGame = games[games.length - 1];
-
-        if(!lastGame) return;
+        if (!lastGame) return;
 
         const opponent = lastGame.white.username.toLowerCase() === 'krisper'
           ? lastGame.black.username
           : lastGame.white.username;
 
-        const url = lastGame.url;
-
-        const el = document.getElementById('chessOpponent');
-        el.innerHTML = `<a href="${url}" target="_blank">${opponent}</a>`;
-      }catch(e){
+        document.getElementById('chessOpponent').innerHTML = `<a href="${lastGame.url}" target="_blank" rel="noopener noreferrer">${opponent}</a>`;
+      } catch (error) {
         document.getElementById('chessOpponent').textContent = 'a recent opponent';
       }
     }
 
     loadLatestChessGame();
-
   </script>
 </body>
 </html>
