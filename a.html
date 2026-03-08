@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Journalistic</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Dancing+Script:wght@700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="brand-mark nav-trigger" data-modal="homeModal" aria-label="Open Home">
+          <span class="brand-feather">✒</span>
+        </button>
+      </div>
+
+      <nav class="topbar-center" aria-label="Primary navigation">
+        <button class="nav-link nav-trigger" data-modal="homeModal">Home</button>
+        <button class="nav-link nav-trigger" data-modal="projectsModal">Projects</button>
+        <button class="nav-link nav-trigger" data-modal="blogModal">Blog</button>
+        <button class="nav-link nav-trigger" data-modal="aboutModal">About</button>
+      </nav>
+
+      <div class="topbar-right">
+        <a href="#" class="signin-link">Sign in</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <section class="hero-copy">
+        <h1 class="hero-title">Journalistic</h1>
+
+        <p class="hero-subtitle">
+          A pristine <span class="script-word">Micro Journaling</span> app with
+          minimalistic design and powerful insights
+        </p>
+
+        <button class="hero-cta nav-trigger" data-modal="projectsModal">
+          <span>Check it out</span>
+          <span class="cta-circle">+</span>
+        </button>
+      </section>
+
+      <section class="hero-visual">
+        <img
+          src="journalistic-phone.png"
+          alt="Journalistic phone preview"
+          class="phone-image"
+        />
+      </section>
+    </main>
+  </div>
+
+  <!-- HOME MODAL -->
+  <div class="screen-modal" id="homeModal" aria-hidden="true">
+    <div class="modal-topbar">
+      <div class="modal-topbar-left">
+        <button class="back-btn close-modal" aria-label="Close modal">←</button>
+        <div class="modal-brand">
+          <span>Journalistic</span>
+          <span class="brand-feather small">✒</span>
+        </div>
+      </div>
+      <div class="modal-topbar-right">
+        <a href="#" class="signin-link">Sign in</a>
+      </div>
+    </div>
+
+    <div class="modal-scroll">
+      <section class="home-modal-inner centered-page">
+        <div class="modal-home-copy">
+          <h2 class="page-title">Welcome</h2>
+          <p class="lead">
+            Journalistic is a calm, minimalist concept for writing, reflection,
+            and organizing daily thoughts without clutter.
+          </p>
+
+          <div class="home-card-grid">
+            <article class="soft-card">
+              <h3>Minimal writing</h3>
+              <p>
+                A distraction-free layout focused on clarity, whitespace,
+                balance, and calm typography.
+              </p>
+            </article>
+
+            <article class="soft-card">
+              <h3>Thoughtful structure</h3>
+              <p>
+                Pages, journal entries, lists, tags, and notes designed to feel
+                effortless and elegant.
+              </p>
+            </article>
+
+            <article class="soft-card">
+              <h3>Quiet visual design</h3>
+              <p>
+                Everything is centered, breathable, and intentionally simple so
+                the content stays in focus.
+              </p>
+            </article>
+
+            <article class="soft-card">
+              <h3>Built to extend</h3>
+              <p>
+                The structure here makes it easy to add more sections, cards,
+                pages, projects, and writing later.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ABOUT MODAL -->
+  <div class="screen-modal" id="aboutModal" aria-hidden="true">
+    <div class="modal-topbar">
+      <div class="modal-topbar-left">
+        <button class="back-btn close-modal" aria-label="Close modal">←</button>
+        <div class="modal-brand">
+          <span>Journalistic</span>
+          <span class="brand-feather small">✒</span>
+        </div>
+      </div>
+      <div class="modal-topbar-right">
+        <a href="#" class="signin-link">Sign in</a>
+      </div>
+    </div>
+
+    <div class="modal-scroll">
+      <section class="about-layout">
+        <div class="about-spacer"></div>
+
+        <div class="about-content">
+          <h2 class="page-title">About</h2>
+
+          <p class="about-lead">
+            Journalistic is a micro journaling app with minimalistic design,
+            pristine writing experience, and powerful insights.
+          </p>
+
+          <p>
+            The ultimate goal of Journalistic is to help you focus on what truly
+            matters in life and to provide a place where you can write down and
+            organize all the things that occupy your mind.
+          </p>
+
+          <p>
+            Our app is optimized for a distraction-free writing experience so
+            that you can express your thoughts clearly.
+          </p>
+
+          <p>
+            While you write, Journalistic aggregates information from your
+            entries, tags, mentions, etc. and compiles them into meaningful
+            insights, e.g. how many times you went surfing in the last month or
+            where and when you have met someone for the first time.
+          </p>
+
+          <div class="section-block">
+            <h3>Design Principles</h3>
+
+            <p class="quote-line">
+              <em>“Simplicity is the ultimate sophistication”</em><br />
+              — Leonardo da Vinci
+            </p>
+
+            <div class="principles-list">
+              <div class="principle-item">
+                <div class="principle-title"><em>Lightning-fast</em></div>
+                <div class="principle-body">
+                  Interactions should feel instant, lag breaks flow.
+                </div>
+              </div>
+
+              <div class="principle-item">
+                <div class="principle-title"><em>Focus</em></div>
+                <div class="principle-body">
+                  Surface what you need, when you need it, hide everything else.
+                </div>
+              </div>
+
+              <div class="principle-item">
+                <div class="principle-title"><em>Calm UI</em></div>
+                <div class="principle-body">
+                  Generous whitespace, soft contrast, and typography that reads
+                  effortlessly.
+                </div>
+              </div>
+
+              <div class="principle-item">
+                <div class="principle-title"><em>Meaningful insights</em></div>
+                <div class="principle-body">
+                  Reflection should reveal patterns, not overwhelm you with
+                  noise.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-right-space"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- BLOG MODAL -->
+  <div class="screen-modal" id="blogModal" aria-hidden="true">
+    <div class="modal-topbar">
+      <div class="modal-topbar-left">
+        <button class="back-btn close-modal" aria-label="Close modal">←</button>
+        <div class="modal-brand">
+          <span>Journalistic</span>
+          <span class="brand-feather small">✒</span>
+        </div>
+      </div>
+      <div class="modal-topbar-right">
+        <a href="#" class="signin-link">Sign in</a>
+      </div>
+    </div>
+
+    <div class="modal-scroll">
+      <section class="blog-shell centered-page narrow-page">
+        <div class="blog-list-view" id="blogListView">
+          <h2 class="page-title blog-title-center">Blog</h2>
+          <p class="blog-subheader">
+            Notes on design, writing, process, and building calm digital
+            experiences.
+          </p>
+
+          <div class="blog-list" id="blogList"></div>
+        </div>
+
+        <div class="blog-post-view hidden" id="blogPostView">
+          <button class="inline-back-btn" id="backToBlogList">← Back to all posts</button>
+          <article id="blogPostContent"></article>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- PROJECTS MODAL -->
+  <div class="screen-modal" id="projectsModal" aria-hidden="true">
+    <div class="modal-topbar">
+      <div class="modal-topbar-left">
+        <button class="back-btn close-modal" aria-label="Close modal">←</button>
+        <div class="modal-brand">
+          <span>Journalistic</span>
+          <span class="brand-feather small">✒</span>
+        </div>
+      </div>
+      <div class="modal-topbar-right">
+        <a href="#" class="signin-link">Sign in</a>
+      </div>
+    </div>
+
+    <div class="modal-scroll">
+      <section class="projects-shell centered-page wide-page">
+        <h2 class="page-title projects-title-center">Projects</h2>
+        <p class="projects-subheader">
+          A clean 2-column layout for projects that can be expanded anytime.
+        </p>
+
+        <div class="projects-grid" id="projectsGrid"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
