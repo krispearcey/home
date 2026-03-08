@@ -219,12 +219,15 @@ h1{
   align-items:flex-start;
   gap:0;
   min-height:1.48em;
-  transition:transform .28s cubic-bezier(.22,1,.36,1);
-  will-change:transform;
+  transition:
+    transform .3s cubic-bezier(.22,1,.36,1),
+    padding-left .3s cubic-bezier(.22,1,.36,1);
+  will-change:transform,padding-left;
+  padding-left:0;
 }
 
 .expandable-line.expanded .line-row{
-  transform:translateY(-1px);
+  padding-left:18px;
 }
 
 .chevron-toggle{
@@ -243,7 +246,6 @@ h1{
   cursor:pointer;
   font:inherit;
   line-height:1.48;
-  transform:translateY(0);
 }
 
 .chevron-toggle:hover{
@@ -274,18 +276,23 @@ h1{
   overflow:hidden;
   max-height:0;
   opacity:0;
-  transition:max-height .34s cubic-bezier(.22,1,.36,1), opacity .22s ease;
+  transition:
+    max-height .34s cubic-bezier(.22,1,.36,1),
+    opacity .22s ease,
+    margin-top .22s ease;
   margin-left:18px;
+  margin-top:0;
 }
 
 .expandable-line.expanded .recent-games{
   max-height:320px;
   opacity:1;
+  margin-top:6px;
 }
 
 .recent-games-list{
   list-style:none;
-  margin:6px 0 0;
+  margin:0;
   padding:0 0 0 18px;
 }
 
@@ -311,7 +318,6 @@ h1{
 .recent-games-list li:nth-child(2){ animation-delay:.07s; }
 .recent-games-list li:nth-child(3){ animation-delay:.11s; }
 .recent-games-list li:nth-child(4){ animation-delay:.15s; }
-.recent-games-list li:nth-child(5){ animation-delay:.19s; }
 
 @keyframes recentGameIn{
   from{
@@ -593,7 +599,6 @@ const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 
 let recentChessGames = [];
-let chessGamesLoaded = false;
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -722,7 +727,6 @@ async function loadLatestFinishedGame(){
 
     if(!archives.length){
       setFallbackChessLine();
-      chessGamesLoaded = true;
       return;
     }
 
@@ -755,7 +759,6 @@ async function loadLatestFinishedGame(){
 
     if(!allFinishedGames.length){
       setFallbackChessLine();
-      chessGamesLoaded = true;
       return;
     }
 
@@ -766,18 +769,16 @@ async function loadLatestFinishedGame(){
     chessOpponent.textContent = latestOpponent || "someone";
     chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
 
-    recentChessGames = allFinishedGames.slice(0, 5).map(game => ({
+    recentChessGames = allFinishedGames.slice(1, 5).map(game => ({
       resultLabel: getResultLabel(game, usernameLower),
       opponent: getOpponentName(game, usernameLower),
       url: game.url || `https://www.chess.com/member/${username}`
     }));
 
     renderRecentGames(recentChessGames);
-    chessGamesLoaded = true;
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
-    chessGamesLoaded = true;
   }
 }
 
