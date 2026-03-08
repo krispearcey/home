@@ -299,6 +299,16 @@ h1{
   opacity:0;
   transform:translateY(6px);
   animation:expandItemIn .28s ease forwards;
+  font:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
+}
+
+.expand-list li a,
+.expand-list li span{
+  font:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
 }
 
 .expand-list li:nth-child(1){ animation-delay:.03s; }
@@ -828,13 +838,17 @@ function renderGoodreadsBooks(books){
 
   books.forEach(book => {
     const item = document.createElement("li");
-    const link = document.createElement("a");
 
+    const label = document.createElement("span");
+    label.textContent = "read ";
+
+    const link = document.createElement("a");
     link.href = book.link || GOODREADS_PROFILE_URL;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.textContent = formatBookText(book.title, book.author);
 
+    item.appendChild(label);
     item.appendChild(link);
     goodreadsExpandList.appendChild(item);
   });
