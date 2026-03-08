@@ -12,23 +12,34 @@
 :root{
   --bg:#243126;
   --text:#f5f5f0;
-  --muted:rgba(245,245,240,0.88);
-  --soft:rgba(245,245,240,0.58);
+  --muted:rgba(245,245,240,0.9);
+  --soft:rgba(245,245,240,0.62);
   --accent:#ff4d73;
   --accent-hover:#ff6b8a;
   --button-text:#ffffff;
-  --toggle-border:rgba(245,245,240,0.14);
+  --toggle-border:rgba(245,245,240,0.16);
+
+  /* subtler button tones */
+  --btn-border:rgba(245,245,240,0.16);
+  --btn-bg:rgba(245,245,240,0.035);
+  --btn-bg-hover:rgba(245,245,240,0.06);
+  --btn-text:rgba(245,245,240,0.82);
 }
 
 body.light{
   --bg:#ececec;
   --text:#131313;
-  --muted:rgba(19,19,19,0.82);
+  --muted:rgba(19,19,19,0.9);
   --soft:rgba(19,19,19,0.48);
   --accent:#ff4d73;
   --accent-hover:#ff355f;
   --button-text:#ffffff;
-  --toggle-border:rgba(19,19,19,0.12);
+  --toggle-border:rgba(19,19,19,0.14);
+
+  --btn-border:rgba(19,19,19,0.12);
+  --btn-bg:rgba(19,19,19,0.025);
+  --btn-bg-hover:rgba(19,19,19,0.05);
+  --btn-text:rgba(19,19,19,0.74);
 }
 
 *{
@@ -49,7 +60,7 @@ body{
   -moz-osx-font-smoothing:grayscale;
 }
 
-/* top actions */
+/* top icons */
 
 .top-actions{
   position:fixed;
@@ -57,14 +68,14 @@ body{
   right:22px;
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
   z-index:10;
 }
 
 .icon-link,
 .theme-toggle{
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   border:1px solid var(--toggle-border);
   background:transparent;
   color:var(--text);
@@ -72,15 +83,15 @@ body{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:.96rem;
+  font-size:.98rem;
   text-decoration:none;
   cursor:pointer;
-  transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease,background-color .18s ease;
+  transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
 }
 
 .icon-link:hover,
 .theme-toggle:hover{
-  opacity:.95;
+  opacity:.9;
   transform:translateY(-1px);
 }
 
@@ -95,19 +106,19 @@ body{
 }
 
 .content{
-  width:min(100%, 525px);
-  transform:translateY(-2.2vh);
+  width:min(100%,560px);
+  transform:translateY(-1.6vh);
 }
 
 /* hero */
 
 h1{
-  margin:0 0 10px;
+  margin:0 0 14px;
   font-family:"Merriweather",serif;
-  font-size:clamp(1.78rem,2.15vw,2.08rem);
+  font-size:clamp(1.9rem,2.2vw,2.28rem);
   font-weight:500;
-  letter-spacing:-0.03em;
-  line-height:1.06;
+  letter-spacing:-0.018em;
+  line-height:1.1;
 }
 
 /* intro text */
@@ -116,25 +127,25 @@ h1{
 .recent-label,
 .build-line{
   font-family:"Merriweather",serif;
-  font-size:clamp(.92rem,.97vw,.97rem);
+  font-size:clamp(.95rem,.98vw,1rem);
   font-weight:400;
-  line-height:1.38;
-  letter-spacing:-0.005em;
+  line-height:1.5;
+  letter-spacing:0;
   word-spacing:0;
 }
 
 .intro{
-  margin:0 0 1px;
+  margin:0 0 4px;
   color:var(--muted);
 }
 
 .recent-label{
-  margin:0 0 10px;
+  margin:0 0 14px;
   color:var(--text);
 }
 
 .build-line{
-  margin-top:10px;
+  margin-top:16px;
   color:var(--muted);
 }
 
@@ -148,13 +159,13 @@ h1{
 
 .activity-list li{
   position:relative;
-  padding-left:16px;
-  margin:0 0 5px;
+  padding-left:18px;
+  margin:0 0 9px;
   font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:clamp(.89rem,.94vw,.95rem);
+  font-size:clamp(.93rem,.97vw,.98rem);
   font-weight:400;
-  line-height:1.34;
-  letter-spacing:-0.01em;
+  line-height:1.48;
+  letter-spacing:0;
   color:var(--text);
 }
 
@@ -181,46 +192,45 @@ a:hover{
 
 .buttons{
   display:flex;
-  gap:9px;
+  gap:10px;
   flex-wrap:wrap;
-  margin-top:18px;
+  margin-top:22px;
 }
 
 .btn{
   min-width:136px;
-  padding:11px 18px;
-  border:1px solid var(--accent);
+  padding:10px 16px;
+  border:1px solid var(--btn-border);
+  background:var(--btn-bg);
+  color:var(--btn-text);
+  border-radius:999px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   font-family:"Merriweather",serif;
-  font-size:.875rem;
+  font-size:.88rem;
   font-weight:400;
   line-height:1;
-  letter-spacing:0;
+  letter-spacing:.01em;
   transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,opacity .18s ease;
 }
 
 .btn:hover{
   transform:translateY(-1px);
+  background:var(--btn-bg-hover);
+  color:var(--text);
+  border-color:rgba(245,245,240,0.22);
 }
 
-.btn.primary{
-  background:var(--accent);
-  color:var(--button-text);
+body.light .btn:hover{
+  border-color:rgba(19,19,19,0.18);
 }
 
-.btn.primary:hover{
-  background:var(--accent-hover);
-}
-
+.btn.primary,
 .btn.secondary{
-  background:transparent;
-  color:var(--accent);
-}
-
-.btn.secondary:hover{
-  background:rgba(255,77,115,.08);
+  background:var(--btn-bg);
+  color:var(--btn-text);
+  border-color:var(--btn-border);
 }
 
 /* mobile */
@@ -234,13 +244,13 @@ a:hover{
 
   .icon-link,
   .theme-toggle{
-    width:39px;
-    height:39px;
+    width:40px;
+    height:40px;
   }
 
   .page{
     align-items:flex-start;
-    padding:96px 22px 40px;
+    padding:100px 22px 40px;
   }
 
   .content{
@@ -249,18 +259,21 @@ a:hover{
   }
 
   h1{
-    font-size:clamp(1.64rem,7vw,1.9rem);
-    margin-bottom:9px;
+    margin-bottom:12px;
+    font-size:clamp(1.72rem,7vw,2rem);
   }
 
   .intro,
   .recent-label,
   .build-line{
-    font-size:.93rem;
+    font-size:.95rem;
+    line-height:1.52;
   }
 
   .activity-list li{
-    font-size:.9rem;
+    font-size:.93rem;
+    line-height:1.5;
+    margin-bottom:10px;
   }
 
   .buttons{
@@ -308,6 +321,7 @@ a:hover{
     <h1>Hi, I'm Kris.</h1>
 
     <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+
     <p class="recent-label">Recently, I’ve -</p>
 
     <ul class="activity-list">
@@ -315,7 +329,17 @@ a:hover{
       <li>Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a></li>
       <li>Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a></li>
       <li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a></li>
-      <li id="chessGameLine">Played against <span id="chessOpponent">loading…</span></li>
+      <li id="chessGameLine">
+        Played against
+        <a
+          id="chessOpponentLink"
+          href="https://www.chess.com/member/krisper"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span id="chessOpponent">loading…</span>
+        </a>
+      </li>
     </ul>
 
     <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
@@ -342,6 +366,7 @@ const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
 const chessOpponent = document.getElementById("chessOpponent");
+const chessOpponentLink = document.getElementById("chessOpponentLink");
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -352,12 +377,10 @@ syncThemeButton();
 
 themeToggle.addEventListener("click", () => {
   body.classList.toggle("light");
-
   localStorage.setItem(
     "kris-theme",
     body.classList.contains("light") ? "light" : "dark"
   );
-
   syncThemeButton();
 });
 
@@ -368,6 +391,7 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
+/* chess.com latest finished game */
 async function loadLatestFinishedGame(){
   const username = "krisper";
   const usernameLower = username.toLowerCase();
@@ -386,6 +410,7 @@ async function loadLatestFinishedGame(){
 
     if(!archives.length){
       chessOpponent.textContent = "someone";
+      chessOpponentLink.href = `https://www.chess.com/member/${username}`;
       return;
     }
 
@@ -408,7 +433,8 @@ async function loadLatestFinishedGame(){
           const blackUser = game?.black?.username?.toLowerCase?.() || "";
           const involvesPlayer = whiteUser === usernameLower || blackUser === usernameLower;
           const hasEndTime = typeof game?.end_time === "number";
-          return involvesPlayer && hasEndTime;
+          const hasGameUrl = typeof game?.url === "string" && game.url.length > 0;
+          return involvesPlayer && hasEndTime && hasGameUrl;
         })
         .sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
 
@@ -420,6 +446,7 @@ async function loadLatestFinishedGame(){
 
     if(!latestGame){
       chessOpponent.textContent = "someone";
+      chessOpponentLink.href = `https://www.chess.com/member/${username}`;
       return;
     }
 
@@ -432,9 +459,11 @@ async function loadLatestFinishedGame(){
         : whiteName;
 
     chessOpponent.textContent = opponent || "someone";
+    chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     chessOpponent.textContent = "someone";
+    chessOpponentLink.href = `https://www.chess.com/member/${username}`;
   }
 }
 
