@@ -2,283 +2,284 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>Journalistic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kris Pearcey</title>
+  <style>
+    :root {
+      --bg: #1f2a22;
+      --bg-soft: #243128;
+      --panel: rgba(255, 255, 255, 0.03);
+      --text: #f5f5f1;
+      --muted: #d7dbd2;
+      --accent: #ff4d73;
+      --accent-strong: #ff355f;
+      --border: rgba(255, 255, 255, 0.15);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      --bullet: rgba(255, 255, 255, 0.28);
+    }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Dancing+Script:wght@700&display=swap"
-    rel="stylesheet"
-  />
+    body.light {
+      --bg: #ececec;
+      --bg-soft: #f5f5f5;
+      --panel: rgba(0, 0, 0, 0.02);
+      --text: #101010;
+      --muted: #2f2f2f;
+      --accent: #ff4d73;
+      --accent-strong: #ff355f;
+      --border: rgba(0, 0, 0, 0.14);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      --bullet: rgba(0, 0, 0, 0.18);
+    }
 
-  <link rel="stylesheet" href="styles.css" />
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.035), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.03), transparent 24%),
+        linear-gradient(180deg, var(--bg-soft), var(--bg));
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--text);
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      font: inherit;
+    }
+
+    body.light .theme-toggle {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .content {
+      width: min(100%, 620px);
+      padding: 8px;
+    }
+
+    .card {
+      background: transparent;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.5rem, 5vw, 4.25rem);
+      line-height: 0.98;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .intro,
+    .build-line {
+      margin: 0;
+      font-size: clamp(1.15rem, 2vw, 1.6rem);
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .recent-label {
+      margin: 18px 0 10px;
+      font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .activity-list li {
+      position: relative;
+      padding-left: 20px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .activity-list li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--bullet);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent-strong);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      min-width: 150px;
+      padding: 14px 22px;
+      border: 1px solid var(--accent);
+      text-align: center;
+      font-size: 1.05rem;
+      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: none;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(255, 77, 115, 0.18);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255, 77, 115, 0.08);
+    }
+
+    .inline-accent {
+      color: var(--accent);
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      opacity: 0.85;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        align-items: flex-start;
+        padding-top: 96px;
+      }
+
+      .theme-toggle {
+        top: 16px;
+        right: 16px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="site-shell">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="brand-mark nav-trigger" data-modal="homeModal" aria-label="Open Home">
-          <span class="brand-feather">✒</span>
-        </button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
+    <span id="themeIcon">☾</span>
+    <span id="themeText">Light mode</span>
+  </button>
+
+  <main class="page">
+    <section class="content card">
+      <h1>Hey, I'm Kris.</h1>
+
+      <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+      <p class="recent-label">Recently, I’ve -</p>
+
+      <ul class="activity-list">
+        <li>
+          Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">“my own personal chess bot”</a>
+        </li>
+        <li>
+          Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a>
+        </li>
+        <li>
+          Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a>
+        </li>
+        <li>
+          Read <a id="goodreadsLink" href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“currently reading on Goodreads”</a>
+        </li>
+      </ul>
+
+      <p class="build-line">I’m currently building at <a href="#" class="inline-accent">this</a>.</p>
+
+      <div class="buttons">
+        <a class="btn primary" href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">krispearcey.com</a>
+        <a class="btn secondary" href="mailto:me@krispearcey.com">Contact Me</a>
       </div>
 
-      <nav class="topbar-center" aria-label="Primary navigation">
-        <button class="nav-link nav-trigger" data-modal="homeModal">Home</button>
-        <button class="nav-link nav-trigger" data-modal="projectsModal">Projects</button>
-        <button class="nav-link nav-trigger" data-modal="blogModal">Blog</button>
-        <button class="nav-link nav-trigger" data-modal="aboutModal">About</button>
-      </nav>
+      <p class="note">Single-file HTML/CSS/JS, ready for GitHub Pages.</p>
+    </section>
+  </main>
 
-      <div class="topbar-right">
-        <a href="#" class="signin-link">Sign in</a>
-      </div>
-    </header>
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeText = document.getElementById('themeText');
+    const themeIcon = document.getElementById('themeIcon');
 
-    <main class="hero">
-      <section class="hero-copy">
-        <h1 class="hero-title">Journalistic</h1>
+    const savedTheme = localStorage.getItem('kris-theme');
+    if (savedTheme === 'light') {
+      body.classList.add('light');
+    }
+    syncThemeButton();
 
-        <p class="hero-subtitle">
-          A pristine <span class="script-word">Micro Journaling</span> app with
-          minimalistic design and powerful insights
-        </p>
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light');
+      localStorage.setItem('kris-theme', body.classList.contains('light') ? 'light' : 'dark');
+      syncThemeButton();
+    });
 
-        <button class="hero-cta nav-trigger" data-modal="projectsModal">
-          <span>Check it out</span>
-          <span class="cta-circle">+</span>
-        </button>
-      </section>
-
-      <section class="hero-visual">
-        <img
-          src="journalistic-phone.png"
-          alt="Journalistic phone preview"
-          class="phone-image"
-        />
-      </section>
-    </main>
-  </div>
-
-  <!-- HOME MODAL -->
-  <div class="screen-modal" id="homeModal" aria-hidden="true">
-    <div class="modal-topbar">
-      <div class="modal-topbar-left">
-        <button class="back-btn close-modal" aria-label="Close modal">←</button>
-        <div class="modal-brand">
-          <span>Journalistic</span>
-          <span class="brand-feather small">✒</span>
-        </div>
-      </div>
-      <div class="modal-topbar-right">
-        <a href="#" class="signin-link">Sign in</a>
-      </div>
-    </div>
-
-    <div class="modal-scroll">
-      <section class="home-modal-inner centered-page">
-        <div class="modal-home-copy">
-          <h2 class="page-title">Welcome</h2>
-          <p class="lead">
-            Journalistic is a calm, minimalist concept for writing, reflection,
-            and organizing daily thoughts without clutter.
-          </p>
-
-          <div class="home-card-grid">
-            <article class="soft-card">
-              <h3>Minimal writing</h3>
-              <p>
-                A distraction-free layout focused on clarity, whitespace,
-                balance, and calm typography.
-              </p>
-            </article>
-
-            <article class="soft-card">
-              <h3>Thoughtful structure</h3>
-              <p>
-                Pages, journal entries, lists, tags, and notes designed to feel
-                effortless and elegant.
-              </p>
-            </article>
-
-            <article class="soft-card">
-              <h3>Quiet visual design</h3>
-              <p>
-                Everything is centered, breathable, and intentionally simple so
-                the content stays in focus.
-              </p>
-            </article>
-
-            <article class="soft-card">
-              <h3>Built to extend</h3>
-              <p>
-                The structure here makes it easy to add more sections, cards,
-                pages, projects, and writing later.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <!-- ABOUT MODAL -->
-  <div class="screen-modal" id="aboutModal" aria-hidden="true">
-    <div class="modal-topbar">
-      <div class="modal-topbar-left">
-        <button class="back-btn close-modal" aria-label="Close modal">←</button>
-        <div class="modal-brand">
-          <span>Journalistic</span>
-          <span class="brand-feather small">✒</span>
-        </div>
-      </div>
-      <div class="modal-topbar-right">
-        <a href="#" class="signin-link">Sign in</a>
-      </div>
-    </div>
-
-    <div class="modal-scroll">
-      <section class="about-layout">
-        <div class="about-spacer"></div>
-
-        <div class="about-content">
-          <h2 class="page-title">About</h2>
-
-          <p class="about-lead">
-            Journalistic is a micro journaling app with minimalistic design,
-            pristine writing experience, and powerful insights.
-          </p>
-
-          <p>
-            The ultimate goal of Journalistic is to help you focus on what truly
-            matters in life and to provide a place where you can write down and
-            organize all the things that occupy your mind.
-          </p>
-
-          <p>
-            Our app is optimized for a distraction-free writing experience so
-            that you can express your thoughts clearly.
-          </p>
-
-          <p>
-            While you write, Journalistic aggregates information from your
-            entries, tags, mentions, etc. and compiles them into meaningful
-            insights, e.g. how many times you went surfing in the last month or
-            where and when you have met someone for the first time.
-          </p>
-
-          <div class="section-block">
-            <h3>Design Principles</h3>
-
-            <p class="quote-line">
-              <em>“Simplicity is the ultimate sophistication”</em><br />
-              — Leonardo da Vinci
-            </p>
-
-            <div class="principles-list">
-              <div class="principle-item">
-                <div class="principle-title"><em>Lightning-fast</em></div>
-                <div class="principle-body">
-                  Interactions should feel instant, lag breaks flow.
-                </div>
-              </div>
-
-              <div class="principle-item">
-                <div class="principle-title"><em>Focus</em></div>
-                <div class="principle-body">
-                  Surface what you need, when you need it, hide everything else.
-                </div>
-              </div>
-
-              <div class="principle-item">
-                <div class="principle-title"><em>Calm UI</em></div>
-                <div class="principle-body">
-                  Generous whitespace, soft contrast, and typography that reads
-                  effortlessly.
-                </div>
-              </div>
-
-              <div class="principle-item">
-                <div class="principle-title"><em>Meaningful insights</em></div>
-                <div class="principle-body">
-                  Reflection should reveal patterns, not overwhelm you with
-                  noise.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="about-right-space"></div>
-      </section>
-    </div>
-  </div>
-
-  <!-- BLOG MODAL -->
-  <div class="screen-modal" id="blogModal" aria-hidden="true">
-    <div class="modal-topbar">
-      <div class="modal-topbar-left">
-        <button class="back-btn close-modal" aria-label="Close modal">←</button>
-        <div class="modal-brand">
-          <span>Journalistic</span>
-          <span class="brand-feather small">✒</span>
-        </div>
-      </div>
-      <div class="modal-topbar-right">
-        <a href="#" class="signin-link">Sign in</a>
-      </div>
-    </div>
-
-    <div class="modal-scroll">
-      <section class="blog-shell centered-page narrow-page">
-        <div class="blog-list-view" id="blogListView">
-          <h2 class="page-title blog-title-center">Blog</h2>
-          <p class="blog-subheader">
-            Notes on design, writing, process, and building calm digital
-            experiences.
-          </p>
-
-          <div class="blog-list" id="blogList"></div>
-        </div>
-
-        <div class="blog-post-view hidden" id="blogPostView">
-          <button class="inline-back-btn" id="backToBlogList">← Back to all posts</button>
-          <article id="blogPostContent"></article>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <!-- PROJECTS MODAL -->
-  <div class="screen-modal" id="projectsModal" aria-hidden="true">
-    <div class="modal-topbar">
-      <div class="modal-topbar-left">
-        <button class="back-btn close-modal" aria-label="Close modal">←</button>
-        <div class="modal-brand">
-          <span>Journalistic</span>
-          <span class="brand-feather small">✒</span>
-        </div>
-      </div>
-      <div class="modal-topbar-right">
-        <a href="#" class="signin-link">Sign in</a>
-      </div>
-    </div>
-
-    <div class="modal-scroll">
-      <section class="projects-shell centered-page wide-page">
-        <h2 class="page-title projects-title-center">Projects</h2>
-        <p class="projects-subheader">
-          A clean 2-column layout for projects that can be expanded anytime.
-        </p>
-
-        <div class="projects-grid" id="projectsGrid"></div>
-      </section>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    function syncThemeButton() {
+      const isLight = body.classList.contains('light');
+      themeText.textContent = isLight ? 'Dark mode' : 'Light mode';
+      themeIcon.textContent = isLight ? '☀' : '☾';
+    }
+  </script>
 </body>
 </html>
