@@ -184,7 +184,7 @@ h1{
   margin:0;
 }
 
-.activity-list li{
+.activity-list > li{
   position:relative;
   padding-left:18px;
   margin:0 0 9px;
@@ -196,12 +196,132 @@ h1{
   color:var(--text);
 }
 
-.activity-list li::before{
+.activity-list > li::before{
   content:">";
   position:absolute;
   left:0;
   top:0;
   color:var(--soft);
+}
+
+/* chess expandable line */
+
+.expandable-line{
+  padding-left:0 !important;
+}
+
+.expandable-line::before{
+  display:none;
+}
+
+.expandable-line .line-row{
+  display:flex;
+  align-items:flex-start;
+  gap:0;
+  min-height:1.48em;
+  transition:transform .28s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+
+.expandable-line.expanded .line-row{
+  transform:translateY(-1px);
+}
+
+.chevron-toggle{
+  appearance:none;
+  border:none;
+  background:transparent;
+  color:var(--soft);
+  padding:0;
+  margin:0;
+  width:18px;
+  min-width:18px;
+  height:1.48em;
+  display:inline-flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  cursor:pointer;
+  font:inherit;
+  line-height:1.48;
+  transform:translateY(0);
+}
+
+.chevron-toggle:hover{
+  color:var(--text);
+}
+
+.chevron-toggle:focus-visible{
+  outline:none;
+  color:var(--text);
+}
+
+.chevron-glyph{
+  display:inline-block;
+  transform-origin:42% 52%;
+  transition:transform .24s cubic-bezier(.22,1,.36,1), color .2s ease;
+}
+
+.expandable-line.expanded .chevron-glyph{
+  transform:rotate(90deg);
+}
+
+.line-content{
+  display:inline;
+  min-width:0;
+}
+
+.recent-games{
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transition:max-height .34s cubic-bezier(.22,1,.36,1), opacity .22s ease;
+  margin-left:18px;
+}
+
+.expandable-line.expanded .recent-games{
+  max-height:320px;
+  opacity:1;
+}
+
+.recent-games-list{
+  list-style:none;
+  margin:6px 0 0;
+  padding:0 0 0 18px;
+}
+
+.recent-games-list li{
+  position:relative;
+  margin:0 0 8px;
+  padding-left:18px;
+  color:var(--text);
+  opacity:0;
+  transform:translateY(6px);
+  animation:recentGameIn .28s ease forwards;
+}
+
+.recent-games-list li::before{
+  content:">";
+  position:absolute;
+  left:0;
+  top:0;
+  color:var(--soft);
+}
+
+.recent-games-list li:nth-child(1){ animation-delay:.03s; }
+.recent-games-list li:nth-child(2){ animation-delay:.07s; }
+.recent-games-list li:nth-child(3){ animation-delay:.11s; }
+.recent-games-list li:nth-child(4){ animation-delay:.15s; }
+.recent-games-list li:nth-child(5){ animation-delay:.19s; }
+
+@keyframes recentGameIn{
+  from{
+    opacity:0;
+    transform:translateY(6px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 /* links */
@@ -309,10 +429,15 @@ a:hover{
     line-height:1.52;
   }
 
-  .activity-list li{
+  .activity-list > li{
     font-size:.93rem;
     line-height:1.5;
     margin-bottom:10px;
+  }
+
+  .chevron-toggle{
+    height:1.5em;
+    line-height:1.5;
   }
 
   .buttons{
@@ -396,16 +521,34 @@ a:hover{
         </a>
       </li>
 
-      <li id="chessGameLine">
-        <span id="chessResultLabel">played against</span>
-        <a
-          id="chessOpponentLink"
-          href="https://www.chess.com/member/krisper"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span id="chessOpponent">loading…</span>
-        </a>
+      <li id="chessGameLine" class="expandable-line">
+        <div class="line-row">
+          <button
+            id="chessExpandToggle"
+            class="chevron-toggle"
+            type="button"
+            aria-label="Show recent chess games"
+            aria-expanded="false"
+          >
+            <span class="chevron-glyph">&gt;</span>
+          </button>
+
+          <div class="line-content">
+            <span id="chessResultLabel">played against</span>
+            <a
+              id="chessOpponentLink"
+              href="https://www.chess.com/member/krisper"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span id="chessOpponent">loading…</span>
+            </a>
+          </div>
+        </div>
+
+        <div id="recentGamesWrap" class="recent-games" aria-hidden="true">
+          <ul id="recentGamesList" class="recent-games-list"></ul>
+        </div>
       </li>
     </ul>
 
@@ -433,6 +576,11 @@ const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
 
+const chessGameLine = document.getElementById("chessGameLine");
+const chessExpandToggle = document.getElementById("chessExpandToggle");
+const recentGamesWrap = document.getElementById("recentGamesWrap");
+const recentGamesList = document.getElementById("recentGamesList");
+
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
 const chessResultLabel = document.getElementById("chessResultLabel");
@@ -443,6 +591,9 @@ const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
+
+let recentChessGames = [];
+let chessGamesLoaded = false;
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -470,9 +621,11 @@ function syncThemeButton(){
 /* ---------- CHESS ---------- */
 
 function setFallbackChessLine(){
-  chessResultLabel.textContent = "Played against";
+  chessResultLabel.textContent = "played against";
   chessOpponent.textContent = "someone";
   chessOpponentLink.href = "https://www.chess.com/member/krisper";
+  recentChessGames = [];
+  renderRecentGames([]);
 }
 
 function getResultLabel(game, usernameLower){
@@ -494,17 +647,62 @@ function getResultLabel(game, usernameLower){
   ]);
 
   if(whiteUser === usernameLower){
-    if(wonResults.has(whiteResult)) return "Won against";
-    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "Lost against";
+    if(wonResults.has(whiteResult)) return "won against";
+    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "lost against";
   }
 
   if(blackUser === usernameLower){
-    if(wonResults.has(blackResult)) return "Won against";
-    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "Lost against";
+    if(wonResults.has(blackResult)) return "won against";
+    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "lost against";
   }
 
-  return "Played against";
+  return "played against";
 }
+
+function getOpponentName(game, usernameLower){
+  const whiteName = game?.white?.username || "";
+  const blackName = game?.black?.username || "";
+
+  return whiteName.toLowerCase() === usernameLower
+    ? blackName
+    : whiteName;
+}
+
+function renderRecentGames(games){
+  recentGamesList.innerHTML = "";
+
+  games.forEach(game => {
+    const item = document.createElement("li");
+
+    const label = document.createElement("span");
+    label.textContent = `${game.resultLabel} `;
+
+    const link = document.createElement("a");
+    link.href = game.url || "https://www.chess.com/member/krisper";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = game.opponent || "someone";
+
+    item.appendChild(label);
+    item.appendChild(link);
+    recentGamesList.appendChild(item);
+  });
+}
+
+function setExpandedState(expanded){
+  chessGameLine.classList.toggle("expanded", expanded);
+  chessExpandToggle.setAttribute("aria-expanded", String(expanded));
+  chessExpandToggle.setAttribute(
+    "aria-label",
+    expanded ? "Hide recent chess games" : "Show recent chess games"
+  );
+  recentGamesWrap.setAttribute("aria-hidden", String(!expanded));
+}
+
+chessExpandToggle.addEventListener("click", () => {
+  const isExpanded = chessGameLine.classList.contains("expanded");
+  setExpandedState(!isExpanded);
+});
 
 async function loadLatestFinishedGame(){
   const username = "krisper";
@@ -524,11 +722,12 @@ async function loadLatestFinishedGame(){
 
     if(!archives.length){
       setFallbackChessLine();
+      chessGamesLoaded = true;
       return;
     }
 
     const archiveUrlsToCheck = archives.slice(-4).reverse();
-    let latestGame = null;
+    let allFinishedGames = [];
 
     for(const archiveUrl of archiveUrlsToCheck){
       const gamesRes = await fetch(archiveUrl, {
@@ -540,42 +739,45 @@ async function loadLatestFinishedGame(){
       const gamesData = await gamesRes.json();
       const games = Array.isArray(gamesData.games) ? gamesData.games : [];
 
-      const finishedGames = games
-        .filter(game => {
-          const whiteUser = game?.white?.username?.toLowerCase?.() || "";
-          const blackUser = game?.black?.username?.toLowerCase?.() || "";
-          const involvesPlayer = whiteUser === usernameLower || blackUser === usernameLower;
-          const hasEndTime = typeof game?.end_time === "number";
-          const hasGameUrl = typeof game?.url === "string" && game.url.length > 0;
-          return involvesPlayer && hasEndTime && hasGameUrl;
-        })
-        .sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
+      const finishedGames = games.filter(game => {
+        const whiteUser = game?.white?.username?.toLowerCase?.() || "";
+        const blackUser = game?.black?.username?.toLowerCase?.() || "";
+        const involvesPlayer = whiteUser === usernameLower || blackUser === usernameLower;
+        const hasEndTime = typeof game?.end_time === "number";
+        const hasGameUrl = typeof game?.url === "string" && game.url.length > 0;
+        return involvesPlayer && hasEndTime && hasGameUrl;
+      });
 
-      if(finishedGames.length){
-        latestGame = finishedGames[0];
-        break;
-      }
+      allFinishedGames = allFinishedGames.concat(finishedGames);
     }
 
-    if(!latestGame){
+    allFinishedGames.sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
+
+    if(!allFinishedGames.length){
       setFallbackChessLine();
+      chessGamesLoaded = true;
       return;
     }
 
-    const whiteName = latestGame?.white?.username || "";
-    const blackName = latestGame?.black?.username || "";
-
-    const opponent =
-      whiteName.toLowerCase() === usernameLower
-        ? blackName
-        : whiteName;
+    const latestGame = allFinishedGames[0];
+    const latestOpponent = getOpponentName(latestGame, usernameLower);
 
     chessResultLabel.textContent = getResultLabel(latestGame, usernameLower);
-    chessOpponent.textContent = opponent || "someone";
+    chessOpponent.textContent = latestOpponent || "someone";
     chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
+
+    recentChessGames = allFinishedGames.slice(0, 5).map(game => ({
+      resultLabel: getResultLabel(game, usernameLower),
+      opponent: getOpponentName(game, usernameLower),
+      url: game.url || `https://www.chess.com/member/${username}`
+    }));
+
+    renderRecentGames(recentChessGames);
+    chessGamesLoaded = true;
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
+    chessGamesLoaded = true;
   }
 }
 
