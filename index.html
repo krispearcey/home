@@ -204,6 +204,114 @@ h1{
   color:var(--soft);
 }
 
+/* expandable chess section */
+
+.chess-group{
+  position:relative;
+  margin:0 0 9px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:clamp(.93rem,.97vw,.98rem);
+  font-weight:400;
+  line-height:1.48;
+  letter-spacing:0;
+  color:var(--text);
+}
+
+.chess-main-line{
+  position:relative;
+  min-height:1.48em;
+  padding-left:18px;
+}
+
+.chess-main-content{
+  position:relative;
+  display:block;
+  transform:translateY(0);
+  transition:transform .28s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+
+.chess-group.expanded .chess-main-content{
+  transform:translateY(calc(-1 * (1.48em + 9px) * 5));
+}
+
+.chess-toggle{
+  position:absolute;
+  left:0;
+  top:0;
+  padding:0;
+  border:none;
+  background:transparent;
+  color:var(--soft);
+  font:inherit;
+  line-height:1.48;
+  cursor:pointer;
+  width:14px;
+  text-align:left;
+}
+
+.chess-toggle-text{
+  display:inline-block;
+  transform-origin:50% 52%;
+  transition:transform .22s ease;
+}
+
+.chess-group.expanded .chess-toggle-text{
+  transform:rotate(90deg);
+}
+
+.chess-toggle:hover,
+.chess-toggle:focus-visible{
+  color:var(--accent);
+  outline:none;
+}
+
+.chess-recent-list{
+  list-style:none;
+  padding:0;
+  margin:0 0 0 0;
+  max-height:0;
+  opacity:0;
+  overflow:hidden;
+  transition:max-height .32s cubic-bezier(.22,1,.36,1), opacity .2s ease;
+}
+
+.chess-group.expanded .chess-recent-list{
+  max-height:220px;
+  opacity:1;
+}
+
+.chess-recent-list li{
+  position:relative;
+  padding-left:18px;
+  margin:0 0 9px;
+  font:inherit;
+  line-height:1.48;
+  color:var(--text);
+  transform:translateY(8px);
+  opacity:0;
+  transition:transform .26s ease, opacity .2s ease;
+}
+
+.chess-group.expanded .chess-recent-list li{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.chess-recent-list li::before{
+  content:">";
+  position:absolute;
+  left:0;
+  top:0;
+  color:var(--soft);
+}
+
+.chess-recent-list li:nth-child(1){ transition-delay:.03s; }
+.chess-recent-list li:nth-child(2){ transition-delay:.06s; }
+.chess-recent-list li:nth-child(3){ transition-delay:.09s; }
+.chess-recent-list li:nth-child(4){ transition-delay:.12s; }
+.chess-recent-list li:nth-child(5){ transition-delay:.15s; }
+
 /* links */
 
 a{
@@ -309,10 +417,21 @@ a:hover{
     line-height:1.52;
   }
 
-  .activity-list li{
+  .activity-list li,
+  .chess-group,
+  .chess-recent-list li{
     font-size:.93rem;
     line-height:1.5;
+  }
+
+  .activity-list li,
+  .chess-group,
+  .chess-recent-list li{
     margin-bottom:10px;
+  }
+
+  .chess-group.expanded .chess-main-content{
+    transform:translateY(calc(-1 * (1.5em + 10px) * 5));
   }
 
   .buttons{
@@ -395,19 +514,36 @@ a:hover{
           <span id="goodreadsBookText">loading…</span>
         </a>
       </li>
-
-      <li id="chessGameLine">
-        <span id="chessResultLabel">played against</span>
-        <a
-          id="chessOpponentLink"
-          href="https://www.chess.com/member/krisper"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span id="chessOpponent">loading…</span>
-        </a>
-      </li>
     </ul>
+
+    <div class="chess-group" id="chessGroup">
+      <div class="chess-main-line">
+        <button
+          class="chess-toggle"
+          id="chessToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="chessRecentList"
+          aria-label="Show recent chess games"
+        >
+          <span class="chess-toggle-text">&gt;</span>
+        </button>
+
+        <div class="chess-main-content">
+          <span id="chessResultLabel">played against</span>
+          <a
+            id="chessOpponentLink"
+            href="https://www.chess.com/member/krisper"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span id="chessOpponent">loading…</span>
+          </a>
+        </div>
+      </div>
+
+      <ul class="chess-recent-list" id="chessRecentList"></ul>
+    </div>
 
     <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
 
@@ -432,6 +568,10 @@ a:hover{
 const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
+
+const chessGroup = document.getElementById("chessGroup");
+const chessToggle = document.getElementById("chessToggle");
+const chessRecentList = document.getElementById("chessRecentList");
 
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
@@ -469,10 +609,45 @@ function syncThemeButton(){
 
 /* ---------- CHESS ---------- */
 
+let recentChessGames = [];
+
+chessToggle.addEventListener("click", () => {
+  const shouldExpand = !chessGroup.classList.contains("expanded");
+  chessGroup.classList.toggle("expanded", shouldExpand);
+  chessToggle.setAttribute("aria-expanded", String(shouldExpand));
+  chessToggle.setAttribute(
+    "aria-label",
+    shouldExpand ? "Hide recent chess games" : "Show recent chess games"
+  );
+});
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, match => {
+    const map = {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    };
+    return map[match];
+  });
+}
+
 function setFallbackChessLine(){
-  chessResultLabel.textContent = "Played against";
+  chessResultLabel.textContent = "played against";
   chessOpponent.textContent = "someone";
   chessOpponentLink.href = "https://www.chess.com/member/krisper";
+
+  recentChessGames = [
+    {
+      label: "played against",
+      opponent: "someone",
+      url: "https://www.chess.com/member/krisper"
+    }
+  ];
+
+  renderRecentChessGames();
 }
 
 function getResultLabel(game, usernameLower){
@@ -494,16 +669,40 @@ function getResultLabel(game, usernameLower){
   ]);
 
   if(whiteUser === usernameLower){
-    if(wonResults.has(whiteResult)) return "Won against";
-    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "Lost against";
+    if(wonResults.has(whiteResult)) return "won against";
+    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "lost against";
   }
 
   if(blackUser === usernameLower){
-    if(wonResults.has(blackResult)) return "Won against";
-    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "Lost against";
+    if(wonResults.has(blackResult)) return "won against";
+    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "lost against";
   }
 
-  return "Played against";
+  return "played against";
+}
+
+function getOpponentName(game, usernameLower){
+  const whiteName = game?.white?.username || "";
+  const blackName = game?.black?.username || "";
+
+  return whiteName.toLowerCase() === usernameLower
+    ? blackName
+    : whiteName;
+}
+
+function renderRecentChessGames(){
+  chessRecentList.innerHTML = recentChessGames.slice(0, 5).map(game => {
+    const label = escapeHtml(game.label || "played against");
+    const opponent = escapeHtml(game.opponent || "someone");
+    const url = escapeHtml(game.url || "https://www.chess.com/member/krisper");
+
+    return `
+      <li>
+        <span>${label}</span>
+        <a href="${url}" target="_blank" rel="noopener noreferrer">${opponent}</a>
+      </li>
+    `;
+  }).join("");
 }
 
 async function loadLatestFinishedGame(){
@@ -527,8 +726,8 @@ async function loadLatestFinishedGame(){
       return;
     }
 
-    const archiveUrlsToCheck = archives.slice(-4).reverse();
-    let latestGame = null;
+    const archiveUrlsToCheck = archives.slice(-6).reverse();
+    const collectedGames = [];
 
     for(const archiveUrl of archiveUrlsToCheck){
       const gamesRes = await fetch(archiveUrl, {
@@ -548,31 +747,33 @@ async function loadLatestFinishedGame(){
           const hasEndTime = typeof game?.end_time === "number";
           const hasGameUrl = typeof game?.url === "string" && game.url.length > 0;
           return involvesPlayer && hasEndTime && hasGameUrl;
-        })
-        .sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
+        });
 
-      if(finishedGames.length){
-        latestGame = finishedGames[0];
-        break;
-      }
+      collectedGames.push(...finishedGames);
     }
 
-    if(!latestGame){
+    const sortedGames = collectedGames
+      .sort((a, b) => (b.end_time || 0) - (a.end_time || 0))
+      .slice(0, 5);
+
+    if(!sortedGames.length){
       setFallbackChessLine();
       return;
     }
 
-    const whiteName = latestGame?.white?.username || "";
-    const blackName = latestGame?.black?.username || "";
+    recentChessGames = sortedGames.map(game => ({
+      label: getResultLabel(game, usernameLower),
+      opponent: getOpponentName(game, usernameLower) || "someone",
+      url: game.url || `https://www.chess.com/member/${username}`
+    }));
 
-    const opponent =
-      whiteName.toLowerCase() === usernameLower
-        ? blackName
-        : whiteName;
+    const latestGame = recentChessGames[0];
 
-    chessResultLabel.textContent = getResultLabel(latestGame, usernameLower);
-    chessOpponent.textContent = opponent || "someone";
-    chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
+    chessResultLabel.textContent = latestGame.label;
+    chessOpponent.textContent = latestGame.opponent;
+    chessOpponentLink.href = latestGame.url;
+
+    renderRecentChessGames();
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
