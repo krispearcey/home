@@ -4,34 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kris Pearcey</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
   <style>
     :root {
       --bg: #243126;
       --text: #f5f5f0;
       --muted: rgba(245, 245, 240, 0.9);
-      --soft: rgba(245, 245, 240, 0.62);
+      --soft: rgba(245, 245, 240, 0.72);
       --accent: #ff4d73;
       --accent-hover: #ff6b8a;
       --button-text: #ffffff;
-      --toggle-border: rgba(245, 245, 240, 0.16);
+      --toggle-bg: transparent;
+      --toggle-border: rgba(245, 245, 240, 0.18);
     }
 
     body.light {
       --bg: #ececec;
-      --text: #131313;
-      --muted: rgba(19, 19, 19, 0.9);
-      --soft: rgba(19, 19, 19, 0.48);
+      --text: #121212;
+      --muted: rgba(18, 18, 18, 0.9);
+      --soft: rgba(18, 18, 18, 0.68);
       --accent: #ff4d73;
       --accent-hover: #ff355f;
       --button-text: #ffffff;
-      --toggle-border: rgba(19, 19, 19, 0.14);
+      --toggle-bg: transparent;
+      --toggle-border: rgba(18, 18, 18, 0.14);
     }
 
     * {
@@ -46,7 +41,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: Georgia, "Times New Roman", Times, serif;
       transition: background-color 0.22s ease, color 0.22s ease;
     }
 
@@ -54,22 +49,22 @@
       position: fixed;
       top: 22px;
       right: 22px;
-      width: 42px;
-      height: 42px;
       border: 1px solid var(--toggle-border);
-      background: transparent;
+      background: var(--toggle-bg);
       color: var(--text);
+      padding: 10px 14px;
       border-radius: 999px;
       cursor: pointer;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      transition: opacity 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+      gap: 8px;
     }
 
     .theme-toggle:hover {
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     .page {
@@ -81,42 +76,36 @@
     }
 
     .content {
-      width: min(100%, 570px);
+      width: min(100%, 590px);
       transform: translateY(-1.5vh);
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      font-size: clamp(2rem, 2.6vw, 2.6rem);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+      font-size: clamp(2.6rem, 4.1vw, 4rem);
+      line-height: 1.03;
+      letter-spacing: -0.03em;
       font-weight: 700;
     }
 
     .intro,
     .recent-label,
-    .build-line,
-    .activity-list li {
-      font-size: clamp(0.94rem, 1vw, 1rem);
-      line-height: 1.45;
-    }
-
-    .intro,
     .build-line {
       margin: 0;
+      font-size: clamp(1.18rem, 1.7vw, 1.55rem);
+      line-height: 1.42;
       color: var(--muted);
     }
 
     .recent-label {
-      margin: 0;
+      margin-top: 2px;
       color: var(--text);
     }
 
     .activity-list {
       list-style: none;
       padding: 0;
-      margin: 8px 0 22px;
+      margin: 10px 0 22px;
     }
 
     .activity-list li {
@@ -124,6 +113,8 @@
       padding-left: 22px;
       margin: 0 0 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: clamp(0.94rem, 1.05vw, 1rem);
+      line-height: 1.45;
       color: var(--text);
     }
 
@@ -158,7 +149,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.98rem;
+      font-size: 1.02rem;
       line-height: 1;
       transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
     }
@@ -189,7 +180,7 @@
     @media (max-width: 640px) {
       .page {
         align-items: flex-start;
-        padding-top: 100px;
+        padding-top: 110px;
       }
 
       .content {
@@ -208,7 +199,7 @@
 </head>
 <body>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle color mode">
-    <i id="themeIcon" class="fa-regular fa-moon"></i>
+    <span id="themeText">Light mode</span>
   </button>
 
   <main class="page">
@@ -248,7 +239,7 @@
   <script>
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
 
     const savedTheme = localStorage.getItem('kris-theme');
     if (savedTheme === 'light') {
@@ -264,9 +255,7 @@
 
     function syncThemeButton() {
       const isLight = body.classList.contains('light');
-      themeIcon.className = isLight ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
-      themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
-      themeToggle.title = isLight ? 'Dark mode' : 'Light mode';
+      themeText.textContent = isLight ? 'Dark mode' : 'Light mode';
     }
 
     async function loadLatestChessGame() {
