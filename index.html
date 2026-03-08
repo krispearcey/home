@@ -283,6 +283,37 @@
       themeText.textContent = isLight ? 'Dark mode' : 'Light mode';
       themeIcon.textContent = isLight ? '☀' : '☾';
     }
+  
+
+    async function loadLatestChessGame(){
+      try{
+        const archivesRes = await fetch('https://api.chess.com/pub/player/krisper/games/archives');
+        const archives = await archivesRes.json();
+
+        const latestArchive = archives.archives[archives.archives.length - 1];
+        const gamesRes = await fetch(latestArchive);
+        const gamesData = await gamesRes.json();
+
+        const games = gamesData.games.filter(g => g.end_time);
+        const lastGame = games[games.length - 1];
+
+        if(!lastGame) return;
+
+        const opponent = lastGame.white.username.toLowerCase() === 'krisper'
+          ? lastGame.black.username
+          : lastGame.white.username;
+
+        const url = lastGame.url;
+
+        const el = document.getElementById('chessOpponent');
+        el.innerHTML = `<a href="${url}" target="_blank">${opponent}</a>`;
+      }catch(e){
+        document.getElementById('chessOpponent').textContent = 'a recent opponent';
+      }
+    }
+
+    loadLatestChessGame();
+
   </script>
 </body>
 </html>
