@@ -27,7 +27,9 @@ body.light{
   --accent-hover:#ff2f5c;
 }
 
-*{box-sizing:border-box;}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -39,15 +41,18 @@ body{
   color:var(--text);
   font-family:Georgia,serif;
   transition:background-color .22s ease,color .22s ease;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-/* icons */
+/* top icons */
 
 .top-actions{
   position:fixed;
   top:22px;
   right:22px;
   display:flex;
+  align-items:center;
   gap:14px;
   z-index:10;
 }
@@ -57,13 +62,18 @@ body{
   position:relative;
   width:22px;
   height:22px;
+  padding:0;
   border:none;
   background:transparent;
   color:var(--text);
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  font-size:1rem;
+  text-decoration:none;
   cursor:pointer;
+  outline:none;
+  transition:color .2s ease,transform .2s ease;
 }
 
 .icon-link::before,
@@ -77,18 +87,45 @@ body{
   background:var(--accent);
   transform:translate(-50%,-50%) scale(.2);
   opacity:0;
-  transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .18s;
+  transition:
+    transform .24s cubic-bezier(.22,1,.36,1),
+    opacity .18s ease,
+    background-color .18s ease;
+  z-index:0;
+  pointer-events:none;
+}
+
+.icon-link i,
+.theme-toggle i{
+  position:relative;
+  z-index:1;
+  transition:color .18s ease,transform .2s ease;
 }
 
 .icon-link:hover,
 .theme-toggle:hover{
-  color:#fff;
+  color:#ffffff;
+  transform:translateY(-1px);
 }
 
 .icon-link:hover::before,
-.theme-toggle:hover::before{
+.theme-toggle:hover::before,
+.icon-link:focus-visible::before,
+.theme-toggle:focus-visible::before{
   transform:translate(-50%,-50%) scale(1);
   opacity:1;
+}
+
+.icon-link:focus-visible,
+.theme-toggle:focus-visible{
+  color:#ffffff;
+}
+
+.icon-link:hover i,
+.theme-toggle:hover i,
+.icon-link:focus-visible i,
+.theme-toggle:focus-visible i{
+  transform:scale(1.02);
 }
 
 /* layout */
@@ -103,6 +140,7 @@ body{
 
 .content{
   width:min(100%,560px);
+  transform:translateY(-1.6vh);
 }
 
 /* hero */
@@ -110,25 +148,41 @@ body{
 h1{
   margin:0 0 14px;
   font-family:"Merriweather",serif;
-  font-size:2rem;
+  font-size:clamp(1.9rem,2.2vw,2.28rem);
   font-weight:500;
+  letter-spacing:-0.018em;
+  line-height:1.1;
 }
 
-/* text */
+/* intro text */
 
 .intro,
 .recent-label,
 .build-line{
   font-family:"Merriweather",serif;
-  font-size:1rem;
+  font-size:clamp(.95rem,.98vw,1rem);
+  font-weight:400;
   line-height:1.5;
+  letter-spacing:0;
+  word-spacing:0;
 }
 
-.intro{margin:0 0 4px;color:var(--muted);}
-.recent-label{margin:0 0 14px;}
-.build-line{margin-top:16px;color:var(--muted);}
+.intro{
+  margin:0 0 4px;
+  color:var(--muted);
+}
 
-/* activity */
+.recent-label{
+  margin:0 0 14px;
+  color:var(--text);
+}
+
+.build-line{
+  margin-top:16px;
+  color:var(--muted);
+}
+
+/* activity list */
 
 .activity-list{
   list-style:none;
@@ -140,14 +194,19 @@ h1{
   position:relative;
   padding-left:18px;
   margin:0 0 9px;
-  font-family:monospace;
-  line-height:1.45;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  font-size:clamp(.93rem,.97vw,.98rem);
+  font-weight:400;
+  line-height:1.48;
+  letter-spacing:0;
+  color:var(--text);
 }
 
 .activity-list li::before{
   content:">";
   position:absolute;
   left:0;
+  top:0;
   color:var(--soft);
 }
 
@@ -167,24 +226,39 @@ a:hover{
 .buttons{
   display:flex;
   gap:12px;
+  flex-wrap:wrap;
   margin-top:22px;
 }
 
 .btn{
+  min-width:128px;
   padding:12px 24px;
   border:1px solid var(--accent);
+  border-radius:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   font-family:"Merriweather",serif;
   font-size:.92rem;
-  transition:.2s;
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.01em;
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
 }
 
 .btn.primary{
   background:var(--accent);
-  color:#fff;
+  color:#ffffff;
 }
 
 .btn.primary:hover{
   background:var(--accent-hover);
+  border-color:var(--accent-hover);
+  color:#ffffff;
 }
 
 .btn.secondary{
@@ -193,8 +267,69 @@ a:hover{
 }
 
 .btn.secondary:hover{
-  border-color:var(--accent-hover);
+  background:rgba(255,63,103,.06);
   color:var(--accent-hover);
+  border-color:var(--accent-hover);
+}
+
+/* mobile */
+
+@media (max-width:640px){
+  .top-actions{
+    top:18px;
+    right:18px;
+    gap:12px;
+  }
+
+  .icon-link,
+  .theme-toggle{
+    width:20px;
+    height:20px;
+    font-size:.96rem;
+  }
+
+  .icon-link::before,
+  .theme-toggle::before{
+    width:36px;
+    height:36px;
+  }
+
+  .page{
+    align-items:flex-start;
+    padding:100px 22px 40px;
+  }
+
+  .content{
+    width:100%;
+    transform:none;
+  }
+
+  h1{
+    margin-bottom:12px;
+    font-size:clamp(1.72rem,7vw,2rem);
+  }
+
+  .intro,
+  .recent-label,
+  .build-line{
+    font-size:.95rem;
+    line-height:1.52;
+  }
+
+  .activity-list li{
+    font-size:.93rem;
+    line-height:1.5;
+    margin-bottom:10px;
+  }
+
+  .buttons{
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .btn{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -202,112 +337,361 @@ a:hover{
 <body>
 
 <div class="top-actions">
+  <a
+    class="icon-link"
+    href="https://www.goodreads.com/user/show/134250743"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Goodreads profile"
+  >
+    <i class="fa-brands fa-goodreads-g"></i>
+  </a>
 
-<a class="icon-link" href="https://www.goodreads.com/user/show/134250743" target="_blank">
-<i class="fa-brands fa-goodreads-g"></i>
-</a>
+  <a
+    class="icon-link"
+    href="mailto:me@krispearcey.com"
+    aria-label="Email Kris"
+  >
+    <i class="fa-regular fa-envelope"></i>
+  </a>
 
-<a class="icon-link" href="mailto:me@krispearcey.com">
-<i class="fa-regular fa-envelope"></i>
-</a>
+  <a
+    class="icon-link"
+    href="https://github.com/krispearcey"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="GitHub profile"
+  >
+    <i class="fa-brands fa-github"></i>
+  </a>
 
-<a class="icon-link" href="https://github.com/krispearcey" target="_blank">
-<i class="fa-brands fa-github"></i>
-</a>
+  <a
+    class="icon-link"
+    href="https://www.chess.com/member/krisper"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chess.com profile"
+  >
+    <i class="fa-solid fa-chess-rook"></i>
+  </a>
 
-<a class="icon-link" href="https://www.chess.com/member/krisper" target="_blank">
-<i class="fa-solid fa-chess-rook"></i>
-</a>
-
-<button class="theme-toggle" id="themeToggle">
-<i id="themeIcon" class="fa-regular fa-moon"></i>
-</button>
-
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+    <i id="themeIcon" class="fa-regular fa-moon"></i>
+  </button>
 </div>
 
 <main class="page">
-<section class="content">
+  <section class="content">
+    <h1>Hi, I'm Kris.</h1>
 
-<h1>Hi, I'm Kris.</h1>
+    <p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
 
-<p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+    <p class="recent-label">Recently, I’ve -</p>
 
-<p class="recent-label">Recently, I’ve -</p>
+    <ul class="activity-list">
+      <li>Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper, my own Personal Chess Bot”</a></li>
+      <li>Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">The Hag</a></li>
+      <li>Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">Woolly Buggers</a></li>
 
-<ul class="activity-list">
+      <li id="goodreadsLine">
+        <span id="goodreadsLabel">been reading</span>
+        <a
+          id="goodreadsBookLink"
+          href="https://www.goodreads.com/user/show/134250743"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span id="goodreadsBookText">loading…</span>
+        </a>
+      </li>
 
-<li>Created <a href="https://krispearcey.github.io/chess/" target="_blank">my own personal chess bot</a></li>
+      <li id="chessGameLine">
+        <span id="chessResultLabel">Played against</span>
+        <a
+          id="chessOpponentLink"
+          href="https://www.chess.com/member/krisper"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span id="chessOpponent">loading…</span>
+        </a>
+      </li>
+    </ul>
 
-<li>Written <a href="https://krispearcey.com" target="_blank">The Hag</a></li>
+    <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
 
-<li>Blogged <a href="https://krispearcey.com" target="_blank">Woolly Buggers</a></li>
+    <div class="buttons">
+      <a
+        class="btn primary"
+        href="https://github.com/krispearcey"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        My Github
+      </a>
 
-<li id="goodreadsLine">
-<span id="goodreadsLabel">been reading</span>
-<a id="goodreadsBookLink" href="https://www.goodreads.com/user/show/134250743" target="_blank">
-<span id="goodreadsBookText">loading…</span>
-</a>
-</li>
-
-<li id="chessGameLine">
-<span id="chessResultLabel">Played against</span>
-<a id="chessOpponentLink" href="https://www.chess.com/member/krisper" target="_blank">
-<span id="chessOpponent">loading…</span>
-</a>
-</li>
-
-</ul>
-
-<p class="build-line">I’m currently building at <a href="#">this</a>.</p>
-
-<div class="buttons">
-
-<a class="btn primary" href="https://github.com/krispearcey" target="_blank">
-My Github
-</a>
-
-<a class="btn secondary" href="mailto:me@krispearcey.com">
-Contact Me
-</a>
-
-</div>
-
-</section>
+      <a class="btn secondary" href="mailto:me@krispearcey.com">
+        Contact Me
+      </a>
+    </div>
+  </section>
 </main>
 
 <script>
+const body = document.body;
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
 
-/* theme */
+const chessOpponent = document.getElementById("chessOpponent");
+const chessOpponentLink = document.getElementById("chessOpponentLink");
+const chessResultLabel = document.getElementById("chessResultLabel");
 
-const body=document.body
-const themeToggle=document.getElementById("themeToggle")
-const themeIcon=document.getElementById("themeIcon")
+const goodreadsLabel = document.getElementById("goodreadsLabel");
+const goodreadsBookText = document.getElementById("goodreadsBookText");
+const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
-const savedTheme=localStorage.getItem("kris-theme")
-if(savedTheme==="light"){body.classList.add("light")}
+const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
+const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 
-syncThemeButton()
-
-themeToggle.onclick=()=>{
-body.classList.toggle("light")
-localStorage.setItem("kris-theme",body.classList.contains("light")?"light":"dark")
-syncThemeButton()
+const savedTheme = localStorage.getItem("kris-theme");
+if(savedTheme === "light"){
+  body.classList.add("light");
 }
+
+syncThemeButton();
+
+themeToggle.addEventListener("click", () => {
+  body.classList.toggle("light");
+  localStorage.setItem(
+    "kris-theme",
+    body.classList.contains("light") ? "light" : "dark"
+  );
+  syncThemeButton();
+});
 
 function syncThemeButton(){
-themeIcon.className=body.classList.contains("light")
-?"fa-regular fa-sun"
-:"fa-regular fa-moon"
+  const isLight = body.classList.contains("light");
+  themeIcon.className = isLight
+    ? "fa-regular fa-sun"
+    : "fa-regular fa-moon";
 }
 
-/* Goodreads formatting */
+/* ---------- CHESS ---------- */
 
-function formatBookText(title,author){
-if(title&&author)return `${title} by ${author}`
-if(title)return title
-return "something good"
+function setFallbackChessLine(){
+  chessResultLabel.textContent = "Played against";
+  chessOpponent.textContent = "someone";
+  chessOpponentLink.href = "https://www.chess.com/member/krisper";
 }
 
+function getResultLabel(game, usernameLower){
+  const whiteUser = game?.white?.username?.toLowerCase?.() || "";
+  const blackUser = game?.black?.username?.toLowerCase?.() || "";
+  const whiteResult = game?.white?.result || "";
+  const blackResult = game?.black?.result || "";
+
+  const wonResults = new Set(["win"]);
+  const lostResults = new Set([
+    "checkmated",
+    "timeout",
+    "resigned",
+    "abandoned",
+    "lose",
+    "kingofthehill",
+    "threecheck",
+    "bughousepartnerlose"
+  ]);
+
+  if(whiteUser === usernameLower){
+    if(wonResults.has(whiteResult)) return "Won against";
+    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "Lost against";
+  }
+
+  if(blackUser === usernameLower){
+    if(wonResults.has(blackResult)) return "Won against";
+    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "Lost against";
+  }
+
+  return "Played against";
+}
+
+async function loadLatestFinishedGame(){
+  const username = "krisper";
+  const usernameLower = username.toLowerCase();
+
+  try{
+    const archivesRes = await fetch(`https://api.chess.com/pub/player/${username}/games/archives`, {
+      headers: { "Accept": "application/json" }
+    });
+
+    if(!archivesRes.ok){
+      throw new Error("Could not load archive list");
+    }
+
+    const archivesData = await archivesRes.json();
+    const archives = Array.isArray(archivesData.archives) ? archivesData.archives : [];
+
+    if(!archives.length){
+      setFallbackChessLine();
+      return;
+    }
+
+    const archiveUrlsToCheck = archives.slice(-4).reverse();
+    let latestGame = null;
+
+    for(const archiveUrl of archiveUrlsToCheck){
+      const gamesRes = await fetch(archiveUrl, {
+        headers: { "Accept": "application/json" }
+      });
+
+      if(!gamesRes.ok) continue;
+
+      const gamesData = await gamesRes.json();
+      const games = Array.isArray(gamesData.games) ? gamesData.games : [];
+
+      const finishedGames = games
+        .filter(game => {
+          const whiteUser = game?.white?.username?.toLowerCase?.() || "";
+          const blackUser = game?.black?.username?.toLowerCase?.() || "";
+          const involvesPlayer = whiteUser === usernameLower || blackUser === usernameLower;
+          const hasEndTime = typeof game?.end_time === "number";
+          const hasGameUrl = typeof game?.url === "string" && game.url.length > 0;
+          return involvesPlayer && hasEndTime && hasGameUrl;
+        })
+        .sort((a, b) => (b.end_time || 0) - (a.end_time || 0));
+
+      if(finishedGames.length){
+        latestGame = finishedGames[0];
+        break;
+      }
+    }
+
+    if(!latestGame){
+      setFallbackChessLine();
+      return;
+    }
+
+    const whiteName = latestGame?.white?.username || "";
+    const blackName = latestGame?.black?.username || "";
+
+    const opponent =
+      whiteName.toLowerCase() === usernameLower
+        ? blackName
+        : whiteName;
+
+    chessResultLabel.textContent = getResultLabel(latestGame, usernameLower);
+    chessOpponent.textContent = opponent || "someone";
+    chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
+  }catch(error){
+    console.error("Chess.com game fetch failed:", error);
+    setFallbackChessLine();
+  }
+}
+
+/* ---------- GOODREADS ---------- */
+
+function setFallbackGoodreadsLine(){
+  goodreadsLabel.textContent = "read";
+  goodreadsBookText.textContent = "“Maynard's House” by Herman Raucher";
+  goodreadsBookLink.href = GOODREADS_FALLBACK_BOOK_URL;
+}
+
+function formatBookText(title, author){
+  if(title && author) return `${title} by ${author}`;
+  if(title) return `${title}`;
+  return "something good";
+}
+
+function parseGoodreadsXmlItems(xmlText){
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, "text/xml");
+  return [...xml.querySelectorAll("item")];
+}
+
+function getXmlText(parent, selector){
+  const node = parent.querySelector(selector);
+  return node && node.textContent ? node.textContent.trim() : "";
+}
+
+function cleanBookTitle(rawTitle){
+  if(!rawTitle) return "";
+  return rawTitle
+    .replace(/^.*?(?:added|is reading|started reading|read|rated|reviewed)\s+/i, "")
+    .replace(/\s+by\s+.*$/i, "")
+    .replace(/^["“]|["”]$/g, "")
+    .trim();
+}
+
+function parseShelfItems(xmlText){
+  const items = parseGoodreadsXmlItems(xmlText);
+
+  return items.map(item => {
+    const explicitTitle = getXmlText(item, "book_title");
+    const explicitAuthor = getXmlText(item, "author_name");
+    const link = getXmlText(item, "link");
+    const titleNodeText = getXmlText(item, "title");
+
+    const title = explicitTitle || cleanBookTitle(titleNodeText);
+    const author = explicitAuthor;
+
+    return {
+      title,
+      author,
+      link: link || GOODREADS_PROFILE_URL
+    };
+  }).filter(item => item.title);
+}
+
+async function fetchThroughProxy(targetUrl){
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+  const response = await fetch(proxyUrl);
+
+  if(!response.ok){
+    throw new Error(`Proxy fetch failed with status ${response.status}`);
+  }
+
+  return response.text();
+}
+
+async function fetchShelf(userId, shelf){
+  const rssUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=${encodeURIComponent(shelf)}`;
+  const xmlText = await fetchThroughProxy(rssUrl);
+  return parseShelfItems(xmlText);
+}
+
+async function loadGoodreadsBook(){
+  const userId = "134250743";
+
+  try{
+    const currentlyReading = await fetchShelf(userId, "currently-reading");
+
+    if(currentlyReading.length > 0){
+      const currentBook = currentlyReading[0];
+      goodreadsLabel.textContent = "been reading";
+      goodreadsBookText.textContent = formatBookText(currentBook.title, currentBook.author);
+      goodreadsBookLink.href = currentBook.link || GOODREADS_PROFILE_URL;
+      return;
+    }
+
+    const readShelf = await fetchShelf(userId, "read");
+
+    if(readShelf.length > 0){
+      const latestRead = readShelf[0];
+      goodreadsLabel.textContent = "read";
+      goodreadsBookText.textContent = formatBookText(latestRead.title, latestRead.author);
+      goodreadsBookLink.href = latestRead.link || GOODREADS_PROFILE_URL;
+      return;
+    }
+
+    setFallbackGoodreadsLine();
+  }catch(error){
+    console.error("Goodreads fetch failed:", error);
+    setFallbackGoodreadsLine();
+  }
+}
+
+loadLatestFinishedGame();
+loadGoodreadsBook();
 </script>
 
 </body>
