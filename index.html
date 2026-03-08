@@ -45,6 +45,8 @@ body{
   color:var(--text);
   font-family:Georgia,serif;
   transition:background-color .22s ease,color .22s ease;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
 /* top icons */
@@ -70,7 +72,7 @@ body{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:1rem;
+  font-size:.98rem;
   text-decoration:none;
   cursor:pointer;
   transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
@@ -93,19 +95,19 @@ body{
 }
 
 .content{
-  width:min(100%,570px);
-  transform:translateY(-1.5vh);
+  width:min(100%,560px);
+  transform:translateY(-1.6vh);
 }
 
 /* hero */
 
 h1{
-  margin:0 0 10px;
+  margin:0 0 12px;
   font-family:"Merriweather",serif;
-  font-size:clamp(2rem,2.6vw,2.6rem);
+  font-size:clamp(1.9rem,2.2vw,2.28rem);
   font-weight:500;
-  letter-spacing:-0.02em;
-  line-height:1.1;
+  letter-spacing:-0.018em;
+  line-height:1.08;
 }
 
 /* intro text */
@@ -114,24 +116,25 @@ h1{
 .recent-label,
 .build-line{
   font-family:"Merriweather",serif;
-  font-size:clamp(.95rem,1vw,1rem);
-  line-height:1.45;
-  letter-spacing:.02em;
-  word-spacing:.04em;
+  font-size:clamp(.95rem,.98vw,1rem);
+  font-weight:400;
+  line-height:1.42;
+  letter-spacing:0;
+  word-spacing:0;
 }
 
 .intro{
-  margin:0 0 6px;
+  margin:0 0 2px;
   color:var(--muted);
 }
 
 .recent-label{
-  margin:0 0 10px;
+  margin:0 0 12px;
   color:var(--text);
 }
 
 .build-line{
-  margin-top:18px;
+  margin-top:12px;
   color:var(--muted);
 }
 
@@ -140,16 +143,18 @@ h1{
 .activity-list{
   list-style:none;
   padding:0;
-  margin:10px 0 0;
+  margin:0;
 }
 
 .activity-list li{
   position:relative;
-  padding-left:22px;
-  margin:0 0 12px;
+  padding-left:18px;
+  margin:0 0 6px;
   font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:clamp(.95rem,1vw,1rem);
-  line-height:1.45;
+  font-size:clamp(.93rem,.97vw,.98rem);
+  font-weight:400;
+  line-height:1.38;
+  letter-spacing:0;
   color:var(--text);
 }
 
@@ -176,22 +181,23 @@ a:hover{
 
 .buttons{
   display:flex;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
-  margin-top:26px;
+  margin-top:20px;
 }
 
 .btn{
-  min-width:150px;
-  padding:13px 22px;
+  min-width:144px;
+  padding:12px 20px;
   border:1px solid var(--accent);
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:.98rem;
-  line-height:1;
-  letter-spacing:.04em;
   font-family:"Merriweather",serif;
+  font-size:.92rem;
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.01em;
   transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
 }
 
@@ -234,15 +240,32 @@ a:hover{
 
   .page{
     align-items:flex-start;
-    padding-top:100px;
+    padding:100px 22px 40px;
   }
 
   .content{
+    width:100%;
     transform:none;
+  }
+
+  h1{
+    margin-bottom:10px;
+    font-size:clamp(1.72rem,7vw,2rem);
+  }
+
+  .intro,
+  .recent-label,
+  .build-line{
+    font-size:.95rem;
+  }
+
+  .activity-list li{
+    font-size:.93rem;
   }
 
   .buttons{
     flex-direction:column;
+    gap:10px;
   }
 
   .btn{
@@ -290,16 +313,10 @@ a:hover{
 
     <ul class="activity-list">
       <li>Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">“my own personal chess bot”</a></li>
-
       <li>Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a></li>
-
       <li>Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a></li>
-
       <li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a></li>
-
-      <li id="chessGameLine">
-        Played against <span id="chessOpponent">loading…</span>
-      </li>
+      <li id="chessGameLine">Played against <span id="chessOpponent">loading…</span></li>
     </ul>
 
     <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
@@ -336,12 +353,10 @@ syncThemeButton();
 
 themeToggle.addEventListener("click", () => {
   body.classList.toggle("light");
-
   localStorage.setItem(
     "kris-theme",
     body.classList.contains("light") ? "light" : "dark"
   );
-
   syncThemeButton();
 });
 
@@ -353,7 +368,6 @@ function syncThemeButton(){
 }
 
 /* chess.com latest finished game */
-
 async function loadLatestFinishedGame(){
   const username = "krisper";
   const usernameLower = username.toLowerCase();
@@ -375,7 +389,7 @@ async function loadLatestFinishedGame(){
       return;
     }
 
-    const archiveUrlsToCheck = archives.slice(-3).reverse();
+    const archiveUrlsToCheck = archives.slice(-4).reverse();
     let latestGame = null;
 
     for(const archiveUrl of archiveUrlsToCheck){
@@ -383,9 +397,7 @@ async function loadLatestFinishedGame(){
         headers: { "Accept": "application/json" }
       });
 
-      if(!gamesRes.ok){
-        continue;
-      }
+      if(!gamesRes.ok) continue;
 
       const gamesData = await gamesRes.json();
       const games = Array.isArray(gamesData.games) ? gamesData.games : [];
