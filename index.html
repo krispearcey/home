@@ -1,254 +1,149 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kris Pearcey</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<title>krispearcey.com</title>
+
+<!-- Inter (UI font) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Merriweather (content font) -->
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
 :root{
---bg:#243126;
---text:#f5f5f0;
---muted:rgba(245,245,240,0.9);
---soft:rgba(245,245,240,0.62);
---accent:#ff4d73;
---accent-hover:#ff6b8a;
---button-text:#ffffff;
---toggle-border:rgba(245,245,240,0.16);
-}
+  --bg-dark:#0e0e0e;
+  --text-dark:#e6e6e6;
 
-body.light{
---bg:#ececec;
---text:#131313;
---muted:rgba(19,19,19,0.9);
---soft:rgba(19,19,19,0.48);
---accent:#ff4d73;
---accent-hover:#ff355f;
---button-text:#ffffff;
---toggle-border:rgba(19,19,19,0.14);
+  --bg-light:#f7f7f7;
+  --text-light:#111;
+
+  --accent:#cfcfcf;
 }
 
 *{
-box-sizing:border-box;
-}
-
-html,body{
-margin:0;
-min-height:100%;
+  box-sizing:border-box;
 }
 
 body{
-background:var(--bg);
-color:var(--text);
-font-family:Georgia,serif;
-transition:background-color .22s ease,color .22s ease;
+  margin:0;
+  font-family:"Inter", sans-serif;
+  background:var(--bg-dark);
+  color:var(--text-dark);
+  transition:background .25s,color .25s;
 }
 
-/* top icons */
-
-.top-actions{
-position:fixed;
-top:22px;
-right:22px;
-display:flex;
-align-items:center;
-gap:10px;
-z-index:10;
+body.light{
+  background:var(--bg-light);
+  color:var(--text-light);
 }
 
-.icon-link,
-.theme-toggle{
-width:42px;
-height:42px;
-border:1px solid var(--toggle-border);
-background:transparent;
-color:var(--text);
-border-radius:999px;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-size:1rem;
-text-decoration:none;
-cursor:pointer;
-transition:opacity .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+/* NAV */
+
+nav{
+  width:100%;
+  padding:28px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
 }
 
-.icon-link:hover,
-.theme-toggle:hover{
-opacity:.9;
-transform:translateY(-1px);
+.nav-left a{
+  margin-right:26px;
+  text-decoration:none;
+  color:inherit;
+  opacity:.7;
 }
 
-/* layout */
-
-.page{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:48px 24px;
+.nav-left a:hover{
+  opacity:1;
 }
 
-.content{
-width:min(100%,570px);
-transform:translateY(-1.5vh);
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
 }
 
-/* hero */
-
-h1{
-margin:0 0 10px;
-font-family:Georgia,serif;
-font-size:clamp(2rem,2.6vw,2.6rem);
-font-weight:500;
-letter-spacing:-0.02em;
-line-height:1.1;
+.nav-right a{
+  color:inherit;
+  font-size:16px;
+  opacity:.7;
 }
 
-/* intro text */
-
-.intro,
-.recent-label,
-.build-line{
-font-family:Georgia,serif;
-font-size:clamp(.95rem,1vw,1rem);
-line-height:1.45;
-letter-spacing:.02em;
-word-spacing:.04em;
+.nav-right a:hover{
+  opacity:1;
 }
 
-.intro{
-margin:0 0 6px;
-color:var(--muted);
+.toggle{
+  cursor:pointer;
+  font-size:16px;
+  opacity:.7;
 }
 
-.recent-label{
-margin:0 0 10px;
-color:var(--text);
+/* HERO */
+
+.hero{
+  max-width:1100px;
+  margin:0 auto;
+  padding:120px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:60px;
 }
 
-.build-line{
-margin-top:18px;
-color:var(--muted);
+/* TEXT */
+
+.hero-text{
+  max-width:520px;
 }
 
-/* activity list */
-
-.activity-list{
-list-style:none;
-padding:0;
-margin:10px 0 0;
+.hero-text h1{
+  font-family:"Merriweather", serif;
+  font-size:46px;
+  font-weight:500;
+  margin:0 0 30px 0;
 }
 
-.activity-list li{
-position:relative;
-padding-left:22px;
-margin:0 0 12px;
-font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-font-size:clamp(.95rem,1vw,1rem);
-line-height:1.45;
-color:var(--text);
+.hero-text p{
+  font-family:"Merriweather", serif;
+  font-size:18px;
+  line-height:1.9;
+  letter-spacing:.04em;
+  margin-bottom:40px;
 }
 
-.activity-list li::before{
-content:">";
-position:absolute;
-left:0;
-top:0;
-color:var(--soft);
+/* BUTTON */
+
+.hero-text button{
+  font-family:"Merriweather", serif;
+  font-size:16px;
+  letter-spacing:.06em;
+  padding:12px 26px;
+  background:none;
+  border:1px solid var(--accent);
+  color:inherit;
+  cursor:pointer;
 }
 
-/* links */
-
-a{
-color:var(--accent);
-text-decoration:none;
+.hero-text button:hover{
+  background:rgba(255,255,255,0.05);
 }
 
-a:hover{
-color:var(--accent-hover);
-}
+/* IMAGE */
 
-/* buttons */
-
-.buttons{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin-top:26px;
-}
-
-.btn{
-min-width:150px;
-padding:13px 22px;
-border:1px solid var(--accent);
-display:inline-flex;
-align-items:center;
-justify-content:center;
-font-size:.98rem;
-line-height:1;
-letter-spacing:.04em;
-transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
-}
-
-.btn:hover{
-transform:translateY(-1px);
-}
-
-.btn.primary{
-background:var(--accent);
-color:var(--button-text);
-}
-
-.btn.primary:hover{
-background:var(--accent-hover);
-}
-
-.btn.secondary{
-background:transparent;
-color:var(--accent);
-}
-
-.btn.secondary:hover{
-background:rgba(255,77,115,.08);
-}
-
-/* mobile */
-
-@media (max-width:640px){
-
-.top-actions{
-top:18px;
-right:18px;
-gap:8px;
-}
-
-.icon-link,
-.theme-toggle{
-width:40px;
-height:40px;
-}
-
-.page{
-align-items:flex-start;
-padding-top:100px;
-}
-
-.content{
-transform:none;
-}
-
-.buttons{
-flex-direction:column;
-}
-
-.btn{
-width:100%;
-}
-
+.hero-img img{
+  width:420px;
+  max-width:100%;
+  display:block;
 }
 
 </style>
@@ -256,107 +151,71 @@ width:100%;
 
 <body>
 
-<div class="top-actions">
+<nav>
 
-<a class="icon-link"
-href="https://www.goodreads.com/user/show/134250743"
-target="_blank">
+<div class="nav-left">
+<a href="#">Home</a>
+<a href="#">Projects</a>
+<a href="#">Blog</a>
+<a href="#">About</a>
+</div>
+
+<div class="nav-right">
+
+<a href="https://www.goodreads.com/user/show/134250743" target="_blank">
 <i class="fa-brands fa-goodreads-g"></i>
 </a>
 
-<a class="icon-link"
-href="https://www.chess.com/member/krisper"
-target="_blank">
-<i class="fa-solid fa-chess-rook"></i>
+<a href="https://www.chess.com/member/krisper" target="_blank">
+<i class="fa-solid fa-chess"></i>
 </a>
 
-<button class="theme-toggle" id="themeToggle">
-<i id="themeIcon" class="fa-regular fa-moon"></i>
-</button>
+<div class="toggle" id="themeToggle">
+<i class="fa-regular fa-moon"></i>
+</div>
 
 </div>
 
-<main class="page">
+</nav>
 
-<section class="content">
+
+<section class="hero">
+
+<div class="hero-text">
 
 <h1>Hi, I'm Kris.</h1>
 
-<p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
+<p>
+This is a collection of lines I’ve cast, written, or coded.<br><br>
+Recently, I’ve —
+</p>
 
-<p class="recent-label">Recently, I’ve -</p>
+<button>Check it out</button>
 
-<ul class="activity-list">
+</div>
 
-<li>Created <a href="https://krispearcey.github.io/chess/" target="_blank">“my own personal chess bot”</a></li>
-
-<li>Written <a href="https://krispearcey.com" target="_blank">“The Hag”</a></li>
-
-<li>Blogged <a href="https://krispearcey.com" target="_blank">“Woolly Buggers”</a></li>
-
-<li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank">“Maynard's House” by Herman Raucher</a></li>
-
-<li id="chessGameLine">
-Played against <span id="chessOpponent">loading…</span>
-</li>
-
-</ul>
-
-<p class="build-line">I’m currently building at <a href="#">this</a>.</p>
-
-<div class="buttons">
-
-<a class="btn primary"
-href="https://krispearcey.com"
-target="_blank">
-krispearcey.com
-</a>
-
-<a class="btn secondary"
-href="mailto:me@krispearcey.com">
-Contact Me
-</a>
-
+<div class="hero-img">
+<img src="your-image.jpg">
 </div>
 
 </section>
 
-</main>
 
 <script>
 
-const body=document.body
-const themeToggle=document.getElementById("themeToggle")
-const themeIcon=document.getElementById("themeIcon")
+const toggle = document.getElementById("themeToggle")
 
-const savedTheme=localStorage.getItem("kris-theme")
+toggle.addEventListener("click", () => {
 
-if(savedTheme==="light"){
-body.classList.add("light")
+document.body.classList.toggle("light")
+
+if(document.body.classList.contains("light")){
+toggle.innerHTML = `<i class="fa-regular fa-sun"></i>`
+}else{
+toggle.innerHTML = `<i class="fa-regular fa-moon"></i>`
 }
 
-syncThemeButton()
-
-themeToggle.addEventListener("click",()=>{
-body.classList.toggle("light")
-
-localStorage.setItem(
-"kris-theme",
-body.classList.contains("light")?"light":"dark"
-)
-
-syncThemeButton()
 })
-
-function syncThemeButton(){
-
-const isLight=body.classList.contains("light")
-
-themeIcon.className=isLight
-?"fa-regular fa-sun"
-:"fa-regular fa-moon"
-
-}
 
 </script>
 
