@@ -607,9 +607,7 @@ const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
-
-let recentChessGames = [];
-let recentReadBooks = [];
+const GOODREADS_USER_ID = "134250743";
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -673,7 +671,6 @@ function setFallbackChessLine(){
   chessResultLabel.textContent = "played against";
   chessOpponent.textContent = "someone";
   chessOpponentLink.href = "https://www.chess.com/member/krisper";
-  recentChessGames = [];
   renderChessGames([]);
 }
 
@@ -798,13 +795,13 @@ async function loadLatestFinishedGame(){
     chessOpponent.textContent = latestOpponent || "someone";
     chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
 
-    recentChessGames = allFinishedGames.slice(1, 5).map(game => ({
+    const previousGames = allFinishedGames.slice(1, 5).map(game => ({
       resultLabel: getResultLabel(game, usernameLower),
       opponent: getOpponentName(game, usernameLower),
       url: game.url || `https://www.chess.com/member/${username}`
     }));
 
-    renderChessGames(recentChessGames);
+    renderChessGames(previousGames);
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
@@ -817,7 +814,6 @@ function setFallbackGoodreadsLine(){
   goodreadsLabel.textContent = "read";
   goodreadsBookText.textContent = "Maynard's House by Herman Raucher";
   goodreadsBookLink.href = GOODREADS_FALLBACK_BOOK_URL;
-  recentReadBooks = [];
   renderGoodreadsBooks([]);
 }
 
@@ -825,63 +821,6 @@ function formatBookText(title, author){
   if(title && author) return `${title} by ${author}`;
   if(title) return title;
   return "something good";
-}
-
-function parseGoodreadsXmlItems(xmlText){
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(xmlText, "text/xml");
-  return [...xml.querySelectorAll("item")];
-}
-
-function getXmlText(parent, selector){
-  const node = parent.querySelector(selector);
-  return node && node.textContent ? node.textContent.trim() : "";
-}
-
-function cleanBookTitle(rawTitle){
-  if(!rawTitle) return "";
-  return rawTitle
-    .replace(/^.*?(?:added|is reading|started reading|read|rated|reviewed)\s+/i, "")
-    .replace(/\s+by\s+.*$/i, "")
-    .replace(/^["“]|["”]$/g, "")
-    .trim();
-}
-
-function parseShelfItems(xmlText){
-  const items = parseGoodreadsXmlItems(xmlText);
-
-  return items.map(item => {
-    const explicitTitle = getXmlText(item, "book_title");
-    const explicitAuthor = getXmlText(item, "author_name");
-    const link = getXmlText(item, "link");
-    const titleNodeText = getXmlText(item, "title");
-
-    const title = explicitTitle || cleanBookTitle(titleNodeText);
-    const author = explicitAuthor;
-
-    return {
-      title,
-      author,
-      link: link || GOODREADS_PROFILE_URL
-    };
-  }).filter(item => item.title);
-}
-
-async function fetchThroughProxy(targetUrl){
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-  const response = await fetch(proxyUrl);
-
-  if(!response.ok){
-    throw new Error(`Proxy fetch failed with status ${response.status}`);
-  }
-
-  return response.text();
-}
-
-async function fetchShelf(userId, shelf){
-  const rssUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=${encodeURIComponent(shelf)}`;
-  const xmlText = await fetchThroughProxy(rssUrl);
-  return parseShelfItems(xmlText);
 }
 
 function renderGoodreadsBooks(books){
@@ -901,44 +840,212 @@ function renderGoodreadsBooks(books){
   });
 }
 
-async function loadGoodreadsBook(){
-  const userId = "134250743";
+function cleanBookTitle(rawTitle){
+  if(!rawTitle) return "";
+  return rawTitle
+    .replace(/^.*?(?:added|is reading|started reading|read|rated|reviewed)\s+/i, "")
+    .replace(/\s+by\s+.*$/i, "")
+    .replace(/^["“]|["”]$/g, "")
+    .trim();
+}
+
+function uniqueBooks(books){
+  const seen = new Set();
+  return books.filter(book => {
+    const key = `${(book.title || "").trim().toLowerCase()}|${(book.author || "").trim().toLowerCase()}`;
+    if(!book.title || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function getXmlText(parent, selector){
+  const node = parent.querySelector(selector);
+  return node && node.textContent ? node.textContent.trim() : "";
+}
+
+function parseGoodreadsXmlItems(xmlText){
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, "text/xml");
+  return [...xml.querySelectorAll("item")];
+}
+
+function parseShelfItemsFromRss(xmlText){
+  const items = parseGoodreadsXmlItems(xmlText);
+
+  return uniqueBooks(
+    items.map(item => {
+      const explicitTitle = getXmlText(item, "book_title");
+      const explicitAuthor = getXmlText(item, "author_name");
+      const link = getXmlText(item, "link");
+      const titleNodeText = getXmlText(item, "title");
+
+      const title = explicitTitle || cleanBookTitle(titleNodeText);
+      const author = explicitAuthor;
+
+      return {
+        title,
+        author,
+        link: link || GOODREADS_PROFILE_URL
+      };
+    })
+  );
+}
+
+function parseShelfItemsFromHtml(htmlText){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, "text/html");
+
+  const rows = [
+    ...doc.querySelectorAll('tr[id^="review_"]'),
+    ...doc.querySelectorAll('.bookalike.review'),
+    ...doc.querySelectorAll('.elementList')
+  ];
+
+  const books = rows.map(row => {
+    const titleLink =
+      row.querySelector('[id^="review_title_"] .value a') ||
+      row.querySelector('td.field.title .value a') ||
+      row.querySelector('a.bookTitle') ||
+      row.querySelector('a[href*="/book/show/"]');
+
+    const authorLink =
+      row.querySelector('[id^="review_author_"] .value a') ||
+      row.querySelector('td.field.author .value a') ||
+      row.querySelector('a.authorName');
+
+    const title = titleLink?.textContent?.trim() || "";
+    const author = authorLink?.textContent?.trim() || "";
+    const rawHref = titleLink?.getAttribute("href") || "";
+    const link = rawHref
+      ? (rawHref.startsWith("http") ? rawHref : `https://www.goodreads.com${rawHref}`)
+      : GOODREADS_PROFILE_URL;
+
+    return { title, author, link };
+  });
+
+  return uniqueBooks(books);
+}
+
+async function fetchTextWithFallbacks(targetUrl){
+  const encoded = encodeURIComponent(targetUrl);
+  const bust = `cb=${Date.now()}`;
+
+  const attempts = [
+    async () => {
+      const res = await fetch(`https://api.allorigins.win/raw?url=${encoded}&${bust}`);
+      if(!res.ok) throw new Error(`allorigins raw failed: ${res.status}`);
+      return await res.text();
+    },
+    async () => {
+      const res = await fetch(`https://api.allorigins.win/get?url=${encoded}&${bust}`);
+      if(!res.ok) throw new Error(`allorigins get failed: ${res.status}`);
+      const data = await res.json();
+      if(!data?.contents) throw new Error("allorigins get returned no contents");
+      return data.contents;
+    },
+    async () => {
+      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
+      if(!res.ok) throw new Error(`corsproxy failed: ${res.status}`);
+      return await res.text();
+    }
+  ];
+
+  let lastError = null;
+
+  for(const attempt of attempts){
+    try{
+      const text = await attempt();
+      if(text && text.trim()) return text;
+    }catch(error){
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("All Goodreads proxy fetches failed");
+}
+
+async function fetchShelfRss(userId, shelf){
+  const rssUrl =
+    `https://www.goodreads.com/review/list_rss/${userId}?shelf=${encodeURIComponent(shelf)}`;
+  const xmlText = await fetchTextWithFallbacks(rssUrl);
+  return parseShelfItemsFromRss(xmlText);
+}
+
+async function fetchShelfHtml(userId, shelf){
+  const htmlUrl =
+    `https://www.goodreads.com/review/list/${userId}?shelf=${encodeURIComponent(shelf)}&sort=date_read&order=d`;
+  const htmlText = await fetchTextWithFallbacks(htmlUrl);
+  return parseShelfItemsFromHtml(htmlText);
+}
+
+async function fetchCurrentReadingBooks(userId){
+  const sources = [];
 
   try{
-    const [currentlyReading, readShelf] = await Promise.all([
-      fetchShelf(userId, "currently-reading").catch(() => []),
-      fetchShelf(userId, "read").catch(() => [])
+    const rssBooks = await fetchShelfRss(userId, "currently-reading");
+    if(rssBooks.length) sources.push(...rssBooks);
+  }catch(error){
+    console.warn("Goodreads currently-reading RSS failed:", error);
+  }
+
+  try{
+    const htmlBooks = await fetchShelfHtml(userId, "currently-reading");
+    if(htmlBooks.length) sources.push(...htmlBooks);
+  }catch(error){
+    console.warn("Goodreads currently-reading HTML failed:", error);
+  }
+
+  return uniqueBooks(sources);
+}
+
+async function fetchReadShelfBooks(userId){
+  const sources = [];
+
+  try{
+    const htmlBooks = await fetchShelfHtml(userId, "read");
+    if(htmlBooks.length) sources.push(...htmlBooks);
+  }catch(error){
+    console.warn("Goodreads read HTML failed:", error);
+  }
+
+  try{
+    const rssBooks = await fetchShelfRss(userId, "read");
+    if(rssBooks.length) sources.push(...rssBooks);
+  }catch(error){
+    console.warn("Goodreads read RSS failed:", error);
+  }
+
+  return uniqueBooks(sources);
+}
+
+async function loadGoodreadsBook(){
+  try{
+    const [currentlyReadingBooks, readShelfBooks] = await Promise.all([
+      fetchCurrentReadingBooks(GOODREADS_USER_ID),
+      fetchReadShelfBooks(GOODREADS_USER_ID)
     ]);
 
-    if(currentlyReading.length > 0){
-      const currentBook = currentlyReading[0];
+    const currentBook = currentlyReadingBooks[0] || null;
+    const latestRead = readShelfBooks[0] || null;
+
+    if(currentBook){
       goodreadsLabel.textContent = "been reading";
       goodreadsBookText.textContent = formatBookText(currentBook.title, currentBook.author);
       goodreadsBookLink.href = currentBook.link || GOODREADS_PROFILE_URL;
 
-      recentReadBooks = readShelf.slice(0, 4).map(book => ({
-        title: book.title,
-        author: book.author,
-        link: book.link || GOODREADS_PROFILE_URL
-      }));
-
-      renderGoodreadsBooks(recentReadBooks);
+      const previousReadBooks = readShelfBooks.slice(0, 4);
+      renderGoodreadsBooks(previousReadBooks);
       return;
     }
 
-    if(readShelf.length > 0){
-      const latestRead = readShelf[0];
+    if(latestRead){
       goodreadsLabel.textContent = "read";
       goodreadsBookText.textContent = formatBookText(latestRead.title, latestRead.author);
       goodreadsBookLink.href = latestRead.link || GOODREADS_PROFILE_URL;
 
-      recentReadBooks = readShelf.slice(1, 5).map(book => ({
-        title: book.title,
-        author: book.author,
-        link: book.link || GOODREADS_PROFILE_URL
-      }));
-
-      renderGoodreadsBooks(recentReadBooks);
+      const previousReadBooks = readShelfBooks.slice(1, 5);
+      renderGoodreadsBooks(previousReadBooks);
       return;
     }
 
