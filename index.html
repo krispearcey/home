@@ -16,10 +16,8 @@
   --soft:rgba(245,245,240,0.62);
   --accent:#ff4d73;
   --accent-hover:#ff6b8a;
-  --button-text:#ffffff;
   --toggle-border:rgba(245,245,240,0.16);
 
-  /* subtler button tones */
   --btn-border:rgba(245,245,240,0.16);
   --btn-bg:rgba(245,245,240,0.035);
   --btn-bg-hover:rgba(245,245,240,0.06);
@@ -33,7 +31,6 @@ body.light{
   --soft:rgba(19,19,19,0.48);
   --accent:#ff4d73;
   --accent-hover:#ff355f;
-  --button-text:#ffffff;
   --toggle-border:rgba(19,19,19,0.14);
 
   --btn-border:rgba(19,19,19,0.12);
@@ -226,11 +223,16 @@ body.light .btn:hover{
   border-color:rgba(19,19,19,0.18);
 }
 
-.btn.primary,
+.btn.primary{
+  color:var(--accent);
+}
+
+.btn.primary:hover{
+  color:var(--accent-hover);
+}
+
 .btn.secondary{
-  background:var(--btn-bg);
   color:var(--btn-text);
-  border-color:var(--btn-border);
 }
 
 /* mobile */
@@ -328,9 +330,9 @@ body.light .btn:hover{
       <li>Created <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">“my own personal chess bot”</a></li>
       <li>Written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“The Hag”</a></li>
       <li>Blogged <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">“Woolly Buggers”</a></li>
-      <li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a></li>
+      <li>Been reading <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank" rel="noopener noreferrer">“Maynard's House” by Herman Raucher</a></li>
       <li id="chessGameLine">
-        Played against
+        <span id="chessResultLabel">Played against</span>
         <a
           id="chessOpponentLink"
           href="https://www.chess.com/member/krisper"
@@ -367,6 +369,7 @@ const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
+const chessResultLabel = document.getElementById("chessResultLabel");
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -391,6 +394,43 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
+function setFallbackChessLine(){
+  chessResultLabel.textContent = "Played against";
+  chessOpponent.textContent = "someone";
+  chessOpponentLink.href = "https://www.chess.com/member/krisper";
+}
+
+function getResultLabel(game, usernameLower){
+  const whiteUser = game?.white?.username?.toLowerCase?.() || "";
+  const blackUser = game?.black?.username?.toLowerCase?.() || "";
+  const whiteResult = game?.white?.result || "";
+  const blackResult = game?.black?.result || "";
+
+  const wonResults = new Set(["win"]);
+  const lostResults = new Set([
+    "checkmated",
+    "timeout",
+    "resigned",
+    "abandoned",
+    "lose",
+    "kingofthehill",
+    "threecheck",
+    "bughousepartnerlose"
+  ]);
+
+  if(whiteUser === usernameLower){
+    if(wonResults.has(whiteResult)) return "Won against";
+    if(lostResults.has(whiteResult) || wonResults.has(blackResult)) return "Lost against";
+  }
+
+  if(blackUser === usernameLower){
+    if(wonResults.has(blackResult)) return "Won against";
+    if(lostResults.has(blackResult) || wonResults.has(whiteResult)) return "Lost against";
+  }
+
+  return "Played against";
+}
+
 /* chess.com latest finished game */
 async function loadLatestFinishedGame(){
   const username = "krisper";
@@ -409,8 +449,7 @@ async function loadLatestFinishedGame(){
     const archives = Array.isArray(archivesData.archives) ? archivesData.archives : [];
 
     if(!archives.length){
-      chessOpponent.textContent = "someone";
-      chessOpponentLink.href = `https://www.chess.com/member/${username}`;
+      setFallbackChessLine();
       return;
     }
 
@@ -445,8 +484,7 @@ async function loadLatestFinishedGame(){
     }
 
     if(!latestGame){
-      chessOpponent.textContent = "someone";
-      chessOpponentLink.href = `https://www.chess.com/member/${username}`;
+      setFallbackChessLine();
       return;
     }
 
@@ -458,12 +496,12 @@ async function loadLatestFinishedGame(){
         ? blackName
         : whiteName;
 
+    chessResultLabel.textContent = getResultLabel(latestGame, usernameLower);
     chessOpponent.textContent = opponent || "someone";
     chessOpponentLink.href = latestGame.url || `https://www.chess.com/member/${username}`;
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
-    chessOpponent.textContent = "someone";
-    chessOpponentLink.href = `https://www.chess.com/member/${username}`;
+    setFallbackChessLine();
   }
 }
 
