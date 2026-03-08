@@ -7,6 +7,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+<!-- Merriweather -->
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
 
 :root{
@@ -101,7 +104,7 @@ transform:translateY(-1.5vh);
 
 h1{
 margin:0 0 10px;
-font-family:Georgia,serif;
+font-family:'Merriweather',serif;
 font-size:clamp(2rem,2.6vw,2.6rem);
 font-weight:500;
 letter-spacing:-0.02em;
@@ -113,7 +116,7 @@ line-height:1.1;
 .intro,
 .recent-label,
 .build-line{
-font-family:Georgia,serif;
+font-family:'Merriweather',serif;
 font-size:clamp(.95rem,1vw,1rem);
 line-height:1.45;
 letter-spacing:.02em;
@@ -191,6 +194,7 @@ justify-content:center;
 font-size:.98rem;
 line-height:1;
 letter-spacing:.04em;
+font-family:'Merriweather',serif;
 transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
 }
 
@@ -253,112 +257,3 @@ width:100%;
 
 </style>
 </head>
-
-<body>
-
-<div class="top-actions">
-
-<a class="icon-link"
-href="https://www.goodreads.com/user/show/134250743"
-target="_blank">
-<i class="fa-brands fa-goodreads-g"></i>
-</a>
-
-<a class="icon-link"
-href="https://www.chess.com/member/krisper"
-target="_blank">
-<i class="fa-solid fa-chess-rook"></i>
-</a>
-
-<button class="theme-toggle" id="themeToggle">
-<i id="themeIcon" class="fa-regular fa-moon"></i>
-</button>
-
-</div>
-
-<main class="page">
-
-<section class="content">
-
-<h1>Hi, I'm Kris.</h1>
-
-<p class="intro">This is a collection of lines I’ve cast, written, or coded.</p>
-
-<p class="recent-label">Recently, I’ve -</p>
-
-<ul class="activity-list">
-
-<li>Created <a href="https://krispearcey.github.io/chess/" target="_blank">“my own personal chess bot”</a></li>
-
-<li>Written <a href="https://krispearcey.com" target="_blank">“The Hag”</a></li>
-
-<li>Blogged <a href="https://krispearcey.com" target="_blank">“Woolly Buggers”</a></li>
-
-<li>Read <a href="https://www.goodreads.com/book/show/242692.Maynard_s_House" target="_blank">“Maynard's House” by Herman Raucher</a></li>
-
-<li id="chessGameLine">
-Played against <span id="chessOpponent">loading…</span>
-</li>
-
-</ul>
-
-<p class="build-line">I’m currently building at <a href="#">this</a>.</p>
-
-<div class="buttons">
-
-<a class="btn primary"
-href="https://krispearcey.com"
-target="_blank">
-krispearcey.com
-</a>
-
-<a class="btn secondary"
-href="mailto:me@krispearcey.com">
-Contact Me
-</a>
-
-</div>
-
-</section>
-
-</main>
-
-<script>
-
-const body=document.body
-const themeToggle=document.getElementById("themeToggle")
-const themeIcon=document.getElementById("themeIcon")
-
-const savedTheme=localStorage.getItem("kris-theme")
-
-if(savedTheme==="light"){
-body.classList.add("light")
-}
-
-syncThemeButton()
-
-themeToggle.addEventListener("click",()=>{
-body.classList.toggle("light")
-
-localStorage.setItem(
-"kris-theme",
-body.classList.contains("light")?"light":"dark"
-)
-
-syncThemeButton()
-})
-
-function syncThemeButton(){
-
-const isLight=body.classList.contains("light")
-
-themeIcon.className=isLight
-?"fa-regular fa-sun"
-:"fa-regular fa-moon"
-
-}
-
-</script>
-
-</body>
-</html>
