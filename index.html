@@ -212,33 +212,6 @@ h1{
   color:var(--soft);
 }
 
-/* thought line */
-
-.thought-text,
-.thought-text:visited{
-  display:inline;
-  color:var(--accent);
-  text-decoration:none;
-  font:inherit;
-  font-size:inherit;
-  font-weight:inherit;
-  line-height:inherit;
-  letter-spacing:inherit;
-  word-spacing:inherit;
-  vertical-align:baseline;
-  opacity:1;
-  transition:opacity .18s ease,color .18s ease;
-}
-
-.thought-text:hover,
-.thought-text:visited:hover{
-  color:var(--accent-hover);
-}
-
-.thought-text.is-changing{
-  opacity:0;
-}
-
 /* expandable lines */
 
 .expandable-line{
@@ -689,14 +662,35 @@ h1{
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
         <li>written <a href="#about" id="openAboutLink">about myself</a></li>
-        <li>
-          been thinking about
-          <a
-            id="thoughtText"
-            class="thought-text"
-            href="#"
-            aria-label="Current thought"
-          >something</a>
+
+        <li id="githubCommitLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="githubExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent commits"
+              aria-expanded="false"
+            >
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="githubCommitLabel">committed to</span>
+              <a
+                id="githubCommitLink"
+                href="https://github.com/krispearcey"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span id="githubCommitText">something on GitHub</span>
+              </a>
+            </div>
+          </div>
+
+          <div id="githubExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="githubExpandList" class="expand-list"></ul>
+          </div>
         </li>
 
         <li id="goodreadsLine" class="expandable-line">
@@ -813,6 +807,14 @@ const mainContent = document.getElementById("mainContent");
 const aboutPanel = document.getElementById("aboutPanel");
 const closeAboutButton = document.getElementById("closeAboutButton");
 
+const githubCommitLine = document.getElementById("githubCommitLine");
+const githubExpandToggle = document.getElementById("githubExpandToggle");
+const githubExpandPanel = document.getElementById("githubExpandPanel");
+const githubExpandList = document.getElementById("githubExpandList");
+const githubCommitLabel = document.getElementById("githubCommitLabel");
+const githubCommitText = document.getElementById("githubCommitText");
+const githubCommitLink = document.getElementById("githubCommitLink");
+
 const chessGameLine = document.getElementById("chessGameLine");
 const chessExpandToggle = document.getElementById("chessExpandToggle");
 const chessExpandPanel = document.getElementById("chessExpandPanel");
@@ -831,28 +833,14 @@ const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
 const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
-const thoughtText = document.getElementById("thoughtText");
+const GITHUB_PROFILE_URL = "https://github.com/krispearcey";
+const GITHUB_USERNAME = "krispearcey";
 
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 const GOODREADS_USER_ID = "134250743";
 const GOODREADS_CACHE_KEY = "kris-goodreads-cache-v1";
 const GOODREADS_CACHE_TTL = 10 * 60 * 1000;
-
-const THOUGHT_ROTATE_MS = 18000;
-const thoughts = [
-  { text: "matching the hatch", href: "#" },
-  { text: "strip-setting streamers", href: "#" },
-  { text: "longer mends", href: "#" },
-  { text: "trapped bishops", href: "#" },
-  { text: "one move blunders", href: "#" },
-  { text: "Scotch gambits", href: "#" },
-  { text: "smoother transitions", href: "#" },
-  { text: "fewer distractions", href: "#" }
-];
-
-let currentThoughtIndex = 0;
-let thoughtIntervalId = null;
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -910,50 +898,6 @@ closeAboutButton.addEventListener("click", () => {
   syncAboutFromHash();
 });
 
-/* ---------- thought rotation ---------- */
-
-function setThought(index, animate = false){
-  if(!thoughtText || !thoughts.length) return;
-
-  const nextThought = thoughts[index];
-
-  if(!animate){
-    thoughtText.textContent = nextThought.text;
-    thoughtText.href = nextThought.href || "#";
-    return;
-  }
-
-  thoughtText.classList.add("is-changing");
-
-  window.setTimeout(() => {
-    thoughtText.textContent = nextThought.text;
-    thoughtText.href = nextThought.href || "#";
-    thoughtText.classList.remove("is-changing");
-  }, 120);
-}
-
-function startThoughtRotation(){
-  if(!thoughtText || thoughts.length <= 1) return;
-
-  currentThoughtIndex = Math.floor(Math.random() * thoughts.length);
-  setThought(currentThoughtIndex, false);
-
-  if(thoughtIntervalId){
-    clearInterval(thoughtIntervalId);
-  }
-
-  thoughtIntervalId = window.setInterval(() => {
-    let nextIndex = currentThoughtIndex;
-
-    while(nextIndex === currentThoughtIndex && thoughts.length > 1){
-      nextIndex = Math.floor(Math.random() * thoughts.length);
-    }
-
-    currentThoughtIndex = nextIndex;
-    setThought(currentThoughtIndex, true);
-  }, THOUGHT_ROTATE_MS);
-}
-
 /* ---------- generic expand ---------- */
 
 function playExpandItemAnimation(panel){
@@ -985,6 +929,18 @@ function setExpandedState(container, button, panel, expanded, openLabel, closedL
   }
 }
 
+githubExpandToggle.addEventListener("click", () => {
+  const isExpanded = githubCommitLine.classList.contains("expanded");
+  setExpandedState(
+    githubCommitLine,
+    githubExpandToggle,
+    githubExpandPanel,
+    !isExpanded,
+    "Hide recent commits",
+    "Show recent commits"
+  );
+});
+
 goodreadsExpandToggle.addEventListener("click", () => {
   const isExpanded = goodreadsLine.classList.contains("expanded");
   setExpandedState(
@@ -1008,6 +964,115 @@ chessExpandToggle.addEventListener("click", () => {
     "Show recent chess games"
   );
 });
+
+/* ---------- GITHUB COMMITS ---------- */
+
+function setFallbackGithubLine(){
+  githubCommitLabel.textContent = "committed to";
+  githubCommitText.textContent = "something on GitHub";
+  githubCommitLink.href = GITHUB_PROFILE_URL;
+  renderGithubCommits([]);
+}
+
+function truncateCommitMessage(message, maxLength = 72){
+  const clean = (message || "").replace(/\s+/g, " ").trim();
+  if(!clean) return "something on GitHub";
+  if(clean.length <= maxLength) return clean;
+  return `${clean.slice(0, maxLength - 1).trim()}…`;
+}
+
+function formatCommitText(commit){
+  const repo = commit?.repo || "a repo";
+  const message = truncateCommitMessage(commit?.message || "");
+  return `${repo} — ${message}`;
+}
+
+function renderGithubCommits(commits){
+  githubExpandList.innerHTML = "";
+
+  commits.forEach(commit => {
+    const item = document.createElement("li");
+
+    const label = document.createElement("span");
+    label.textContent = "committed to ";
+
+    const link = document.createElement("a");
+    link.href = commit.url || GITHUB_PROFILE_URL;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = formatCommitText(commit);
+
+    item.appendChild(label);
+    item.appendChild(link);
+    githubExpandList.appendChild(item);
+  });
+
+  if(githubCommitLine.classList.contains("expanded")){
+    playExpandItemAnimation(githubExpandPanel);
+  }
+}
+
+async function loadLatestGithubCommits(){
+  try{
+    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public`, {
+      headers: {
+        "Accept": "application/vnd.github+json"
+      }
+    });
+
+    if(!response.ok){
+      throw new Error("Could not load GitHub events");
+    }
+
+    const events = await response.json();
+    if(!Array.isArray(events) || !events.length){
+      setFallbackGithubLine();
+      return;
+    }
+
+    const commits = [];
+
+    for(const event of events){
+      if(event?.type !== "PushEvent") continue;
+
+      const repoName = event?.repo?.name || "";
+      const eventCommits = Array.isArray(event?.payload?.commits) ? event.payload.commits : [];
+
+      for(const commit of eventCommits){
+        const sha = commit?.sha || "";
+        const message = commit?.message || "";
+
+        if(!sha || !message || !repoName) continue;
+
+        commits.push({
+          repo: repoName,
+          message,
+          sha,
+          url: `https://github.com/${repoName}/commit/${sha}`
+        });
+
+        if(commits.length >= 5) break;
+      }
+
+      if(commits.length >= 5) break;
+    }
+
+    if(!commits.length){
+      setFallbackGithubLine();
+      return;
+    }
+
+    const latestCommit = commits[0];
+    githubCommitLabel.textContent = "committed to";
+    githubCommitText.textContent = formatCommitText(latestCommit);
+    githubCommitLink.href = latestCommit.url || GITHUB_PROFILE_URL;
+
+    renderGithubCommits(commits.slice(1, 5));
+  }catch(error){
+    console.error("GitHub commits fetch failed:", error);
+    setFallbackGithubLine();
+  }
+}
 
 /* ---------- CHESS ---------- */
 
@@ -1475,7 +1540,7 @@ async function loadGoodreadsBook(){
   }
 }
 
-startThoughtRotation();
+loadLatestGithubCommits();
 loadLatestFinishedGame();
 requestAnimationFrame(() => {
   loadGoodreadsBook();
