@@ -217,7 +217,7 @@ h1{
 .thought-text,
 .thought-text:visited{
   display:inline;
-  color:inherit;
+  color:var(--accent);
   text-decoration:none;
   font:inherit;
   font-size:inherit;
@@ -226,13 +226,8 @@ h1{
   letter-spacing:inherit;
   word-spacing:inherit;
   vertical-align:baseline;
-  transition:
-    opacity .28s ease,
-    transform .28s ease,
-    color .18s ease;
   opacity:1;
-  transform:translateY(0);
-  will-change:opacity, transform;
+  transition:opacity .18s ease,color .18s ease;
 }
 
 .thought-text:hover,
@@ -242,7 +237,6 @@ h1{
 
 .thought-text.is-changing{
   opacity:0;
-  transform:translateY(4px);
 }
 
 /* expandable lines */
@@ -935,7 +929,7 @@ function setThought(index, animate = false){
     thoughtText.textContent = nextThought.text;
     thoughtText.href = nextThought.href || "#";
     thoughtText.classList.remove("is-changing");
-  }, 160);
+  }, 120);
 }
 
 function startThoughtRotation(){
