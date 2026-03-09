@@ -651,36 +651,7 @@ a:hover{
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
         <li>written <a href="#about" id="openAboutLink">about myself</a></li>
-
-        <li id="stravaActivityLine" class="expandable-line">
-          <div class="line-row">
-            <button
-              id="stravaExpandToggle"
-              class="chevron-toggle"
-              type="button"
-              aria-label="Show recent Strava activities"
-              aria-expanded="false"
-            >
-              <span class="chevron-glyph">&gt;</span>
-            </button>
-
-            <div class="line-content">
-              <span id="stravaActivityLabel">did something active for</span>
-              <a
-                id="stravaActivityLink"
-                href="https://www.strava.com/athletes/10547751"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span id="stravaActivityDuration">loading…</span>
-              </a>
-            </div>
-          </div>
-
-          <div id="stravaExpandPanel" class="expand-panel" aria-hidden="true">
-            <ul id="stravaExpandList" class="expand-list"></ul>
-          </div>
-        </li>
+        <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
 
         <li id="goodreadsLine" class="expandable-line">
           <div class="line-row">
@@ -768,20 +739,9 @@ a:hover{
             I’m a front-end developer based in Atlantic Canada. This site isn’t meant to be polished portfolio; 
             it should act as more as a personal concoction of the projects, ideas, and rabbit holes that occupy my time. 
           </p>
-
+          
           <p>
-            I have a particular weakness for over-complicated minimalism—the kind of "simple" design that actually requires 
-            a dozen hidden moving parts to feel seamless. Whether I'm building custom chess tools, experimenting with web layouts, 
-            or tinkering with general dev projects, I like taking a basic concept and pushing it until it feels distinctive.
-          </p>
-
-          <p>
-            When I'm not staring at a code editor, I’m usually trying to get as far away from a screen as possible. 
-            Whether that's hitting the trails or finding a quiet spot for some fly fishing. 
-          </p>
-
-          <p>
-            Outside of that, I usually have a few half-finished projects open at once, follow ideas wherever they go, 
+            I usually have a few half-finished projects open at once, follow ideas wherever they go, 
             and occasionally turn those rabbit holes into something tangible. This page is meant to be a small record of 
             those interests — what I’m making, what I’m reading, and what’s currently holding my attention.
           </p>
@@ -825,19 +785,9 @@ const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
 const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
-const stravaActivityLine = document.getElementById("stravaActivityLine");
-const stravaExpandToggle = document.getElementById("stravaExpandToggle");
-const stravaExpandPanel = document.getElementById("stravaExpandPanel");
-const stravaExpandList = document.getElementById("stravaExpandList");
-const stravaActivityLabel = document.getElementById("stravaActivityLabel");
-const stravaActivityDuration = document.getElementById("stravaActivityDuration");
-const stravaActivityLink = document.getElementById("stravaActivityLink");
-
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 const GOODREADS_USER_ID = "134250743";
-
-const STRAVA_PROFILE_URL = "https://www.strava.com/athletes/10547751";
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -925,18 +875,6 @@ chessExpandToggle.addEventListener("click", () => {
     !isExpanded,
     "Hide recent chess games",
     "Show recent chess games"
-  );
-});
-
-stravaExpandToggle.addEventListener("click", () => {
-  const isExpanded = stravaActivityLine.classList.contains("expanded");
-  setExpandedState(
-    stravaActivityLine,
-    stravaExpandToggle,
-    stravaExpandPanel,
-    !isExpanded,
-    "Hide recent Strava activities",
-    "Show recent Strava activities"
   );
 });
 
@@ -1080,248 +1018,6 @@ async function loadLatestFinishedGame(){
   }catch(error){
     console.error("Chess.com game fetch failed:", error);
     setFallbackChessLine();
-  }
-}
-
-/* ---------- STRAVA ---------- */
-
-function formatDurationLabel(hours, minutes){
-  return `${hours} hours & ${minutes} minutes`;
-}
-
-function normalizeStravaType(text){
-  const value = (text || "").toLowerCase().trim();
-
-  if(value.includes("weight training")) return "weight training";
-  if(value.includes("hiit")) return "hiit";
-  if(value.includes("workout")) return "workout";
-
-  return "";
-}
-
-function getStravaLabelFromType(type){
-  if(type === "weight training") return "lifted weights for";
-  if(type === "workout") return "played hockey for";
-  if(type === "hiit") return "did a HIIT session for";
-  return "did something active for";
-}
-
-function parseDurationToHoursMinutes(text){
-  const raw = (text || "").replace(/\s+/g, " ").trim().toLowerCase();
-
-  let hours = 0;
-  let minutes = 0;
-
-  const hhmmss = raw.match(/\b(\d{1,2}):(\d{2}):(\d{2})\b/);
-  if(hhmmss){
-    hours = parseInt(hhmmss[1], 10) || 0;
-    minutes = parseInt(hhmmss[2], 10) || 0;
-    return { hours, minutes };
-  }
-
-  const hmm = raw.match(/\b(\d{1,2}):(\d{2})\b/);
-  if(hmm){
-    hours = parseInt(hmm[1], 10) || 0;
-    minutes = parseInt(hmm[2], 10) || 0;
-    return { hours, minutes };
-  }
-
-  const hoursMatch = raw.match(/(\d+)\s*(?:h|hr|hrs|hour|hours)\b/);
-  const minutesMatch = raw.match(/(\d+)\s*(?:m|min|mins|minute|minutes)\b/);
-
-  if(hoursMatch) hours = parseInt(hoursMatch[1], 10) || 0;
-  if(minutesMatch) minutes = parseInt(minutesMatch[1], 10) || 0;
-
-  if(hoursMatch || minutesMatch){
-    return { hours, minutes };
-  }
-
-  return { hours: 0, minutes: 0 };
-}
-
-function parseDurationFromContext(text){
-  const lines = (text || "")
-    .split(/\n+/)
-    .map(part => part.trim())
-    .filter(Boolean);
-
-  for(const line of lines){
-    const parsed = parseDurationToHoursMinutes(line);
-    if(parsed.hours > 0 || parsed.minutes > 0){
-      return parsed;
-    }
-  }
-
-  return { hours: 0, minutes: 0 };
-}
-
-function uniqueStravaActivities(activities){
-  const seen = new Set();
-
-  return activities.filter(activity => {
-    const key = `${activity.url}|${activity.type}|${activity.hours}|${activity.minutes}`;
-    if(!activity.url || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-function renderStravaActivities(activities){
-  stravaExpandList.innerHTML = "";
-
-  activities.forEach(activity => {
-    const item = document.createElement("li");
-
-    const label = document.createElement("span");
-    label.textContent = `${activity.label} `;
-
-    const link = document.createElement("a");
-    link.href = activity.url || STRAVA_PROFILE_URL;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = formatDurationLabel(activity.hours, activity.minutes);
-
-    item.appendChild(label);
-    item.appendChild(link);
-    stravaExpandList.appendChild(item);
-  });
-}
-
-function setFallbackStravaLine(){
-  stravaActivityLabel.textContent = "did something active for";
-  stravaActivityDuration.textContent = "0 hours & 0 minutes";
-  stravaActivityLink.href = STRAVA_PROFILE_URL;
-  renderStravaActivities([]);
-}
-
-function extractActivityUrl(anchor){
-  const href = anchor?.getAttribute("href") || "";
-  if(!href) return "";
-
-  if(href.startsWith("http")) return href;
-  if(href.startsWith("/activities/")) return `https://www.strava.com${href}`;
-
-  return "";
-}
-
-function parseStravaActivitiesFromHtml(htmlText){
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlText, "text/html");
-
-  const anchors = [
-    ...doc.querySelectorAll('a[href*="/activities/"]')
-  ];
-
-  const activities = anchors.map(anchor => {
-    const url = extractActivityUrl(anchor);
-    if(!url) return null;
-
-    const container =
-      anchor.closest("article") ||
-      anchor.closest("li") ||
-      anchor.closest("div") ||
-      anchor.parentElement;
-
-    const text = container?.textContent || anchor.textContent || "";
-    const type = normalizeStravaType(text);
-
-    if(!type) return null;
-
-    const { hours, minutes } = parseDurationFromContext(text);
-
-    return {
-      type,
-      label: getStravaLabelFromType(type),
-      hours,
-      minutes,
-      url
-    };
-  }).filter(Boolean);
-
-  return uniqueStravaActivities(activities);
-}
-
-function parseStravaActivitiesFromJsonLikeHtml(htmlText){
-  const lower = htmlText.toLowerCase();
-  const matches = [];
-
-  const activityRegex = /https?:\/\/www\.strava\.com\/activities\/(\d+)/gi;
-  let match;
-
-  while((match = activityRegex.exec(htmlText)) !== null){
-    const id = match[1];
-    const start = Math.max(0, match.index - 400);
-    const end = Math.min(htmlText.length, match.index + 900);
-    const chunk = htmlText.slice(start, end);
-    const chunkLower = chunk.toLowerCase();
-
-    let type = "";
-    if(chunkLower.includes("weight training")) type = "weight training";
-    else if(chunkLower.includes("\"hiit\"") || chunkLower.includes(">hiit<") || chunkLower.includes(" hiit ")) type = "hiit";
-    else if(chunkLower.includes("workout")) type = "workout";
-
-    if(!type) continue;
-
-    const durationMatch =
-      chunk.match(/"moving_time"\s*:\s*(\d+)/i) ||
-      chunk.match(/"elapsed_time"\s*:\s*(\d+)/i);
-
-    let hours = 0;
-    let minutes = 0;
-
-    if(durationMatch){
-      const totalSeconds = parseInt(durationMatch[1], 10) || 0;
-      hours = Math.floor(totalSeconds / 3600);
-      minutes = Math.floor((totalSeconds % 3600) / 60);
-    }else{
-      const parsed = parseDurationFromContext(chunk);
-      hours = parsed.hours;
-      minutes = parsed.minutes;
-    }
-
-    matches.push({
-      type,
-      label: getStravaLabelFromType(type),
-      hours,
-      minutes,
-      url: `https://www.strava.com/activities/${id}`
-    });
-  }
-
-  return uniqueStravaActivities(matches);
-}
-
-async function fetchStravaActivities(){
-  const profileText = await fetchTextWithFallbacks(STRAVA_PROFILE_URL);
-
-  let activities = parseStravaActivitiesFromHtml(profileText);
-
-  if(!activities.length){
-    activities = parseStravaActivitiesFromJsonLikeHtml(profileText);
-  }
-
-  return activities;
-}
-
-async function loadStravaActivities(){
-  try{
-    const activities = await fetchStravaActivities();
-
-    if(!activities.length){
-      setFallbackStravaLine();
-      return;
-    }
-
-    const latestActivity = activities[0];
-    stravaActivityLabel.textContent = latestActivity.label;
-    stravaActivityDuration.textContent = formatDurationLabel(latestActivity.hours, latestActivity.minutes);
-    stravaActivityLink.href = latestActivity.url || STRAVA_PROFILE_URL;
-
-    const previousActivities = activities.slice(1, 5);
-    renderStravaActivities(previousActivities);
-  }catch(error){
-    console.error("Strava fetch failed:", error);
-    setFallbackStravaLine();
   }
 }
 
@@ -1483,7 +1179,7 @@ async function fetchTextWithFallbacks(targetUrl){
     }
   }
 
-  throw lastError || new Error("All proxy fetches failed");
+  throw lastError || new Error("All Goodreads proxy fetches failed");
 }
 
 async function fetchShelfRss(userId, shelf){
@@ -1578,7 +1274,6 @@ async function loadGoodreadsBook(){
 }
 
 loadLatestFinishedGame();
-loadStravaActivities();
 loadGoodreadsBook();
 </script>
 
