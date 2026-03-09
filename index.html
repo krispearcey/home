@@ -36,13 +36,18 @@ html,body{
   min-height:100%;
 }
 
+html{
+  scroll-behavior:smooth;
+}
+
 body{
   background:var(--bg);
   color:var(--text);
   font-family:Georgia,serif;
-  transition:background-color .22s ease,color .22s ease;
+  transition:background-color .28s ease,color .28s ease;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
 }
 
 /* top icons */
@@ -73,7 +78,7 @@ body{
   text-decoration:none;
   cursor:pointer;
   outline:none;
-  transition:color .2s ease,transform .2s ease;
+  transition:color .22s ease,transform .22s ease;
 }
 
 .icon-link::before,
@@ -88,9 +93,9 @@ body{
   transform:translate(-50%,-50%) scale(.2);
   opacity:0;
   transition:
-    transform .24s cubic-bezier(.22,1,.36,1),
-    opacity .18s ease,
-    background-color .18s ease;
+    transform .3s cubic-bezier(.22,1,.36,1),
+    opacity .2s ease,
+    background-color .2s ease;
   z-index:0;
   pointer-events:none;
 }
@@ -99,7 +104,7 @@ body{
 .theme-toggle i{
   position:relative;
   z-index:1;
-  transition:color .18s ease,transform .2s ease;
+  transition:color .2s ease,transform .22s ease;
 }
 
 .icon-link:hover,
@@ -141,11 +146,12 @@ body{
 .content{
   width:min(100%,560px);
   transform:translateY(-1.6vh);
-  transition:transform .42s cubic-bezier(.22,1,.36,1);
+  transition:transform .62s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
 }
 
 .content.about-open{
-  transform:translateY(-7.5vh);
+  transform:translateY(-6.2vh);
 }
 
 /* hero */
@@ -255,7 +261,7 @@ h1{
 .chevron-glyph{
   display:inline-block;
   transform-origin:42% 52%;
-  transition:transform .24s cubic-bezier(.22,1,.36,1), color .2s ease;
+  transition:transform .28s cubic-bezier(.22,1,.36,1), color .2s ease;
 }
 
 .expandable-line.expanded .chevron-glyph{
@@ -265,7 +271,7 @@ h1{
 .line-content{
   display:inline-block;
   min-width:0;
-  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  transition:transform .34s cubic-bezier(.22,1,.36,1);
   transform:translateX(0);
 }
 
@@ -280,9 +286,9 @@ h1{
   margin-left:36px;
   margin-top:0;
   transition:
-    max-height .34s cubic-bezier(.22,1,.36,1),
-    opacity .22s ease,
-    margin-top .22s ease;
+    max-height .42s cubic-bezier(.22,1,.36,1),
+    opacity .26s ease,
+    margin-top .26s ease;
 }
 
 .expandable-line.expanded .expand-panel{
@@ -303,7 +309,7 @@ h1{
   color:var(--text);
   opacity:0;
   transform:translateY(6px);
-  animation:expandItemIn .28s ease forwards;
+  animation:expandItemIn .32s ease forwards;
   font:inherit;
   line-height:inherit;
   letter-spacing:inherit;
@@ -316,10 +322,10 @@ h1{
   letter-spacing:inherit;
 }
 
-.expand-list li:nth-child(1){ animation-delay:.03s; }
-.expand-list li:nth-child(2){ animation-delay:.07s; }
-.expand-list li:nth-child(3){ animation-delay:.11s; }
-.expand-list li:nth-child(4){ animation-delay:.15s; }
+.expand-list li:nth-child(1){ animation-delay:.04s; }
+.expand-list li:nth-child(2){ animation-delay:.08s; }
+.expand-list li:nth-child(3){ animation-delay:.12s; }
+.expand-list li:nth-child(4){ animation-delay:.16s; }
 
 @keyframes expandItemIn{
   from{
@@ -337,6 +343,7 @@ h1{
 a{
   color:var(--accent);
   text-decoration:none;
+  transition:color .18s ease;
 }
 
 a:hover{
@@ -398,46 +405,61 @@ a:hover{
 
 .main-content{
   transition:
-    opacity .24s ease,
-    transform .34s cubic-bezier(.22,1,.36,1),
-    max-height .4s ease,
-    margin .28s ease;
+    opacity .38s ease,
+    transform .56s cubic-bezier(.22,1,.36,1),
+    filter .4s ease,
+    visibility 0s linear 0s;
   transform:translateY(0);
   opacity:1;
-  max-height:1200px;
-  overflow:hidden;
+  filter:blur(0);
+  visibility:visible;
+  pointer-events:auto;
+  will-change:transform, opacity, filter;
 }
 
 .main-content.hidden-for-about{
   opacity:0;
-  transform:translateY(18px);
-  max-height:0;
-  margin:0;
+  transform:translateY(14px);
+  filter:blur(3px);
+  visibility:hidden;
   pointer-events:none;
+  transition:
+    opacity .3s ease,
+    transform .5s cubic-bezier(.22,1,.36,1),
+    filter .32s ease,
+    visibility 0s linear .3s;
 }
 
 /* about panel */
 
 .about-panel{
+  position:relative;
   opacity:0;
-  max-height:0;
-  overflow:hidden;
   transform:translateY(18px);
+  filter:blur(6px);
+  visibility:hidden;
   pointer-events:none;
   transition:
-    opacity .28s ease,
-    transform .36s cubic-bezier(.22,1,.36,1),
-    max-height .45s cubic-bezier(.22,1,.36,1),
-    margin-top .28s ease;
+    opacity .48s ease,
+    transform .66s cubic-bezier(.22,1,.36,1),
+    filter .48s ease,
+    visibility 0s linear .48s;
   margin-top:0;
+  will-change:transform, opacity, filter;
 }
 
 .about-panel.open{
   opacity:1;
-  max-height:1200px;
   transform:translateY(0);
+  filter:blur(0);
+  visibility:visible;
   pointer-events:auto;
-  margin-top:8px;
+  margin-top:10px;
+  transition:
+    opacity .58s ease .1s,
+    transform .72s cubic-bezier(.22,1,.36,1) .06s,
+    filter .58s ease .08s,
+    visibility 0s linear 0s;
 }
 
 .about-copy{
@@ -451,6 +473,28 @@ a:hover{
 
 .about-copy p{
   margin:0 0 16px;
+  opacity:0;
+  transform:translateY(12px);
+}
+
+.about-panel.open .about-copy p{
+  animation:aboutParagraphIn .6s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+.about-panel.open .about-copy p:nth-child(1){ animation-delay:.10s; }
+.about-panel.open .about-copy p:nth-child(2){ animation-delay:.16s; }
+.about-panel.open .about-copy p:nth-child(3){ animation-delay:.22s; }
+.about-panel.open .about-copy p:nth-child(4){ animation-delay:.28s; }
+
+@keyframes aboutParagraphIn{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 .about-copy p:last-child{
@@ -459,6 +503,13 @@ a:hover{
 
 .about-close-wrap{
   margin-top:24px;
+  opacity:0;
+  transform:translateY(10px);
+}
+
+.about-panel.open .about-close-wrap{
+  animation:aboutParagraphIn .55s cubic-bezier(.22,1,.36,1) forwards;
+  animation-delay:.34s;
 }
 
 .about-close{
@@ -550,10 +601,6 @@ a:hover{
   .btn{
     width:100%;
   }
-
-  .about-panel.open{
-    margin-top:10px;
-  }
 }
 </style>
 </head>
@@ -613,7 +660,7 @@ a:hover{
 
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
-        <li>written <a href="#" id="openAboutLink">About Myself</a></li>
+        <li>written <a href="#about" id="openAboutLink">About Myself</a></li>
         <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
 
         <li id="goodreadsLine" class="expandable-line">
@@ -677,7 +724,7 @@ a:hover{
         </li>
       </ul>
 
-      <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
+      <p class="build-line">I’m currently building at <a href="#about" id="buildAboutLink">this</a>.</p>
 
       <div class="buttons">
         <a
@@ -740,6 +787,7 @@ const contentWrap = document.getElementById("contentWrap");
 const mainContent = document.getElementById("mainContent");
 const aboutPanel = document.getElementById("aboutPanel");
 const openAboutLink = document.getElementById("openAboutLink");
+const buildAboutLink = document.getElementById("buildAboutLink");
 const closeAboutButton = document.getElementById("closeAboutButton");
 
 const chessGameLine = document.getElementById("chessGameLine");
@@ -787,30 +835,66 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
-/* ---------- about panel ---------- */
+/* ---------- about panel + url ---------- */
 
-function openAbout(){
+function setAboutHash(){
+  if(window.location.hash !== "#about"){
+    history.pushState(null, "", "#about");
+  }
+}
+
+function clearAboutHash(){
+  if(window.location.hash === "#about"){
+    const cleanUrl = window.location.pathname + window.location.search;
+    history.pushState(null, "", cleanUrl);
+  }
+}
+
+function openAbout(updateUrl = true){
   mainContent.classList.add("hidden-for-about");
   aboutPanel.classList.add("open");
   contentWrap.classList.add("about-open");
   aboutPanel.setAttribute("aria-hidden", "false");
+
+  if(updateUrl){
+    setAboutHash();
+  }
 }
 
-function closeAbout(){
+function closeAbout(updateUrl = true){
   aboutPanel.classList.remove("open");
   mainContent.classList.remove("hidden-for-about");
   contentWrap.classList.remove("about-open");
   aboutPanel.setAttribute("aria-hidden", "true");
+
+  if(updateUrl){
+    clearAboutHash();
+  }
+}
+
+function syncAboutWithHash(){
+  if(window.location.hash === "#about"){
+    openAbout(false);
+  }else{
+    closeAbout(false);
+  }
 }
 
 openAboutLink.addEventListener("click", (event) => {
   event.preventDefault();
-  openAbout();
+  openAbout(true);
+});
+
+buildAboutLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  openAbout(true);
 });
 
 closeAboutButton.addEventListener("click", () => {
-  closeAbout();
+  closeAbout(true);
 });
+
+window.addEventListener("hashchange", syncAboutWithHash);
 
 /* ---------- generic expand ---------- */
 
@@ -1242,6 +1326,7 @@ async function loadGoodreadsBook(){
 
 loadLatestFinishedGame();
 loadGoodreadsBook();
+syncAboutWithHash();
 </script>
 
 </body>
