@@ -214,14 +214,23 @@ h1{
 
 /* thought line */
 
-.thought-text{
+.thought-text,
+.thought-text:visited{
   display:inline-block;
+  color:var(--accent);
+  text-decoration:none;
   transition:
     opacity .28s ease,
-    transform .28s ease;
+    transform .28s ease,
+    color .18s ease;
   opacity:1;
   transform:translateY(0);
   will-change:opacity, transform;
+}
+
+.thought-text:hover,
+.thought-text:visited:hover{
+  color:var(--accent-hover);
 }
 
 .thought-text.is-changing{
@@ -681,7 +690,12 @@ h1{
         <li>written <a href="#about" id="openAboutLink">about myself</a></li>
         <li>
           thinking about
-          <span id="thoughtText" class="thought-text">static websites</span>
+          <a
+            id="thoughtText"
+            class="thought-text"
+            href="#"
+            aria-label="Current thought"
+          >static websites</a>
         </li>
 
         <li id="goodreadsLine" class="expandable-line">
@@ -826,14 +840,14 @@ const GOODREADS_CACHE_TTL = 10 * 60 * 1000;
 
 const THOUGHT_ROTATE_MS = 30000;
 const thoughts = [
-  "static websites",
-  "small web experiments",
-  "good UI animation",
-  "chess openings",
-  "personal tools",
-  "front-end details",
-  "quiet internet corners",
-  "things worth building"
+  { text: "static websites", href: "#" },
+  { text: "small web experiments", href: "#" },
+  { text: "good UI animation", href: "#" },
+  { text: "chess openings", href: "#" },
+  { text: "personal tools", href: "#" },
+  { text: "front-end details", href: "#" },
+  { text: "quiet internet corners", href: "#" },
+  { text: "things worth building", href: "#" }
 ];
 
 let currentThoughtIndex = 0;
@@ -903,14 +917,16 @@ function setThought(index, animate = false){
   const nextThought = thoughts[index];
 
   if(!animate){
-    thoughtText.textContent = nextThought;
+    thoughtText.textContent = nextThought.text;
+    thoughtText.href = nextThought.href || "#";
     return;
   }
 
   thoughtText.classList.add("is-changing");
 
   window.setTimeout(() => {
-    thoughtText.textContent = nextThought;
+    thoughtText.textContent = nextThought.text;
+    thoughtText.href = nextThought.href || "#";
     thoughtText.classList.remove("is-changing");
   }, 160);
 }
