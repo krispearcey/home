@@ -212,6 +212,23 @@ h1{
   color:var(--soft);
 }
 
+/* thought line */
+
+.thought-text{
+  display:inline-block;
+  transition:
+    opacity .28s ease,
+    transform .28s ease;
+  opacity:1;
+  transform:translateY(0);
+  will-change:opacity, transform;
+}
+
+.thought-text.is-changing{
+  opacity:0;
+  transform:translateY(4px);
+}
+
 /* expandable lines */
 
 .expandable-line{
@@ -662,7 +679,10 @@ h1{
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
         <li>written <a href="#about" id="openAboutLink">about myself</a></li>
-        <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
+        <li>
+          thinking about
+          <span id="thoughtText" class="thought-text">static websites</span>
+        </li>
 
         <li id="goodreadsLine" class="expandable-line">
           <div class="line-row">
@@ -796,11 +816,28 @@ const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
 const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
+const thoughtText = document.getElementById("thoughtText");
+
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
 const GOODREADS_USER_ID = "134250743";
 const GOODREADS_CACHE_KEY = "kris-goodreads-cache-v1";
 const GOODREADS_CACHE_TTL = 10 * 60 * 1000;
+
+const THOUGHT_ROTATE_MS = 30000;
+const thoughts = [
+  "static websites",
+  "small web experiments",
+  "good UI animation",
+  "chess openings",
+  "personal tools",
+  "front-end details",
+  "quiet internet corners",
+  "things worth building"
+];
+
+let currentThoughtIndex = 0;
+let thoughtIntervalId = null;
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -857,6 +894,48 @@ closeAboutButton.addEventListener("click", () => {
   history.replaceState(null, "", cleanUrl);
   syncAboutFromHash();
 });
+
+/* ---------- thought rotation ---------- */
+
+function setThought(index, animate = false){
+  if(!thoughtText || !thoughts.length) return;
+
+  const nextThought = thoughts[index];
+
+  if(!animate){
+    thoughtText.textContent = nextThought;
+    return;
+  }
+
+  thoughtText.classList.add("is-changing");
+
+  window.setTimeout(() => {
+    thoughtText.textContent = nextThought;
+    thoughtText.classList.remove("is-changing");
+  }, 160);
+}
+
+function startThoughtRotation(){
+  if(!thoughtText || thoughts.length <= 1) return;
+
+  currentThoughtIndex = Math.floor(Math.random() * thoughts.length);
+  setThought(currentThoughtIndex, false);
+
+  if(thoughtIntervalId){
+    clearInterval(thoughtIntervalId);
+  }
+
+  thoughtIntervalId = window.setInterval(() => {
+    let nextIndex = currentThoughtIndex;
+
+    while(nextIndex === currentThoughtIndex && thoughts.length > 1){
+      nextIndex = Math.floor(Math.random() * thoughts.length);
+    }
+
+    currentThoughtIndex = nextIndex;
+    setThought(currentThoughtIndex, true);
+  }, THOUGHT_ROTATE_MS);
+}
 
 /* ---------- generic expand ---------- */
 
@@ -1379,6 +1458,7 @@ async function loadGoodreadsBook(){
   }
 }
 
+startThoughtRotation();
 loadLatestFinishedGame();
 requestAnimationFrame(() => {
   loadGoodreadsBook();
