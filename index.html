@@ -16,6 +16,8 @@
   --soft:rgba(245,245,240,0.62);
   --accent:#ff3f67;
   --accent-hover:#ff577b;
+  --scrollbar-thumb:rgba(245,245,240,0.16);
+  --scrollbar-thumb-hover:rgba(245,245,240,0.28);
 }
 
 body.light{
@@ -25,6 +27,8 @@ body.light{
   --soft:rgba(19,19,19,0.48);
   --accent:#ff3f67;
   --accent-hover:#ff2f5c;
+  --scrollbar-thumb:rgba(19,19,19,0.14);
+  --scrollbar-thumb-hover:rgba(19,19,19,0.24);
 }
 
 *{
@@ -430,11 +434,39 @@ a:hover{
 
 .about-panel.open{
   opacity:1;
-  max-height:58vh;
-  overflow-y:auto;
+  max-height:64vh;
   transform:translateY(0);
   pointer-events:auto;
   margin-top:8px;
+}
+
+.about-scroll{
+  max-height:calc(64vh - 46px);
+  overflow-y:auto;
+  padding-right:10px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--scrollbar-thumb) transparent;
+}
+
+.about-scroll::-webkit-scrollbar{
+  width:10px;
+}
+
+.about-scroll::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.about-scroll::-webkit-scrollbar-thumb{
+  background:var(--scrollbar-thumb);
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.about-scroll::-webkit-scrollbar-thumb:hover{
+  background:var(--scrollbar-thumb-hover);
+  border:2px solid transparent;
+  background-clip:padding-box;
 }
 
 .about-copy{
@@ -455,7 +487,7 @@ a:hover{
 }
 
 .about-close-wrap{
-  margin-top:24px;
+  margin-top:18px;
 }
 
 .about-close{
@@ -551,8 +583,13 @@ a:hover{
 
   .about-panel.open{
     max-height:none;
-    overflow:visible;
     margin-top:10px;
+  }
+
+  .about-scroll{
+    max-height:none;
+    overflow:visible;
+    padding-right:0;
   }
 }
 </style>
@@ -696,28 +733,30 @@ a:hover{
     </div>
 
     <div id="aboutPanel" class="about-panel" aria-hidden="true">
-      <div class="about-copy">
-        <p>
-          I’m a front-end developer based in Atlantic Canada. This site isn’t meant to be polished portfolio; 
-          it should act as more as a personal concoction of the projects, ideas, and rabbit holes that occupy my time. 
-        </p>
+      <div class="about-scroll">
+        <div class="about-copy">
+          <p>
+            I’m a front-end developer based in Atlantic Canada. This site isn’t meant to be polished portfolio; 
+            it should act as more as a personal concoction of the projects, ideas, and rabbit holes that occupy my time. 
+          </p>
 
-        <p>
-          I have a particular weakness for over-complicated minimalism—the kind of "simple" design that actually requires 
-          a dozen hidden moving parts to feel seamless. Whether I'm building custom chess tools, experimenting with web layouts, 
-          or tinkering with general dev projects, I like taking a basic concept and pushing it until it feels distinctive.
-        </p>
+          <p>
+            I have a particular weakness for over-complicated minimalism—the kind of "simple" design that actually requires 
+            a dozen hidden moving parts to feel seamless. Whether I'm building custom chess tools, experimenting with web layouts, 
+            or tinkering with general dev projects, I like taking a basic concept and pushing it until it feels distinctive.
+          </p>
 
-        <p>
-          When I'm not staring at a code editor, I’m usually trying to get as far away from a screen as possible. 
-          Whether that's hitting the trails or finding a quiet spot for some fly fishing. 
-        </p>
+          <p>
+            When I'm not staring at a code editor, I’m usually trying to get as far away from a screen as possible. 
+            Whether that's hitting the trails or finding a quiet spot for some fly fishing. 
+          </p>
 
-        <p>
-          Outside of that, I usually have a few half-finished projects open at once, follow ideas wherever they go, 
-          and occasionally turn those rabbit holes into something tangible. This page is meant to be a small record of 
-          those interests — what I’m making, what I’m reading, and what’s currently holding my attention.
-        </p>
+          <p>
+            Outside of that, I usually have a few half-finished projects open at once, follow ideas wherever they go, 
+            and occasionally turn those rabbit holes into something tangible. This page is meant to be a small record of 
+            those interests — what I’m making, what I’m reading, and what’s currently holding my attention.
+          </p>
+        </div>
       </div>
 
       <div class="about-close-wrap">
