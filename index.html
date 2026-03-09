@@ -6,7 +6,7 @@
 <title>Kris Pearcey</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -156,8 +156,6 @@ h1{
   overflow:visible;
 }
 
-/* hover arrow beside Kris */
-
 .name-anchor{
   position:relative;
   display:inline-block;
@@ -178,14 +176,14 @@ h1{
 
 .name-hover-callout{
   position:absolute;
-  left:calc(100% + 2px);
-  top:-54px;
-  width:122px;
-  height:82px;
+  left:calc(100% - 2px);
+  top:-24px;
+  width:134px;
+  height:78px;
   pointer-events:none;
   opacity:0;
   transform:translate(-6px,8px) scale(.96);
-  transform-origin:left bottom;
+  transform-origin:left center;
   transition:
     opacity .24s ease,
     transform .34s cubic-bezier(.22,1,.36,1);
@@ -199,32 +197,43 @@ h1{
   overflow:visible;
 }
 
-.name-hover-callout path{
+.name-hover-callout .curve-path,
+.name-hover-callout .arrow-head{
   fill:none;
   stroke:var(--text);
-  stroke-width:2;
+  stroke-width:2.05;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:170;
-  stroke-dashoffset:170;
+}
+
+.name-hover-callout .curve-path{
+  stroke-dasharray:160;
+  stroke-dashoffset:160;
   transition:stroke-dashoffset .44s cubic-bezier(.22,1,.36,1);
+}
+
+.name-hover-callout .arrow-head{
+  stroke-dasharray:24;
+  stroke-dashoffset:24;
+  transition:stroke-dashoffset .18s ease .24s;
 }
 
 .name-hover-label{
   position:absolute;
-  left:94px;
-  top:1px;
-  font-family:"Merriweather",serif;
-  font-size:.82rem;
+  left:86px;
+  top:-2px;
+  font-family:"Caveat",cursive;
+  font-size:1.12rem;
+  font-weight:600;
   line-height:1;
   color:var(--text);
-  transform:rotate(-15deg) translate(-4px,6px);
-  transform-origin:left bottom;
+  white-space:nowrap;
+  transform:rotate(16deg) translate(-5px,7px);
+  transform-origin:left center;
   opacity:0;
   transition:
     opacity .2s ease .12s,
     transform .34s cubic-bezier(.22,1,.36,1) .08s;
-  white-space:nowrap;
 }
 
 .name-hover-target:hover .name-hover-callout,
@@ -233,15 +242,20 @@ h1{
   transform:translate(0,0) scale(1);
 }
 
-.name-hover-target:hover .name-hover-callout path,
-.name-hover-target:focus-visible .name-hover-callout path{
+.name-hover-target:hover .name-hover-callout .curve-path,
+.name-hover-target:focus-visible .name-hover-callout .curve-path{
+  stroke-dashoffset:0;
+}
+
+.name-hover-target:hover .name-hover-callout .arrow-head,
+.name-hover-target:focus-visible .name-hover-callout .arrow-head{
   stroke-dashoffset:0;
 }
 
 .name-hover-target:hover .name-hover-label,
 .name-hover-target:focus-visible .name-hover-label{
   opacity:1;
-  transform:rotate(-15deg) translate(0,0);
+  transform:rotate(16deg) translate(0,0);
 }
 
 /* intro text */
@@ -517,16 +531,16 @@ a:hover{
   }
 
   .name-hover-callout{
-    left:calc(100% - 6px);
-    top:-60px;
-    width:102px;
-    height:72px;
+    left:calc(100% - 8px);
+    top:-22px;
+    width:110px;
+    height:66px;
   }
 
   .name-hover-label{
-    left:77px;
-    top:1px;
-    font-size:.74rem;
+    left:72px;
+    top:-3px;
+    font-size:1rem;
   }
 
   .intro,
@@ -575,14 +589,15 @@ a:hover{
     opacity:1;
   }
 
-  .name-hover-callout path{
+  .name-hover-callout .curve-path,
+  .name-hover-callout .arrow-head{
     stroke-dasharray:none;
     stroke-dashoffset:0;
   }
 
   .name-hover-label{
     opacity:1;
-    transform:rotate(-15deg);
+    transform:rotate(16deg);
   }
 }
 </style>
@@ -642,9 +657,9 @@ a:hover{
         <span class="name-hover-target" tabindex="0" aria-label="About Me">
           Kris.
           <span class="name-hover-callout" aria-hidden="true">
-            <svg viewBox="0 0 122 82" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 66 C 28 70, 55 62, 73 43 S 88 16, 96 10" />
-              <path d="M90 16 L 96 10 L 100 18" />
+            <svg viewBox="0 0 134 78" xmlns="http://www.w3.org/2000/svg">
+              <path class="curve-path" d="M8 43 C 24 48, 43 47, 57 39 C 69 32, 77 21, 84 11" />
+              <path class="arrow-head" d="M79 17 L84 11 L90 16" />
             </svg>
             <span class="name-hover-label">About Me</span>
           </span>
