@@ -301,6 +301,9 @@ h1{
   margin:0 0 8px;
   padding:0;
   color:var(--text);
+  opacity:0;
+  transform:translateY(6px);
+  animation:expandItemIn .28s ease forwards;
   font:inherit;
   line-height:inherit;
   letter-spacing:inherit;
@@ -313,22 +316,10 @@ h1{
   letter-spacing:inherit;
 }
 
-.expand-panel[aria-hidden="false"] .expand-list li{
-  opacity:0;
-  transform:translateY(6px);
-  animation:expandItemIn .28s ease forwards;
-}
-
-.expand-panel[aria-hidden="false"] .expand-list li:nth-child(1){ animation-delay:.03s; }
-.expand-panel[aria-hidden="false"] .expand-list li:nth-child(2){ animation-delay:.07s; }
-.expand-panel[aria-hidden="false"] .expand-list li:nth-child(3){ animation-delay:.11s; }
-.expand-panel[aria-hidden="false"] .expand-list li:nth-child(4){ animation-delay:.15s; }
-
-.expand-panel[aria-hidden="true"] .expand-list li{
-  opacity:0 !important;
-  transform:translateY(6px) !important;
-  animation:none !important;
-}
+.expand-list li:nth-child(1){ animation-delay:.03s; }
+.expand-list li:nth-child(2){ animation-delay:.07s; }
+.expand-list li:nth-child(3){ animation-delay:.11s; }
+.expand-list li:nth-child(4){ animation-delay:.15s; }
 
 @keyframes expandItemIn{
   from{
@@ -343,14 +334,12 @@ h1{
 
 /* links */
 
-a,
-a:visited{
+a{
   color:var(--accent);
   text-decoration:none;
 }
 
-a:hover,
-a:visited:hover{
+a:hover{
   color:var(--accent-hover);
 }
 
