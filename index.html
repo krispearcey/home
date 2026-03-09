@@ -156,6 +156,8 @@ h1{
   overflow:visible;
 }
 
+/* hover arrow beside Kris */
+
 .name-anchor{
   position:relative;
   display:inline-block;
@@ -176,10 +178,10 @@ h1{
 
 .name-hover-callout{
   position:absolute;
-  left:calc(100% - 2px);
-  top:-24px;
-  width:138px;
-  height:82px;
+  left:calc(100% - 4px);
+  top:-18px;
+  width:122px;
+  height:72px;
   pointer-events:none;
   opacity:0;
   transform:translate(-6px,8px) scale(.96);
@@ -207,30 +209,30 @@ h1{
 }
 
 .name-hover-callout .curve-path{
-  stroke-dasharray:170;
-  stroke-dashoffset:170;
+  stroke-dasharray:150;
+  stroke-dashoffset:150;
   transition:stroke-dashoffset .44s cubic-bezier(.22,1,.36,1);
 }
 
 .name-hover-callout .arrow-head{
-  stroke-dasharray:22;
-  stroke-dashoffset:22;
+  stroke-dasharray:20;
+  stroke-dashoffset:20;
   transition:stroke-dashoffset .18s ease .24s;
 }
 
 .name-hover-label{
   position:absolute;
-  left:92px;
-  top:-9px;
-  width:42px;
+  left:82px;
+  top:-2px;
+  width:40px;
   text-align:center;
   font-family:"Caveat",cursive;
-  font-size:1.12rem;
+  font-size:1.08rem;
   font-weight:600;
   line-height:1;
   color:var(--text);
   white-space:nowrap;
-  transform:rotate(16deg) translate(-4px,7px);
+  transform:rotate(18deg) translate(-4px,6px);
   transform-origin:center center;
   opacity:0;
   transition:
@@ -257,7 +259,7 @@ h1{
 .name-hover-target:hover .name-hover-label,
 .name-hover-target:focus-visible .name-hover-label{
   opacity:1;
-  transform:rotate(16deg) translate(0,0);
+  transform:rotate(18deg) translate(0,0);
 }
 
 /* intro text */
@@ -534,16 +536,16 @@ a:hover{
 
   .name-hover-callout{
     left:calc(100% - 8px);
-    top:-22px;
-    width:112px;
-    height:66px;
+    top:-18px;
+    width:102px;
+    height:62px;
   }
 
   .name-hover-label{
-    left:74px;
-    top:-8px;
-    width:38px;
-    font-size:1rem;
+    left:67px;
+    top:-3px;
+    width:34px;
+    font-size:.96rem;
   }
 
   .intro,
@@ -600,7 +602,7 @@ a:hover{
 
   .name-hover-label{
     opacity:1;
-    transform:rotate(16deg);
+    transform:rotate(18deg);
   }
 }
 </style>
@@ -660,9 +662,15 @@ a:hover{
         <span class="name-hover-target" tabindex="0" aria-label="About Me">
           Kris.
           <span class="name-hover-callout" aria-hidden="true">
-            <svg viewBox="0 0 138 82" xmlns="http://www.w3.org/2000/svg">
-              <path class="curve-path" d="M8 43 C 25 49, 45 48, 60 39 C 74 31, 83 19, 94 7" />
-              <path class="arrow-head" d="M89 14 L94 7 L101 12" />
+            <svg viewBox="0 0 122 72" xmlns="http://www.w3.org/2000/svg">
+              <path
+                class="curve-path"
+                d="M8 46
+                   C 28 52, 52 50, 69 38
+                   S 89 18, 94 12" />
+              <path
+                class="arrow-head"
+                d="M88 18 L94 12 L100 18" />
             </svg>
             <span class="name-hover-label">About Me</span>
           </span>
@@ -1241,5 +1249,3 @@ loadGoodreadsBook();
 
 </body>
 </html>
-
-
