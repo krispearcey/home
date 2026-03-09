@@ -62,6 +62,7 @@ body{
 }
 
 .icon-link,
+.icon-link:visited,
 .theme-toggle{
   position:relative;
   width:22px;
@@ -107,6 +108,7 @@ body{
 }
 
 .icon-link:hover,
+.icon-link:visited:hover,
 .theme-toggle:hover{
   color:#ffffff;
 }
@@ -120,6 +122,7 @@ body{
 }
 
 .icon-link:focus-visible,
+.icon-link:visited:focus-visible,
 .theme-toggle:focus-visible{
   color:#ffffff;
 }
@@ -275,11 +278,14 @@ h1{
 
 .expand-panel{
   display:none;
-  overflow:hidden;
-  height:0;
-  opacity:0;
   margin-left:36px;
-  margin-top:0;
+  margin-top:6px;
+  overflow:hidden;
+  contain:layout paint;
+}
+
+.expandable-line.expanded .expand-panel{
+  display:block;
 }
 
 .expand-list{
@@ -330,16 +336,16 @@ h1{
   }
 }
 
-/* links */
+/* links: scoped so top icons do not turn pink */
 
-a,
-a:visited{
+.content a:not(.btn):not(.icon-link),
+.content a:not(.btn):not(.icon-link):visited{
   color:var(--accent);
   text-decoration:none;
 }
 
-a:hover,
-a:visited:hover{
+.content a:not(.btn):not(.icon-link):hover,
+.content a:not(.btn):not(.icon-link):visited:hover{
   color:var(--accent-hover);
 }
 
@@ -365,6 +371,7 @@ a:visited:hover{
   font-weight:400;
   line-height:1;
   letter-spacing:.01em;
+  text-decoration:none;
   transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
 }
 
@@ -372,23 +379,27 @@ a:visited:hover{
   transform:translateY(-1px);
 }
 
-.btn.primary{
+.btn.primary,
+.btn.primary:visited{
   background:var(--accent);
   color:#ffffff;
 }
 
-.btn.primary:hover{
+.btn.primary:hover,
+.btn.primary:visited:hover{
   background:var(--accent-hover);
   border-color:var(--accent-hover);
   color:#ffffff;
 }
 
-.btn.secondary{
+.btn.secondary,
+.btn.secondary:visited{
   background:transparent;
   color:var(--accent);
 }
 
-.btn.secondary:hover{
+.btn.secondary:hover,
+.btn.secondary:visited:hover{
   background:rgba(255,63,103,.06);
   color:var(--accent-hover);
   border-color:var(--accent-hover);
@@ -849,91 +860,19 @@ closeAboutButton.addEventListener("click", () => {
 
 /* ---------- generic expand ---------- */
 
-function resetExpandItemAnimation(items){
+function playExpandItemAnimation(panel){
+  const items = [...panel.querySelectorAll(".expand-list li")];
+
   items.forEach(item => {
     item.classList.remove("is-visible");
-    item.style.opacity = "0";
-    item.style.transform = "translateY(6px)";
     item.style.animation = "none";
     void item.offsetWidth;
     item.style.animation = "";
   });
-}
-
-function animateExpandPanel(panel, shouldOpen){
-  const items = [...panel.querySelectorAll(".expand-list li")];
-
-  panel.removeEventListener("transitionend", panel._onTransitionEnd || (() => {}));
-
-  if(shouldOpen){
-    panel.style.display = "block";
-    panel.style.overflow = "hidden";
-    panel.style.opacity = "1";
-    panel.style.marginTop = "6px";
-    panel.style.height = "0px";
-    panel.style.transition = "none";
-
-    resetExpandItemAnimation(items);
-
-    const targetHeight = panel.scrollHeight;
-
-    requestAnimationFrame(() => {
-      panel.style.transition = "height .34s cubic-bezier(.22,1,.36,1), margin-top .22s ease, opacity .22s ease";
-      panel.style.height = `${targetHeight}px`;
-
-      items.forEach(item => {
-        item.classList.add("is-visible");
-      });
-    });
-
-    panel._onTransitionEnd = (event) => {
-      if(event.target !== panel || event.propertyName !== "height") return;
-      panel.style.height = "auto";
-      panel.style.overflow = "visible";
-      panel.removeEventListener("transitionend", panel._onTransitionEnd);
-      panel._onTransitionEnd = null;
-    };
-
-    panel.addEventListener("transitionend", panel._onTransitionEnd);
-    return;
-  }
-
-  if(getComputedStyle(panel).display === "none"){
-    panel.style.display = "none";
-    panel.style.height = "0px";
-    panel.style.opacity = "0";
-    panel.style.marginTop = "0";
-    return;
-  }
-
-  const startHeight = panel.scrollHeight;
-  panel.style.transition = "none";
-  panel.style.display = "block";
-  panel.style.overflow = "hidden";
-  panel.style.height = `${startHeight}px`;
-  panel.style.opacity = "1";
-  panel.style.marginTop = "6px";
-
-  resetExpandItemAnimation(items);
 
   requestAnimationFrame(() => {
-    panel.style.transition = "height .28s cubic-bezier(.22,1,.36,1), margin-top .22s ease, opacity .18s ease";
-    panel.style.height = "0px";
-    panel.style.opacity = "0";
-    panel.style.marginTop = "0";
+    items.forEach(item => item.classList.add("is-visible"));
   });
-
-  panel._onTransitionEnd = (event) => {
-    if(event.target !== panel || event.propertyName !== "height") return;
-    panel.style.display = "none";
-    panel.style.height = "0px";
-    panel.style.opacity = "0";
-    panel.style.marginTop = "0";
-    panel.removeEventListener("transitionend", panel._onTransitionEnd);
-    panel._onTransitionEnd = null;
-  };
-
-  panel.addEventListener("transitionend", panel._onTransitionEnd);
 }
 
 function setExpandedState(container, button, panel, expanded, openLabel, closedLabel){
@@ -941,7 +880,13 @@ function setExpandedState(container, button, panel, expanded, openLabel, closedL
   button.setAttribute("aria-expanded", String(expanded));
   button.setAttribute("aria-label", expanded ? openLabel : closedLabel);
   panel.setAttribute("aria-hidden", String(!expanded));
-  animateExpandPanel(panel, expanded);
+
+  if(expanded){
+    panel.style.display = "block";
+    playExpandItemAnimation(panel);
+  }else{
+    panel.style.display = "none";
+  }
 }
 
 goodreadsExpandToggle.addEventListener("click", () => {
@@ -1038,7 +983,7 @@ function renderChessGames(games){
   });
 
   if(chessGameLine.classList.contains("expanded")){
-    animateExpandPanel(chessExpandPanel, true);
+    playExpandItemAnimation(chessExpandPanel);
   }
 }
 
@@ -1151,7 +1096,7 @@ function renderGoodreadsBooks(books){
   });
 
   if(goodreadsLine.classList.contains("expanded")){
-    animateExpandPanel(goodreadsExpandPanel, true);
+    playExpandItemAnimation(goodreadsExpandPanel);
   }
 }
 
