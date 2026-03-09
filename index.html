@@ -178,8 +178,8 @@ h1{
   position:absolute;
   left:calc(100% - 2px);
   top:-24px;
-  width:134px;
-  height:78px;
+  width:138px;
+  height:82px;
   pointer-events:none;
   opacity:0;
   transform:translate(-6px,8px) scale(.96);
@@ -207,29 +207,31 @@ h1{
 }
 
 .name-hover-callout .curve-path{
-  stroke-dasharray:160;
-  stroke-dashoffset:160;
+  stroke-dasharray:170;
+  stroke-dashoffset:170;
   transition:stroke-dashoffset .44s cubic-bezier(.22,1,.36,1);
 }
 
 .name-hover-callout .arrow-head{
-  stroke-dasharray:24;
-  stroke-dashoffset:24;
+  stroke-dasharray:22;
+  stroke-dashoffset:22;
   transition:stroke-dashoffset .18s ease .24s;
 }
 
 .name-hover-label{
   position:absolute;
-  left:86px;
-  top:-2px;
+  left:92px;
+  top:-9px;
+  width:42px;
+  text-align:center;
   font-family:"Caveat",cursive;
   font-size:1.12rem;
   font-weight:600;
   line-height:1;
   color:var(--text);
   white-space:nowrap;
-  transform:rotate(16deg) translate(-5px,7px);
-  transform-origin:left center;
+  transform:rotate(16deg) translate(-4px,7px);
+  transform-origin:center center;
   opacity:0;
   transition:
     opacity .2s ease .12s,
@@ -533,13 +535,14 @@ a:hover{
   .name-hover-callout{
     left:calc(100% - 8px);
     top:-22px;
-    width:110px;
+    width:112px;
     height:66px;
   }
 
   .name-hover-label{
-    left:72px;
-    top:-3px;
+    left:74px;
+    top:-8px;
+    width:38px;
     font-size:1rem;
   }
 
@@ -606,24 +609,6 @@ a:hover{
 <body>
 
 <div class="top-actions">
-    <a
-    class="icon-link"
-    href="mailto:me@krispearcey.com"
-    aria-label="Email Kris"
-  >
-    <i class="fa-regular fa-envelope"></i>
-  </a>
-  
-    <a
-    class="icon-link"
-    href="https://github.com/krispearcey"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="GitHub profile"
-  >
-    <i class="fa-brands fa-github"></i>
-  </a>
-  
   <a
     class="icon-link"
     href="https://www.goodreads.com/user/show/134250743"
@@ -631,7 +616,25 @@ a:hover{
     rel="noopener noreferrer"
     aria-label="Goodreads profile"
   >
-    <i class="fa-brands fa-goodreads-g"></i>
+    <i class="fa-brands fa-goodreads"></i>
+  </a>
+
+  <a
+    class="icon-link"
+    href="mailto:me@krispearcey.com"
+    aria-label="Email Kris"
+  >
+    <i class="fa-regular fa-envelope"></i>
+  </a>
+
+  <a
+    class="icon-link"
+    href="https://github.com/krispearcey"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="GitHub profile"
+  >
+    <i class="fa-brands fa-github"></i>
   </a>
 
   <a
@@ -657,9 +660,9 @@ a:hover{
         <span class="name-hover-target" tabindex="0" aria-label="About Me">
           Kris.
           <span class="name-hover-callout" aria-hidden="true">
-            <svg viewBox="0 0 134 78" xmlns="http://www.w3.org/2000/svg">
-              <path class="curve-path" d="M8 43 C 24 48, 43 47, 57 39 C 69 32, 77 21, 84 11" />
-              <path class="arrow-head" d="M79 17 L84 11 L90 16" />
+            <svg viewBox="0 0 138 82" xmlns="http://www.w3.org/2000/svg">
+              <path class="curve-path" d="M8 43 C 25 49, 45 48, 60 39 C 74 31, 83 19, 94 7" />
+              <path class="arrow-head" d="M89 13 L94 7 L100 12" />
             </svg>
             <span class="name-hover-label">About Me</span>
           </span>
@@ -1238,4 +1241,3 @@ loadGoodreadsBook();
 
 </body>
 </html>
-
