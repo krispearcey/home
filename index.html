@@ -835,6 +835,9 @@ const goodreadsBookLink = document.getElementById("goodreadsBookLink");
 
 const GITHUB_PROFILE_URL = "https://github.com/krispearcey";
 const GITHUB_USERNAME = "krispearcey";
+const GITHUB_API_BASE = "https://api.github.com";
+const GITHUB_REPO_SCAN_LIMIT = 12;
+const GITHUB_COMMITS_PER_REPO = 5;
 
 const GOODREADS_PROFILE_URL = "https://www.goodreads.com/user/show/134250743";
 const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.Maynard_s_House";
@@ -974,17 +977,29 @@ function setFallbackGithubLine(){
   renderGithubCommits([]);
 }
 
-function truncateCommitMessage(message, maxLength = 72){
+function truncateCommitMessage(message, maxLength = 64){
   const clean = (message || "").replace(/\s+/g, " ").trim();
-  if(!clean) return "something on GitHub";
+  if(!clean) return "recent changes";
   if(clean.length <= maxLength) return clean;
   return `${clean.slice(0, maxLength - 1).trim()}…`;
 }
 
+function shortRepoName(fullName){
+  if(!fullName) return "a repo";
+  const parts = fullName.split("/");
+  return parts[parts.length - 1] || fullName;
+}
+
 function formatCommitText(commit){
-  const repo = commit?.repo || "a repo";
+  const repo = shortRepoName(commit?.repo || "");
   const message = truncateCommitMessage(commit?.message || "");
   return `${repo} — ${message}`;
+}
+
+function getCommitDate(commit){
+  const authored = commit?.commit?.author?.date;
+  const committed = commit?.commit?.committer?.date;
+  return authored || committed || "";
 }
 
 function renderGithubCommits(commits){
@@ -1012,62 +1027,110 @@ function renderGithubCommits(commits){
   }
 }
 
+async function fetchGitHubJson(url){
+  const response = await fetch(url, {
+    headers: {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    }
+  });
+
+  if(!response.ok){
+    throw new Error(`GitHub request failed: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+async function fetchUserRepos(username){
+  const url =
+    `${GITHUB_API_BASE}/users/${encodeURIComponent(username)}/repos` +
+    `?sort=pushed&direction=desc&per_page=${GITHUB_REPO_SCAN_LIMIT}`;
+
+  const repos = await fetchGitHubJson(url);
+  return Array.isArray(repos) ? repos : [];
+}
+
+async function fetchRepoCommits(owner, repo, author){
+  const url =
+    `${GITHUB_API_BASE}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/commits` +
+    `?author=${encodeURIComponent(author)}&per_page=${GITHUB_COMMITS_PER_REPO}`;
+
+  const commits = await fetchGitHubJson(url);
+  return Array.isArray(commits) ? commits : [];
+}
+
 async function loadLatestGithubCommits(){
   try{
-    const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events/public`, {
-      headers: {
-        "Accept": "application/vnd.github+json"
-      }
+    const repos = await fetchUserRepos(GITHUB_USERNAME);
+
+    if(!repos.length){
+      setFallbackGithubLine();
+      return;
+    }
+
+    const candidateRepos = repos
+      .filter(repo => repo && repo.full_name && !repo.archived)
+      .slice(0, GITHUB_REPO_SCAN_LIMIT);
+
+    const commitGroups = await Promise.all(
+      candidateRepos.map(async repo => {
+        try{
+          const owner = repo.owner?.login || GITHUB_USERNAME;
+          const repoName = repo.name;
+          const commits = await fetchRepoCommits(owner, repoName, GITHUB_USERNAME);
+
+          return commits.map(commit => ({
+            ...commit,
+            repo: repo.full_name,
+            url: commit?.html_url || `https://github.com/${repo.full_name}`,
+            message: commit?.commit?.message || "",
+            date: getCommitDate(commit)
+          }));
+        }catch(error){
+          console.warn(`Skipping repo ${repo.full_name}:`, error);
+          return [];
+        }
+      })
+    );
+
+    const allCommits = commitGroups
+      .flat()
+      .filter(commit =>
+        commit &&
+        commit.sha &&
+        commit.repo &&
+        commit.message &&
+        commit.date
+      );
+
+    const uniqueCommits = [];
+    const seen = new Set();
+
+    for(const commit of allCommits){
+      const key = `${commit.repo}:${commit.sha}`;
+      if(seen.has(key)) continue;
+      seen.add(key);
+      uniqueCommits.push(commit);
+    }
+
+    uniqueCommits.sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
-    if(!response.ok){
-      throw new Error("Could not load GitHub events");
-    }
+    const latestFive = uniqueCommits.slice(0, 5);
 
-    const events = await response.json();
-    if(!Array.isArray(events) || !events.length){
+    if(!latestFive.length){
       setFallbackGithubLine();
       return;
     }
 
-    const commits = [];
-
-    for(const event of events){
-      if(event?.type !== "PushEvent") continue;
-
-      const repoName = event?.repo?.name || "";
-      const eventCommits = Array.isArray(event?.payload?.commits) ? event.payload.commits : [];
-
-      for(const commit of eventCommits){
-        const sha = commit?.sha || "";
-        const message = commit?.message || "";
-
-        if(!sha || !message || !repoName) continue;
-
-        commits.push({
-          repo: repoName,
-          message,
-          sha,
-          url: `https://github.com/${repoName}/commit/${sha}`
-        });
-
-        if(commits.length >= 5) break;
-      }
-
-      if(commits.length >= 5) break;
-    }
-
-    if(!commits.length){
-      setFallbackGithubLine();
-      return;
-    }
-
-    const latestCommit = commits[0];
+    const latestCommit = latestFive[0];
     githubCommitLabel.textContent = "committed to";
     githubCommitText.textContent = formatCommitText(latestCommit);
     githubCommitLink.href = latestCommit.url || GITHUB_PROFILE_URL;
 
-    renderGithubCommits(commits.slice(1, 5));
+    renderGithubCommits(latestFive.slice(1, 5));
   }catch(error){
     console.error("GitHub commits fetch failed:", error);
     setFallbackGithubLine();
