@@ -6,7 +6,7 @@
 <title>Kris Pearcey</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -152,114 +152,6 @@ h1{
   font-weight:500;
   letter-spacing:-0.018em;
   line-height:1.1;
-  position:relative;
-  overflow:visible;
-}
-
-/* hover arrow beside Kris */
-
-.name-anchor{
-  position:relative;
-  display:inline-block;
-  white-space:nowrap;
-}
-
-.name-hover-target{
-  position:relative;
-  display:inline-block;
-  color:inherit;
-  text-decoration:none;
-  cursor:pointer;
-}
-
-.name-hover-target:focus-visible{
-  outline:none;
-}
-
-.name-hover-callout{
-  position:absolute;
-  left:calc(100% - 4px);
-  top:-18px;
-  width:122px;
-  height:72px;
-  pointer-events:none;
-  opacity:0;
-  transform:translate(-6px,8px) scale(.96);
-  transform-origin:left center;
-  transition:
-    opacity .24s ease,
-    transform .34s cubic-bezier(.22,1,.36,1);
-}
-
-.name-hover-callout svg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  overflow:visible;
-}
-
-.name-hover-callout .curve-path,
-.name-hover-callout .arrow-head{
-  fill:none;
-  stroke:var(--text);
-  stroke-width:2.05;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.name-hover-callout .curve-path{
-  stroke-dasharray:150;
-  stroke-dashoffset:150;
-  transition:stroke-dashoffset .44s cubic-bezier(.22,1,.36,1);
-}
-
-.name-hover-callout .arrow-head{
-  stroke-dasharray:20;
-  stroke-dashoffset:20;
-  transition:stroke-dashoffset .18s ease .24s;
-}
-
-.name-hover-label{
-  position:absolute;
-  left:82px;
-  top:-2px;
-  width:40px;
-  text-align:center;
-  font-family:"Caveat",cursive;
-  font-size:1.08rem;
-  font-weight:600;
-  line-height:1;
-  color:var(--text);
-  white-space:nowrap;
-  transform:rotate(18deg) translate(-4px,6px);
-  transform-origin:center center;
-  opacity:0;
-  transition:
-    opacity .2s ease .12s,
-    transform .34s cubic-bezier(.22,1,.36,1) .08s;
-}
-
-.name-hover-target:hover .name-hover-callout,
-.name-hover-target:focus-visible .name-hover-callout{
-  opacity:1;
-  transform:translate(0,0) scale(1);
-}
-
-.name-hover-target:hover .name-hover-callout .curve-path,
-.name-hover-target:focus-visible .name-hover-callout .curve-path{
-  stroke-dashoffset:0;
-}
-
-.name-hover-target:hover .name-hover-callout .arrow-head,
-.name-hover-target:focus-visible .name-hover-callout .arrow-head{
-  stroke-dashoffset:0;
-}
-
-.name-hover-target:hover .name-hover-label,
-.name-hover-target:focus-visible .name-hover-label{
-  opacity:1;
-  transform:rotate(18deg) translate(0,0);
 }
 
 /* intro text */
@@ -534,20 +426,6 @@ a:hover{
     font-size:clamp(1.72rem,7vw,2rem);
   }
 
-  .name-hover-callout{
-    left:calc(100% - 8px);
-    top:-18px;
-    width:102px;
-    height:62px;
-  }
-
-  .name-hover-label{
-    left:67px;
-    top:-3px;
-    width:34px;
-    font-size:.96rem;
-  }
-
   .intro,
   .build-line{
     font-size:.95rem;
@@ -574,62 +452,22 @@ a:hover{
     width:100%;
   }
 }
-
-@media (prefers-reduced-motion: reduce){
-  *,
-  *::before,
-  *::after{
-    animation:none !important;
-    transition:none !important;
-    scroll-behavior:auto !important;
-  }
-
-  .name-hover-callout{
-    opacity:0;
-    transform:none;
-  }
-
-  .name-hover-target:hover .name-hover-callout,
-  .name-hover-target:focus-visible .name-hover-callout{
-    opacity:1;
-  }
-
-  .name-hover-callout .curve-path,
-  .name-hover-callout .arrow-head{
-    stroke-dasharray:none;
-    stroke-dashoffset:0;
-  }
-
-  .name-hover-label{
-    opacity:1;
-    transform:rotate(18deg);
-  }
-}
 </style>
 </head>
 
 <body>
 
 <div class="top-actions">
-  <a
-    class="icon-link"
-    href="https://www.goodreads.com/user/show/134250743"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Goodreads profile"
-  >
-    <i class="fa-brands fa-goodreads"></i>
-  </a>
-
-  <a
+  
+    <a
     class="icon-link"
     href="mailto:me@krispearcey.com"
     aria-label="Email Kris"
   >
     <i class="fa-regular fa-envelope"></i>
   </a>
-
-  <a
+   
+   <a
     class="icon-link"
     href="https://github.com/krispearcey"
     target="_blank"
@@ -639,7 +477,7 @@ a:hover{
     <i class="fa-brands fa-github"></i>
   </a>
 
-  <a
+	<a
     class="icon-link"
     href="https://www.chess.com/member/krisper"
     target="_blank"
@@ -647,6 +485,16 @@ a:hover{
     aria-label="Chess.com profile"
   >
     <i class="fa-solid fa-chess-rook"></i>
+  </a>
+  
+   <a
+    class="icon-link"
+    href="https://www.goodreads.com/user/show/134250743"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Goodreads profile"
+  >
+    <i class="fa-brands fa-goodreads"></i>
   </a>
 
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
@@ -656,25 +504,7 @@ a:hover{
 
 <main class="page">
   <section class="content">
-    <h1>
-      Hi, I'm
-      <span class="name-anchor">
-        <span class="name-hover-target" tabindex="0" aria-label="About Me">
-          Kris.
-          <span class="name-hover-callout" aria-hidden="true">
-            <svg viewBox="0 0 122 72" xmlns="http://www.w3.org/2000/svg">
-              <path
-                class="curve-path"
-                d="M8 46
-                   C 28 52, 52 50, 69 38
-                   S 89 18, 94 12" />
-              <path class="arrow-head" d="M87 14 L94 7 L96 16" />
-            </svg>
-            <span class="name-hover-label">About Me</span>
-          </span>
-        </span>
-      </span>
-    </h1>
+    <h1>Hi, I'm Kris.</h1>
 
     <p class="intro">This is a collection of projects, experiments, and the things that keep me busy. Recently, I've —</p>
 
@@ -1247,6 +1077,3 @@ loadGoodreadsBook();
 
 </body>
 </html>
-
-
-
