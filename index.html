@@ -178,13 +178,13 @@ h1{
 
 .name-hover-callout{
   position:absolute;
-  left:calc(100% + 10px);
-  top:-74px;
-  width:180px;
-  height:112px;
+  left:calc(100% + 2px);
+  top:-54px;
+  width:122px;
+  height:82px;
   pointer-events:none;
   opacity:0;
-  transform:translate(-8px,10px) scale(.96);
+  transform:translate(-6px,8px) scale(.96);
   transform-origin:left bottom;
   transition:
     opacity .24s ease,
@@ -205,20 +205,21 @@ h1{
   stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
-  stroke-dasharray:220;
-  stroke-dashoffset:220;
-  transition:stroke-dashoffset .48s cubic-bezier(.22,1,.36,1);
+  stroke-dasharray:170;
+  stroke-dashoffset:170;
+  transition:stroke-dashoffset .44s cubic-bezier(.22,1,.36,1);
 }
 
 .name-hover-label{
   position:absolute;
-  right:2px;
-  top:6px;
+  left:94px;
+  top:1px;
   font-family:"Merriweather",serif;
-  font-size:.86rem;
+  font-size:.82rem;
   line-height:1;
   color:var(--text);
-  transform:rotate(-12deg) translateY(4px);
+  transform:rotate(-15deg) translate(-4px,6px);
+  transform-origin:left bottom;
   opacity:0;
   transition:
     opacity .2s ease .12s,
@@ -240,7 +241,7 @@ h1{
 .name-hover-target:hover .name-hover-label,
 .name-hover-target:focus-visible .name-hover-label{
   opacity:1;
-  transform:rotate(-12deg) translateY(0);
+  transform:rotate(-15deg) translate(0,0);
 }
 
 /* intro text */
@@ -516,17 +517,16 @@ a:hover{
   }
 
   .name-hover-callout{
-    left:auto;
-    right:-2px;
-    top:-92px;
-    width:136px;
-    height:96px;
+    left:calc(100% - 6px);
+    top:-60px;
+    width:102px;
+    height:72px;
   }
 
   .name-hover-label{
-    font-size:.78rem;
-    right:0;
-    top:10px;
+    left:77px;
+    top:1px;
+    font-size:.74rem;
   }
 
   .intro,
@@ -582,7 +582,7 @@ a:hover{
 
   .name-hover-label{
     opacity:1;
-    transform:rotate(-12deg);
+    transform:rotate(-15deg);
   }
 }
 </style>
@@ -642,9 +642,9 @@ a:hover{
         <span class="name-hover-target" tabindex="0" aria-label="About Me">
           Kris.
           <span class="name-hover-callout" aria-hidden="true">
-            <svg viewBox="0 0 180 112" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 92 C 40 95, 86 88, 110 54 S 145 16, 166 18" />
-              <path d="M156 12 L 166 18 L 156 26" />
+            <svg viewBox="0 0 122 82" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 66 C 28 70, 55 62, 73 43 S 88 16, 96 10" />
+              <path d="M90 16 L 96 10 L 100 18" />
             </svg>
             <span class="name-hover-label">About Me</span>
           </span>
