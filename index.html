@@ -43,7 +43,6 @@ body{
   transition:background-color .22s ease,color .22s ease;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  overflow-x:hidden;
 }
 
 /* top icons */
@@ -142,11 +141,11 @@ body{
 .content{
   width:min(100%,560px);
   transform:translateY(-1.6vh);
+  transition:transform .42s cubic-bezier(.22,1,.36,1);
 }
 
-.panel-stage{
-  position:relative;
-  min-height:520px;
+.content.about-open{
+  transform:translateY(-7.5vh);
 }
 
 /* hero */
@@ -395,53 +394,50 @@ a:hover{
   border-color:var(--accent-hover);
 }
 
-/* stacked panels */
-
-.main-content,
-.about-panel{
-  transition:
-    opacity .42s ease,
-    transform .56s cubic-bezier(.22,1,.36,1),
-    visibility 0s linear .42s;
-  width:100%;
-}
+/* main content transition when about is open */
 
 .main-content{
-  position:relative;
-  opacity:1;
+  transition:
+    opacity .24s ease,
+    transform .34s cubic-bezier(.22,1,.36,1),
+    max-height .4s ease,
+    margin .28s ease;
   transform:translateY(0);
-  visibility:visible;
-  pointer-events:auto;
+  opacity:1;
+  max-height:1200px;
+  overflow:hidden;
 }
 
 .main-content.hidden-for-about{
-  position:absolute;
-  inset:0;
   opacity:0;
   transform:translateY(18px);
-  visibility:hidden;
+  max-height:0;
+  margin:0;
   pointer-events:none;
 }
 
+/* about panel */
+
 .about-panel{
-  position:absolute;
-  inset:0 auto auto 0;
   opacity:0;
-  transform:translateY(22px);
-  visibility:hidden;
+  max-height:0;
+  overflow:hidden;
+  transform:translateY(18px);
   pointer-events:none;
+  transition:
+    opacity .28s ease,
+    transform .36s cubic-bezier(.22,1,.36,1),
+    max-height .45s cubic-bezier(.22,1,.36,1),
+    margin-top .28s ease;
+  margin-top:0;
 }
 
 .about-panel.open{
-  position:relative;
   opacity:1;
+  max-height:1200px;
   transform:translateY(0);
-  visibility:visible;
   pointer-events:auto;
-  transition:
-    opacity .52s ease .08s,
-    transform .62s cubic-bezier(.22,1,.36,1) .04s,
-    visibility 0s linear 0s;
+  margin-top:8px;
 }
 
 .about-copy{
@@ -455,28 +451,6 @@ a:hover{
 
 .about-copy p{
   margin:0 0 16px;
-  opacity:0;
-  transform:translateY(10px);
-}
-
-.about-panel.open .about-copy p{
-  animation:aboutParagraphIn .5s cubic-bezier(.22,1,.36,1) forwards;
-}
-
-.about-panel.open .about-copy p:nth-child(1){ animation-delay:.10s; }
-.about-panel.open .about-copy p:nth-child(2){ animation-delay:.16s; }
-.about-panel.open .about-copy p:nth-child(3){ animation-delay:.22s; }
-.about-panel.open .about-copy p:nth-child(4){ animation-delay:.28s; }
-
-@keyframes aboutParagraphIn{
-  from{
-    opacity:0;
-    transform:translateY(10px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
 }
 
 .about-copy p:last-child{
@@ -485,13 +459,6 @@ a:hover{
 
 .about-close-wrap{
   margin-top:24px;
-  opacity:0;
-  transform:translateY(8px);
-}
-
-.about-panel.open .about-close-wrap{
-  animation:aboutParagraphIn .48s cubic-bezier(.22,1,.36,1) forwards;
-  animation-delay:.34s;
 }
 
 .about-close{
@@ -548,19 +515,8 @@ a:hover{
     transform:none;
   }
 
-  .panel-stage{
-    min-height:auto;
-  }
-
-  .main-content.hidden-for-about{
-    position:absolute;
-    inset:0;
-  }
-
-  .about-panel,
-  .about-panel.open{
-    position:relative;
-    inset:auto;
+  .content.about-open{
+    transform:none;
   }
 
   h1{
@@ -593,6 +549,10 @@ a:hover{
 
   .btn{
     width:100%;
+  }
+
+  .about-panel.open{
+    margin-top:10px;
   }
 }
 </style>
@@ -645,129 +605,127 @@ a:hover{
 </div>
 
 <main class="page">
-  <section class="content">
+  <section class="content" id="contentWrap">
     <h1>Hi, I'm Kris.</h1>
 
-    <div class="panel-stage">
-      <div id="mainContent" class="main-content">
-        <p class="intro">This is a collection of projects, experiments, and things that keep me busy. Recently, I've —</p>
+    <div id="mainContent" class="main-content">
+      <p class="intro">This is a collection of projects, experiments, and things that keep me busy. Recently, I've —</p>
 
-        <ul class="activity-list">
-          <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
-          <li>written <a href="#about" id="openAboutLink">About Myself</a></li>
-          <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
+      <ul class="activity-list">
+        <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
+        <li>written <a href="#" id="openAboutLink">About Myself</a></li>
+        <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
 
-          <li id="goodreadsLine" class="expandable-line">
-            <div class="line-row">
-              <button
-                id="goodreadsExpandToggle"
-                class="chevron-toggle"
-                type="button"
-                aria-label="Show recent books"
-                aria-expanded="false"
+        <li id="goodreadsLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="goodreadsExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent books"
+              aria-expanded="false"
+            >
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="goodreadsLabel">been reading</span>
+              <a
+                id="goodreadsBookLink"
+                href="https://www.goodreads.com/user/show/134250743"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span class="chevron-glyph">&gt;</span>
-              </button>
-
-              <div class="line-content">
-                <span id="goodreadsLabel">been reading</span>
-                <a
-                  id="goodreadsBookLink"
-                  href="https://www.goodreads.com/user/show/134250743"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span id="goodreadsBookText">loading…</span>
-                </a>
-              </div>
+                <span id="goodreadsBookText">loading…</span>
+              </a>
             </div>
+          </div>
 
-            <div id="goodreadsExpandPanel" class="expand-panel" aria-hidden="true">
-              <ul id="goodreadsExpandList" class="expand-list"></ul>
-            </div>
-          </li>
+          <div id="goodreadsExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="goodreadsExpandList" class="expand-list"></ul>
+          </div>
+        </li>
 
-          <li id="chessGameLine" class="expandable-line">
-            <div class="line-row">
-              <button
-                id="chessExpandToggle"
-                class="chevron-toggle"
-                type="button"
-                aria-label="Show recent chess games"
-                aria-expanded="false"
+        <li id="chessGameLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="chessExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent chess games"
+              aria-expanded="false"
+            >
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="chessResultLabel">played against</span>
+              <a
+                id="chessOpponentLink"
+                href="https://www.chess.com/member/krisper"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span class="chevron-glyph">&gt;</span>
-              </button>
-
-              <div class="line-content">
-                <span id="chessResultLabel">played against</span>
-                <a
-                  id="chessOpponentLink"
-                  href="https://www.chess.com/member/krisper"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span id="chessOpponent">loading…</span>
-                </a>
-              </div>
+                <span id="chessOpponent">loading…</span>
+              </a>
             </div>
+          </div>
 
-            <div id="chessExpandPanel" class="expand-panel" aria-hidden="true">
-              <ul id="chessExpandList" class="expand-list"></ul>
-            </div>
-          </li>
-        </ul>
+          <div id="chessExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="chessExpandList" class="expand-list"></ul>
+          </div>
+        </li>
+      </ul>
 
-        <p class="build-line">I’m currently building at <a href="#about" id="buildAboutLink">this</a>.</p>
+      <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
 
-        <div class="buttons">
-          <a
-            class="btn primary"
-            href="https://github.com/krispearcey"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            My Github
-          </a>
+      <div class="buttons">
+        <a
+          class="btn primary"
+          href="https://github.com/krispearcey"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          My Github
+        </a>
 
-          <a class="btn secondary" href="mailto:me@krispearcey.com">
-            Contact Me
-          </a>
-        </div>
+        <a class="btn secondary" href="mailto:me@krispearcey.com">
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <div id="aboutPanel" class="about-panel" aria-hidden="true">
+      <div class="about-copy">
+        <p>
+          I’m Kris — someone who likes building things that feel thoughtful, a little playful,
+          and very personal. Most of what I make lives somewhere between code, design, writing,
+          and experimentation.
+        </p>
+
+        <p>
+          I’m especially drawn to projects that feel tactile on the screen: interfaces with a bit
+          of atmosphere, small interactions that feel deliberate, and pages that say something
+          about the person behind them instead of just listing facts.
+        </p>
+
+        <p>
+          Lately, I’ve been spending a lot of time working on web experiments, chess-related tools,
+          personal site ideas, and anything else that lets me combine aesthetics with logic. I like
+          taking a simple concept and pushing it until it feels distinctive.
+        </p>
+
+        <p>
+          Outside of that, I read a lot, follow ideas wherever they go, and usually have a few
+          half-finished projects open at once. This page is meant to be a small record of those
+          interests — what I’m making, what I’m reading, and what’s currently holding my attention.
+        </p>
       </div>
 
-      <div id="aboutPanel" class="about-panel" aria-hidden="true">
-        <div class="about-copy">
-          <p>
-            I’m Kris — someone who likes building things that feel thoughtful, a little playful,
-            and very personal. Most of what I make lives somewhere between code, design, writing,
-            and experimentation.
-          </p>
-
-          <p>
-            I’m especially drawn to projects that feel tactile on the screen: interfaces with a bit
-            of atmosphere, small interactions that feel deliberate, and pages that say something
-            about the person behind them instead of just listing facts.
-          </p>
-
-          <p>
-            Lately, I’ve been spending a lot of time working on web experiments, chess-related tools,
-            personal site ideas, and anything else that lets me combine aesthetics with logic. I like
-            taking a simple concept and pushing it until it feels distinctive.
-          </p>
-
-          <p>
-            Outside of that, I read a lot, follow ideas wherever they go, and usually have a few
-            half-finished projects open at once. This page is meant to be a small record of those
-            interests — what I’m making, what I’m reading, and what’s currently holding my attention.
-          </p>
-        </div>
-
-        <div class="about-close-wrap">
-          <button id="closeAboutButton" class="about-close" type="button">
-            ← Back
-          </button>
-        </div>
+      <div class="about-close-wrap">
+        <button id="closeAboutButton" class="about-close" type="button">
+          ← Back
+        </button>
       </div>
     </div>
   </section>
@@ -778,10 +736,10 @@ const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
 
+const contentWrap = document.getElementById("contentWrap");
 const mainContent = document.getElementById("mainContent");
 const aboutPanel = document.getElementById("aboutPanel");
 const openAboutLink = document.getElementById("openAboutLink");
-const buildAboutLink = document.getElementById("buildAboutLink");
 const closeAboutButton = document.getElementById("closeAboutButton");
 
 const chessGameLine = document.getElementById("chessGameLine");
@@ -829,71 +787,30 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
-/* ---------- about panel + url ---------- */
+/* ---------- about panel ---------- */
 
-function setAboutHash(){
-  if(window.location.hash !== "#about"){
-    history.pushState(null, "", "#about");
-  }
-}
-
-function clearAboutHash(){
-  if(window.location.hash === "#about"){
-    const cleanUrl = window.location.pathname + window.location.search;
-    history.pushState(null, "", cleanUrl);
-  }
-}
-
-function openAbout(updateUrl = true){
+function openAbout(){
   mainContent.classList.add("hidden-for-about");
   aboutPanel.classList.add("open");
+  contentWrap.classList.add("about-open");
   aboutPanel.setAttribute("aria-hidden", "false");
-
-  if(updateUrl){
-    setAboutHash();
-  }
 }
 
-function closeAbout(updateUrl = true){
+function closeAbout(){
   aboutPanel.classList.remove("open");
+  mainContent.classList.remove("hidden-for-about");
+  contentWrap.classList.remove("about-open");
   aboutPanel.setAttribute("aria-hidden", "true");
-
-  setTimeout(() => {
-    if(!aboutPanel.classList.contains("open")){
-      mainContent.classList.remove("hidden-for-about");
-    }
-  }, 60);
-
-  if(updateUrl){
-    clearAboutHash();
-  }
-}
-
-function syncAboutWithHash(){
-  if(window.location.hash === "#about"){
-    openAbout(false);
-  }else{
-    aboutPanel.classList.remove("open");
-    aboutPanel.setAttribute("aria-hidden", "true");
-    mainContent.classList.remove("hidden-for-about");
-  }
 }
 
 openAboutLink.addEventListener("click", (event) => {
   event.preventDefault();
-  openAbout(true);
-});
-
-buildAboutLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  openAbout(true);
+  openAbout();
 });
 
 closeAboutButton.addEventListener("click", () => {
-  closeAbout(true);
+  closeAbout();
 });
-
-window.addEventListener("hashchange", syncAboutWithHash);
 
 /* ---------- generic expand ---------- */
 
@@ -1325,8 +1242,8 @@ async function loadGoodreadsBook(){
 
 loadLatestFinishedGame();
 loadGoodreadsBook();
-syncAboutWithHash();
 </script>
 
 </body>
 </html>
+
