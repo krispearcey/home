@@ -132,12 +132,16 @@ body{
 
 .content{
   width:min(100%,560px);
+  min-height:min(78vh,720px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
   transform:translateY(-1.6vh);
   transition:transform .42s cubic-bezier(.22,1,.36,1);
 }
 
 .content.about-open{
-  transform:translateY(-7.5vh);
+  transform:translateY(-3.2vh);
 }
 
 /* hero */
@@ -426,7 +430,8 @@ a:hover{
 
 .about-panel.open{
   opacity:1;
-  max-height:1200px;
+  max-height:58vh;
+  overflow-y:auto;
   transform:translateY(0);
   pointer-events:auto;
   margin-top:8px;
@@ -504,6 +509,7 @@ a:hover{
 
   .content{
     width:100%;
+    min-height:auto;
     transform:none;
   }
 
@@ -544,6 +550,8 @@ a:hover{
   }
 
   .about-panel.open{
+    max-height:none;
+    overflow:visible;
     margin-top:10px;
   }
 }
