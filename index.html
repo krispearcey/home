@@ -54,7 +54,7 @@ body{
   display:flex;
   align-items:center;
   gap:14px;
-  z-index:10;
+  z-index:20;
 }
 
 .icon-link,
@@ -141,6 +141,11 @@ body{
 .content{
   width:min(100%,560px);
   transform:translateY(-1.6vh);
+  transition:transform .42s cubic-bezier(.22,1,.36,1);
+}
+
+.content.about-open{
+  transform:translateY(-7.5vh);
 }
 
 /* hero */
@@ -389,6 +394,95 @@ a:hover{
   border-color:var(--accent-hover);
 }
 
+/* main content transition when about is open */
+
+.main-content{
+  transition:
+    opacity .24s ease,
+    transform .34s cubic-bezier(.22,1,.36,1),
+    max-height .4s ease,
+    margin .28s ease;
+  transform:translateY(0);
+  opacity:1;
+  max-height:1200px;
+  overflow:hidden;
+}
+
+.main-content.hidden-for-about{
+  opacity:0;
+  transform:translateY(18px);
+  max-height:0;
+  margin:0;
+  pointer-events:none;
+}
+
+/* about panel */
+
+.about-panel{
+  opacity:0;
+  max-height:0;
+  overflow:hidden;
+  transform:translateY(18px);
+  pointer-events:none;
+  transition:
+    opacity .28s ease,
+    transform .36s cubic-bezier(.22,1,.36,1),
+    max-height .45s cubic-bezier(.22,1,.36,1),
+    margin-top .28s ease;
+  margin-top:0;
+}
+
+.about-panel.open{
+  opacity:1;
+  max-height:1200px;
+  transform:translateY(0);
+  pointer-events:auto;
+  margin-top:8px;
+}
+
+.about-copy{
+  color:var(--muted);
+  font-family:"Merriweather",serif;
+  font-size:clamp(.95rem,.98vw,1rem);
+  font-weight:400;
+  line-height:1.72;
+  letter-spacing:0;
+}
+
+.about-copy p{
+  margin:0 0 16px;
+}
+
+.about-copy p:last-child{
+  margin-bottom:0;
+}
+
+.about-close-wrap{
+  margin-top:24px;
+}
+
+.about-close{
+  border:none;
+  background:transparent;
+  color:var(--accent);
+  padding:0;
+  cursor:pointer;
+  font-family:"Merriweather",serif;
+  font-size:.95rem;
+  line-height:1.2;
+  transition:color .18s ease, transform .18s ease;
+}
+
+.about-close:hover{
+  color:var(--accent-hover);
+  transform:translateY(-1px);
+}
+
+.about-close:focus-visible{
+  outline:none;
+  color:var(--accent-hover);
+}
+
 /* mobile */
 
 @media (max-width:640px){
@@ -421,15 +515,20 @@ a:hover{
     transform:none;
   }
 
+  .content.about-open{
+    transform:none;
+  }
+
   h1{
     margin-bottom:12px;
     font-size:clamp(1.72rem,7vw,2rem);
   }
 
   .intro,
-  .build-line{
+  .build-line,
+  .about-copy{
     font-size:.95rem;
-    line-height:1.52;
+    line-height:1.62;
   }
 
   .activity-list > li{
@@ -451,6 +550,10 @@ a:hover{
   .btn{
     width:100%;
   }
+
+  .about-panel.open{
+    margin-top:10px;
+  }
 }
 </style>
 </head>
@@ -458,16 +561,15 @@ a:hover{
 <body>
 
 <div class="top-actions">
-  
-    <a
+  <a
     class="icon-link"
     href="mailto:me@krispearcey.com"
     aria-label="Email Kris"
   >
     <i class="fa-regular fa-envelope"></i>
   </a>
-   
-   <a
+
+  <a
     class="icon-link"
     href="https://github.com/krispearcey"
     target="_blank"
@@ -477,7 +579,7 @@ a:hover{
     <i class="fa-brands fa-github"></i>
   </a>
 
-	<a
+  <a
     class="icon-link"
     href="https://www.chess.com/member/krisper"
     target="_blank"
@@ -486,8 +588,8 @@ a:hover{
   >
     <i class="fa-solid fa-chess-rook"></i>
   </a>
-  
-   <a
+
+  <a
     class="icon-link"
     href="https://www.goodreads.com/user/show/134250743"
     target="_blank"
@@ -503,92 +605,128 @@ a:hover{
 </div>
 
 <main class="page">
-  <section class="content">
+  <section class="content" id="contentWrap">
     <h1>Hi, I'm Kris.</h1>
 
-    <p class="intro">This is a collection of projects, experiments, and things that keep me busy. Recently, I've —</p>
+    <div id="mainContent" class="main-content">
+      <p class="intro">This is a collection of projects, experiments, and things that keep me busy. Recently, I've —</p>
 
-    <ul class="activity-list">
-      <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
-      <li>written <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">About Myself</a></li>
-      <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
+      <ul class="activity-list">
+        <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
+        <li>written <a href="#" id="openAboutLink">About Myself</a></li>
+        <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
 
-      <li id="goodreadsLine" class="expandable-line">
-        <div class="line-row">
-          <button
-            id="goodreadsExpandToggle"
-            class="chevron-toggle"
-            type="button"
-            aria-label="Show recent books"
-            aria-expanded="false"
-          >
-            <span class="chevron-glyph">&gt;</span>
-          </button>
-
-          <div class="line-content">
-            <span id="goodreadsLabel">been reading</span>
-            <a
-              id="goodreadsBookLink"
-              href="https://www.goodreads.com/user/show/134250743"
-              target="_blank"
-              rel="noopener noreferrer"
+        <li id="goodreadsLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="goodreadsExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent books"
+              aria-expanded="false"
             >
-              <span id="goodreadsBookText">loading…</span>
-            </a>
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="goodreadsLabel">been reading</span>
+              <a
+                id="goodreadsBookLink"
+                href="https://www.goodreads.com/user/show/134250743"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span id="goodreadsBookText">loading…</span>
+              </a>
+            </div>
           </div>
-        </div>
 
-        <div id="goodreadsExpandPanel" class="expand-panel" aria-hidden="true">
-          <ul id="goodreadsExpandList" class="expand-list"></ul>
-        </div>
-      </li>
+          <div id="goodreadsExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="goodreadsExpandList" class="expand-list"></ul>
+          </div>
+        </li>
 
-      <li id="chessGameLine" class="expandable-line">
-        <div class="line-row">
-          <button
-            id="chessExpandToggle"
-            class="chevron-toggle"
-            type="button"
-            aria-label="Show recent chess games"
-            aria-expanded="false"
-          >
-            <span class="chevron-glyph">&gt;</span>
-          </button>
-
-          <div class="line-content">
-            <span id="chessResultLabel">played against</span>
-            <a
-              id="chessOpponentLink"
-              href="https://www.chess.com/member/krisper"
-              target="_blank"
-              rel="noopener noreferrer"
+        <li id="chessGameLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="chessExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent chess games"
+              aria-expanded="false"
             >
-              <span id="chessOpponent">loading…</span>
-            </a>
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="chessResultLabel">played against</span>
+              <a
+                id="chessOpponentLink"
+                href="https://www.chess.com/member/krisper"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span id="chessOpponent">loading…</span>
+              </a>
+            </div>
           </div>
-        </div>
 
-        <div id="chessExpandPanel" class="expand-panel" aria-hidden="true">
-          <ul id="chessExpandList" class="expand-list"></ul>
-        </div>
-      </li>
-    </ul>
+          <div id="chessExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="chessExpandList" class="expand-list"></ul>
+          </div>
+        </li>
+      </ul>
 
-    <p class="build-line">Feel free to poke around, or come learn more <a href="#">about me</a>.</p>
+      <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
 
-    <div class="buttons">
-      <a
-        class="btn primary"
-        href="https://github.com/krispearcey"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        My Github
-      </a>
+      <div class="buttons">
+        <a
+          class="btn primary"
+          href="https://github.com/krispearcey"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          My Github
+        </a>
 
-      <a class="btn secondary" href="mailto:me@krispearcey.com">
-        Contact Me
-      </a>
+        <a class="btn secondary" href="mailto:me@krispearcey.com">
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <div id="aboutPanel" class="about-panel" aria-hidden="true">
+      <div class="about-copy">
+        <p>
+          I’m Kris — someone who likes building things that feel thoughtful, a little playful,
+          and very personal. Most of what I make lives somewhere between code, design, writing,
+          and experimentation.
+        </p>
+
+        <p>
+          I’m especially drawn to projects that feel tactile on the screen: interfaces with a bit
+          of atmosphere, small interactions that feel deliberate, and pages that say something
+          about the person behind them instead of just listing facts.
+        </p>
+
+        <p>
+          Lately, I’ve been spending a lot of time working on web experiments, chess-related tools,
+          personal site ideas, and anything else that lets me combine aesthetics with logic. I like
+          taking a simple concept and pushing it until it feels distinctive.
+        </p>
+
+        <p>
+          Outside of that, I read a lot, follow ideas wherever they go, and usually have a few
+          half-finished projects open at once. This page is meant to be a small record of those
+          interests — what I’m making, what I’m reading, and what’s currently holding my attention.
+        </p>
+      </div>
+
+      <div class="about-close-wrap">
+        <button id="closeAboutButton" class="about-close" type="button">
+          ← Back
+        </button>
+      </div>
     </div>
   </section>
 </main>
@@ -597,6 +735,12 @@ a:hover{
 const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const themeIcon = document.getElementById("themeIcon");
+
+const contentWrap = document.getElementById("contentWrap");
+const mainContent = document.getElementById("mainContent");
+const aboutPanel = document.getElementById("aboutPanel");
+const openAboutLink = document.getElementById("openAboutLink");
+const closeAboutButton = document.getElementById("closeAboutButton");
 
 const chessGameLine = document.getElementById("chessGameLine");
 const chessExpandToggle = document.getElementById("chessExpandToggle");
@@ -642,6 +786,31 @@ function syncThemeButton(){
     ? "fa-regular fa-sun"
     : "fa-regular fa-moon";
 }
+
+/* ---------- about panel ---------- */
+
+function openAbout(){
+  mainContent.classList.add("hidden-for-about");
+  aboutPanel.classList.add("open");
+  contentWrap.classList.add("about-open");
+  aboutPanel.setAttribute("aria-hidden", "false");
+}
+
+function closeAbout(){
+  aboutPanel.classList.remove("open");
+  mainContent.classList.remove("hidden-for-about");
+  contentWrap.classList.remove("about-open");
+  aboutPanel.setAttribute("aria-hidden", "true");
+}
+
+openAboutLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  openAbout();
+});
+
+closeAboutButton.addEventListener("click", () => {
+  closeAbout();
+});
 
 /* ---------- generic expand ---------- */
 
@@ -1077,5 +1246,3 @@ loadGoodreadsBook();
 
 </body>
 </html>
-
-
