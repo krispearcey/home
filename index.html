@@ -73,7 +73,7 @@ body{
   text-decoration:none;
   cursor:pointer;
   outline:none;
-  transition:color .2s ease,transform .2s ease;
+  transition:color .2s ease;
 }
 
 .icon-link::before,
@@ -99,13 +99,12 @@ body{
 .theme-toggle i{
   position:relative;
   z-index:1;
-  transition:color .18s ease,transform .2s ease;
+  transition:color .18s ease;
 }
 
 .icon-link:hover,
 .theme-toggle:hover{
   color:#ffffff;
-  transform:translateY(-1px);
 }
 
 .icon-link:hover::before,
@@ -119,13 +118,6 @@ body{
 .icon-link:focus-visible,
 .theme-toggle:focus-visible{
   color:#ffffff;
-}
-
-.icon-link:hover i,
-.theme-toggle:hover i,
-.icon-link:focus-visible i,
-.theme-toggle:focus-visible i{
-  transform:scale(1.02);
 }
 
 /* layout */
@@ -613,7 +605,7 @@ a:hover{
 
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
-        <li>written <a href="#" id="openAboutLink">About Myself</a></li>
+        <li>written <a href="#about" id="openAboutLink">About Myself</a></li>
         <li>blogged about <a href="https://krispearcey.com" target="_blank" rel="noopener noreferrer">some stuff</a></li>
 
         <li id="goodreadsLine" class="expandable-line">
@@ -677,7 +669,7 @@ a:hover{
         </li>
       </ul>
 
-      <p class="build-line">I’m currently building at <a href="#">this</a>.</p>
+      <p class="build-line">I’m currently building at <a href="#about">this</a>.</p>
 
       <div class="buttons">
         <a
@@ -739,7 +731,6 @@ const themeIcon = document.getElementById("themeIcon");
 const contentWrap = document.getElementById("contentWrap");
 const mainContent = document.getElementById("mainContent");
 const aboutPanel = document.getElementById("aboutPanel");
-const openAboutLink = document.getElementById("openAboutLink");
 const closeAboutButton = document.getElementById("closeAboutButton");
 
 const chessGameLine = document.getElementById("chessGameLine");
@@ -787,29 +778,37 @@ function syncThemeButton(){
     : "fa-regular fa-moon";
 }
 
-/* ---------- about panel ---------- */
+/* ---------- about panel / hash routing ---------- */
 
-function openAbout(){
+function showAboutUI(){
   mainContent.classList.add("hidden-for-about");
   aboutPanel.classList.add("open");
   contentWrap.classList.add("about-open");
   aboutPanel.setAttribute("aria-hidden", "false");
 }
 
-function closeAbout(){
+function hideAboutUI(){
   aboutPanel.classList.remove("open");
   mainContent.classList.remove("hidden-for-about");
   contentWrap.classList.remove("about-open");
   aboutPanel.setAttribute("aria-hidden", "true");
 }
 
-openAboutLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  openAbout();
-});
+function syncAboutFromHash(){
+  if(window.location.hash === "#about"){
+    showAboutUI();
+  }else{
+    hideAboutUI();
+  }
+}
+
+window.addEventListener("hashchange", syncAboutFromHash);
+syncAboutFromHash();
 
 closeAboutButton.addEventListener("click", () => {
-  closeAbout();
+  const cleanUrl = window.location.pathname + window.location.search;
+  history.replaceState(null, "", cleanUrl);
+  syncAboutFromHash();
 });
 
 /* ---------- generic expand ---------- */
@@ -1246,4 +1245,3 @@ loadGoodreadsBook();
 
 </body>
 </html>
-
