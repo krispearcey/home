@@ -661,7 +661,36 @@ h1{
 
       <ul class="activity-list">
         <li>developed <a href="https://krispearcey.github.io/chess/" target="_blank" rel="noopener noreferrer">Krisper — my own Personal Chess Bot</a></li>
-        <li>written <a href="#about" id="openAboutLink">about myself</a></li>
+
+        <li id="storiesLine" class="expandable-line">
+          <div class="line-row">
+            <button
+              id="storiesExpandToggle"
+              class="chevron-toggle"
+              type="button"
+              aria-label="Show recent stories"
+              aria-expanded="false"
+            >
+              <span class="chevron-glyph">&gt;</span>
+            </button>
+
+            <div class="line-content">
+              <span id="storiesLabel">written</span>
+              <a
+                id="storiesMainLink"
+                href="https://krispearcey.github.io/short-stories/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span id="storiesMainText">something new</span>
+              </a>
+            </div>
+          </div>
+
+          <div id="storiesExpandPanel" class="expand-panel" aria-hidden="true">
+            <ul id="storiesExpandList" class="expand-list"></ul>
+          </div>
+        </li>
 
         <li id="githubCommitLine" class="expandable-line">
           <div class="line-row">
@@ -776,8 +805,8 @@ h1{
       <div class="about-scroll">
         <div class="about-copy">
           <p>
-            I’m a front-end developer based in Atlantic Canada. 
-            This site isn’t meant to be polished portfolio so much as a record of the projects, 
+            I’m a front-end developer based in Atlantic Canada.
+            This site isn’t meant to be polished portfolio so much as a record of the projects,
             ideas, and rabbit holes that keep me busy.
           </p>
 
@@ -808,6 +837,14 @@ const mainContent = document.getElementById("mainContent");
 const aboutPanel = document.getElementById("aboutPanel");
 const closeAboutButton = document.getElementById("closeAboutButton");
 
+const storiesLine = document.getElementById("storiesLine");
+const storiesExpandToggle = document.getElementById("storiesExpandToggle");
+const storiesExpandPanel = document.getElementById("storiesExpandPanel");
+const storiesExpandList = document.getElementById("storiesExpandList");
+const storiesLabel = document.getElementById("storiesLabel");
+const storiesMainText = document.getElementById("storiesMainText");
+const storiesMainLink = document.getElementById("storiesMainLink");
+
 const githubCommitLine = document.getElementById("githubCommitLine");
 const githubExpandToggle = document.getElementById("githubExpandToggle");
 const githubExpandPanel = document.getElementById("githubExpandPanel");
@@ -820,7 +857,6 @@ const chessGameLine = document.getElementById("chessGameLine");
 const chessExpandToggle = document.getElementById("chessExpandToggle");
 const chessExpandPanel = document.getElementById("chessExpandPanel");
 const chessExpandList = document.getElementById("chessExpandList");
-
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
 const chessResultLabel = document.getElementById("chessResultLabel");
@@ -829,7 +865,6 @@ const goodreadsLine = document.getElementById("goodreadsLine");
 const goodreadsExpandToggle = document.getElementById("goodreadsExpandToggle");
 const goodreadsExpandPanel = document.getElementById("goodreadsExpandPanel");
 const goodreadsExpandList = document.getElementById("goodreadsExpandList");
-
 const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
 const goodreadsBookLink = document.getElementById("goodreadsBookLink");
@@ -845,6 +880,10 @@ const GOODREADS_FALLBACK_BOOK_URL = "https://www.goodreads.com/book/show/242692.
 const GOODREADS_USER_ID = "134250743";
 const GOODREADS_CACHE_KEY = "kris-goodreads-cache-v1";
 const GOODREADS_CACHE_TTL = 10 * 60 * 1000;
+
+const STORIES_INDEX_URL = "https://krispearcey.github.io/short-stories/";
+const STORIES_CACHE_KEY = "kris-short-stories-cache-v1";
+const STORIES_CACHE_TTL = 10 * 60 * 1000;
 
 const savedTheme = localStorage.getItem("kris-theme");
 if(savedTheme === "light"){
@@ -933,6 +972,18 @@ function setExpandedState(container, button, panel, expanded, openLabel, closedL
   }
 }
 
+storiesExpandToggle.addEventListener("click", () => {
+  const isExpanded = storiesLine.classList.contains("expanded");
+  setExpandedState(
+    storiesLine,
+    storiesExpandToggle,
+    storiesExpandPanel,
+    !isExpanded,
+    "Hide recent stories",
+    "Show recent stories"
+  );
+});
+
 githubExpandToggle.addEventListener("click", () => {
   const isExpanded = githubCommitLine.classList.contains("expanded");
   setExpandedState(
@@ -968,6 +1019,300 @@ chessExpandToggle.addEventListener("click", () => {
     "Show recent chess games"
   );
 });
+
+/* ---------- helpers ---------- */
+
+async function fetchWithTimeout(url, timeoutMs = 4500, options = {}){
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try{
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+
+    if(!response.ok){
+      throw new Error(`Fetch failed: ${response.status}`);
+    }
+
+    return response;
+  }finally{
+    clearTimeout(timeoutId);
+  }
+}
+
+async function fetchTextFast(targetUrl){
+  const encoded = encodeURIComponent(targetUrl);
+  const bust = `cb=${Date.now()}`;
+
+  const candidates = [
+    targetUrl,
+    `https://api.allorigins.win/raw?url=${encoded}&${bust}`,
+    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+  ];
+
+  const attempts = candidates.map(async url => {
+    const res = await fetchWithTimeout(url, 4500);
+    return await res.text();
+  });
+
+  const settled = await Promise.any(attempts);
+  if(!settled || !settled.trim()){
+    throw new Error("No content returned");
+  }
+  return settled;
+}
+
+async function fetchJsonFast(targetUrl){
+  const encoded = encodeURIComponent(targetUrl);
+  const bust = `cb=${Date.now()}`;
+
+  const candidates = [
+    targetUrl,
+    `https://api.allorigins.win/raw?url=${encoded}&${bust}`,
+    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+  ];
+
+  const attempts = candidates.map(async url => {
+    const res = await fetchWithTimeout(url, 4500, {
+      headers: { "Accept": "application/json" }
+    });
+    return await res.json();
+  });
+
+  return await Promise.any(attempts);
+}
+
+function normalizeStoryTitle(title){
+  return (title || "")
+    .replace(/\s+/g, " ")
+    .replace(/^["“‘]|["”’]$/g, "")
+    .trim();
+}
+
+function absoluteUrl(href, base = STORIES_INDEX_URL){
+  try{
+    return new URL(href, base).href;
+  }catch{
+    return STORIES_INDEX_URL;
+  }
+}
+
+function uniqueByLink(items){
+  const seen = new Set();
+  return items.filter(item => {
+    const key = (item?.link || "").trim().toLowerCase();
+    if(!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function getCachedStories(){
+  try{
+    const raw = localStorage.getItem(STORIES_CACHE_KEY);
+    if(!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if(!parsed?.timestamp || !Array.isArray(parsed?.data)) return null;
+    if(Date.now() - parsed.timestamp > STORIES_CACHE_TTL) return null;
+
+    return parsed.data;
+  }catch{
+    return null;
+  }
+}
+
+function setCachedStories(data){
+  try{
+    localStorage.setItem(
+      STORIES_CACHE_KEY,
+      JSON.stringify({
+        timestamp: Date.now(),
+        data
+      })
+    );
+  }catch(error){
+    console.warn("Could not cache short stories data:", error);
+  }
+}
+
+/* ---------- SHORT STORIES ---------- */
+
+function setFallbackStoriesLine(){
+  storiesLabel.textContent = "written";
+  storiesMainText.textContent = "short stories";
+  storiesMainLink.href = STORIES_INDEX_URL;
+  renderStories([]);
+}
+
+function renderStories(stories){
+  storiesExpandList.innerHTML = "";
+
+  stories.forEach(story => {
+    const item = document.createElement("li");
+
+    const label = document.createElement("span");
+    label.textContent = "written ";
+
+    const link = document.createElement("a");
+    link.href = story.link || STORIES_INDEX_URL;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = story.title || "something new";
+
+    item.appendChild(label);
+    item.appendChild(link);
+    storiesExpandList.appendChild(item);
+  });
+
+  if(storiesLine.classList.contains("expanded")){
+    playExpandItemAnimation(storiesExpandPanel);
+  }
+}
+
+function applyStoriesData(stories){
+  if(!Array.isArray(stories) || !stories.length){
+    setFallbackStoriesLine();
+    return;
+  }
+
+  const [latest, ...rest] = stories;
+  storiesLabel.textContent = "written";
+  storiesMainText.textContent = latest.title || "something new";
+  storiesMainLink.href = latest.link || STORIES_INDEX_URL;
+  renderStories(rest.slice(0, 4));
+}
+
+function parseStoriesFromJson(data){
+  let items = [];
+
+  if(Array.isArray(data)){
+    items = data;
+  }else if(Array.isArray(data?.stories)){
+    items = data.stories;
+  }else if(Array.isArray(data?.items)){
+    items = data.items;
+  }else if(Array.isArray(data?.posts)){
+    items = data.posts;
+  }
+
+  const mapped = items.map(item => {
+    const title = normalizeStoryTitle(
+      item?.title || item?.name || item?.storyTitle || item?.headline || ""
+    );
+
+    const href =
+      item?.url ||
+      item?.href ||
+      item?.link ||
+      item?.path ||
+      item?.slug ||
+      "";
+
+    return {
+      title,
+      link: href.startsWith("http")
+        ? href
+        : absoluteUrl(href.replace(/^\/+/, ""))
+    };
+  });
+
+  return uniqueByLink(mapped).filter(item => item.title);
+}
+
+function parseStoriesFromHtml(htmlText){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, "text/html");
+
+  const blockedHrefs = new Set([
+    "/",
+    "#",
+    STORIES_INDEX_URL,
+    `${STORIES_INDEX_URL}#`
+  ]);
+
+  const blockedTexts = new Set([
+    "← Kris Pearcey",
+    "See more stories",
+    "Short Stories."
+  ]);
+
+  const anchors = [...doc.querySelectorAll("a[href]")];
+
+  const items = anchors.map(anchor => {
+    const text = normalizeStoryTitle(anchor.textContent || "");
+    const href = absoluteUrl(anchor.getAttribute("href") || "", STORIES_INDEX_URL);
+
+    return {
+      title: text,
+      link: href
+    };
+  }).filter(item => {
+    if(!item.title) return false;
+    if(blockedTexts.has(item.title)) return false;
+    if(blockedHrefs.has(item.link)) return false;
+
+    const url = new URL(item.link);
+    const sameSite = url.origin === new URL(STORIES_INDEX_URL).origin;
+    const isStoryPath =
+      sameSite &&
+      url.pathname.startsWith("/short-stories/") &&
+      url.pathname !== "/short-stories/" &&
+      !url.pathname.endsWith("/index.html");
+
+    return isStoryPath;
+  });
+
+  return uniqueByLink(items);
+}
+
+async function loadLatestStories(){
+  const cached = getCachedStories();
+  if(cached?.length){
+    applyStoriesData(cached);
+  }
+
+  try{
+    const jsonCandidates = [
+      `${STORIES_INDEX_URL}stories.json`,
+      `${STORIES_INDEX_URL}data/stories.json`,
+      `${STORIES_INDEX_URL}index.json`,
+      `${STORIES_INDEX_URL}stories/index.json`
+    ];
+
+    for(const url of jsonCandidates){
+      try{
+        const data = await fetchJsonFast(url);
+        const parsed = parseStoriesFromJson(data);
+        if(parsed.length){
+          applyStoriesData(parsed.slice(0, 5));
+          setCachedStories(parsed.slice(0, 5));
+          return;
+        }
+      }catch(error){
+        console.warn(`Short stories JSON candidate failed: ${url}`, error);
+      }
+    }
+
+    const htmlText = await fetchTextFast(STORIES_INDEX_URL);
+    const stories = parseStoriesFromHtml(htmlText);
+
+    if(stories.length){
+      applyStoriesData(stories.slice(0, 5));
+      setCachedStories(stories.slice(0, 5));
+      return;
+    }
+
+    setFallbackStoriesLine();
+  }catch(error){
+    console.error("Short stories fetch failed:", error);
+    if(!cached?.length){
+      setFallbackStoriesLine();
+    }
+  }
+}
 
 /* ---------- GITHUB COMMITS ---------- */
 
@@ -1380,21 +1725,21 @@ function parseShelfItemsFromHtml(htmlText){
 
   const rows = [
     ...doc.querySelectorAll('tr[id^="review_"]'),
-    ...doc.querySelectorAll('.bookalike.review'),
-    ...doc.querySelectorAll('.elementList')
+    ...doc.querySelectorAll(".bookalike.review"),
+    ...doc.querySelectorAll(".elementList")
   ];
 
   const books = rows.map(row => {
     const titleLink =
       row.querySelector('[id^="review_title_"] .value a') ||
-      row.querySelector('td.field.title .value a') ||
-      row.querySelector('a.bookTitle') ||
+      row.querySelector("td.field.title .value a") ||
+      row.querySelector("a.bookTitle") ||
       row.querySelector('a[href*="/book/show/"]');
 
     const authorLink =
       row.querySelector('[id^="review_author_"] .value a') ||
-      row.querySelector('td.field.author .value a') ||
-      row.querySelector('a.authorName');
+      row.querySelector("td.field.author .value a") ||
+      row.querySelector("a.authorName");
 
     const title = titleLink?.textContent?.trim() || "";
     const author = authorLink?.textContent?.trim() || "";
@@ -1407,42 +1752,6 @@ function parseShelfItemsFromHtml(htmlText){
   });
 
   return uniqueBooks(books);
-}
-
-async function fetchWithTimeout(url, timeoutMs = 4500){
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try{
-    const response = await fetch(url, { signal: controller.signal });
-    if(!response.ok){
-      throw new Error(`Fetch failed: ${response.status}`);
-    }
-    return response;
-  }finally{
-    clearTimeout(timeoutId);
-  }
-}
-
-async function fetchTextFast(targetUrl){
-  const encoded = encodeURIComponent(targetUrl);
-  const bust = `cb=${Date.now()}`;
-
-  const candidates = [
-    `https://api.allorigins.win/raw?url=${encoded}&${bust}`,
-    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
-  ];
-
-  const attempts = candidates.map(async url => {
-    const res = await fetchWithTimeout(url, 4500);
-    return await res.text();
-  });
-
-  const settled = await Promise.any(attempts);
-  if(!settled || !settled.trim()){
-    throw new Error("No proxy returned content");
-  }
-  return settled;
 }
 
 async function fetchTextFromAllOriginsGet(targetUrl){
@@ -1604,6 +1913,7 @@ async function loadGoodreadsBook(){
   }
 }
 
+loadLatestStories();
 loadLatestGithubCommits();
 loadLatestFinishedGame();
 requestAnimationFrame(() => {
@@ -1613,7 +1923,3 @@ requestAnimationFrame(() => {
 
 </body>
 </html>
-
-
-
-
