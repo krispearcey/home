@@ -805,8 +805,8 @@ h1{
       <div class="about-scroll">
         <div class="about-copy">
           <p>
-            I’m a front-end developer based in Atlantic Canada.
-            This site isn’t meant to be polished portfolio so much as a record of the projects,
+            I’m a front-end developer based in Atlantic Canada. 
+            This site isn’t meant to be polished portfolio so much as a record of the projects, 
             ideas, and rabbit holes that keep me busy.
           </p>
 
@@ -857,6 +857,7 @@ const chessGameLine = document.getElementById("chessGameLine");
 const chessExpandToggle = document.getElementById("chessExpandToggle");
 const chessExpandPanel = document.getElementById("chessExpandPanel");
 const chessExpandList = document.getElementById("chessExpandList");
+
 const chessOpponent = document.getElementById("chessOpponent");
 const chessOpponentLink = document.getElementById("chessOpponentLink");
 const chessResultLabel = document.getElementById("chessResultLabel");
@@ -865,6 +866,7 @@ const goodreadsLine = document.getElementById("goodreadsLine");
 const goodreadsExpandToggle = document.getElementById("goodreadsExpandToggle");
 const goodreadsExpandPanel = document.getElementById("goodreadsExpandPanel");
 const goodreadsExpandList = document.getElementById("goodreadsExpandList");
+
 const goodreadsLabel = document.getElementById("goodreadsLabel");
 const goodreadsBookText = document.getElementById("goodreadsBookText");
 const goodreadsBookLink = document.getElementById("goodreadsBookLink");
@@ -1020,7 +1022,7 @@ chessExpandToggle.addEventListener("click", () => {
   );
 });
 
-/* ---------- helpers ---------- */
+/* ---------- common fetch helpers ---------- */
 
 async function fetchWithTimeout(url, timeoutMs = 4500, options = {}){
   const controller = new AbortController();
@@ -1059,7 +1061,7 @@ async function fetchTextFast(targetUrl){
 
   const settled = await Promise.any(attempts);
   if(!settled || !settled.trim()){
-    throw new Error("No content returned");
+    throw new Error("No proxy returned content");
   }
   return settled;
 }
@@ -1083,6 +1085,8 @@ async function fetchJsonFast(targetUrl){
 
   return await Promise.any(attempts);
 }
+
+/* ---------- SHORT STORIES ---------- */
 
 function normalizeStoryTitle(title){
   return (title || "")
@@ -1137,8 +1141,6 @@ function setCachedStories(data){
     console.warn("Could not cache short stories data:", error);
   }
 }
-
-/* ---------- SHORT STORIES ---------- */
 
 function setFallbackStoriesLine(){
   storiesLabel.textContent = "written";
@@ -1215,7 +1217,7 @@ function parseStoriesFromJson(data){
       title,
       link: href.startsWith("http")
         ? href
-        : absoluteUrl(href.replace(/^\/+/, ""))
+        : absoluteUrl(String(href).replace(/^\/+/, ""))
     };
   });
 
@@ -1226,46 +1228,30 @@ function parseStoriesFromHtml(htmlText){
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlText, "text/html");
 
-  const blockedHrefs = new Set([
-    "/",
-    "#",
-    STORIES_INDEX_URL,
-    `${STORIES_INDEX_URL}#`
-  ]);
+  const rows = [
+    ...doc.querySelectorAll("tbody tr"),
+    ...doc.querySelectorAll("table tr")
+  ];
 
-  const blockedTexts = new Set([
-    "← Kris Pearcey",
-    "See more stories",
-    "Short Stories."
-  ]);
+  const stories = rows.map(row => {
+    const cells = [...row.querySelectorAll("td")];
+    const titleCell = cells[0] || row.querySelector("td");
+    const titleLink = titleCell?.querySelector('a[href]');
 
-  const anchors = [...doc.querySelectorAll("a[href]")];
+    if(!titleLink) return null;
 
-  const items = anchors.map(anchor => {
-    const text = normalizeStoryTitle(anchor.textContent || "");
-    const href = absoluteUrl(anchor.getAttribute("href") || "", STORIES_INDEX_URL);
+    const title = normalizeStoryTitle(titleLink.textContent || "");
+    const href = titleLink.getAttribute("href") || "";
+
+    if(!title || !href) return null;
 
     return {
-      title: text,
-      link: href
+      title,
+      link: absoluteUrl(href, STORIES_INDEX_URL)
     };
-  }).filter(item => {
-    if(!item.title) return false;
-    if(blockedTexts.has(item.title)) return false;
-    if(blockedHrefs.has(item.link)) return false;
+  }).filter(Boolean);
 
-    const url = new URL(item.link);
-    const sameSite = url.origin === new URL(STORIES_INDEX_URL).origin;
-    const isStoryPath =
-      sameSite &&
-      url.pathname.startsWith("/short-stories/") &&
-      url.pathname !== "/short-stories/" &&
-      !url.pathname.endsWith("/index.html");
-
-    return isStoryPath;
-  });
-
-  return uniqueByLink(items);
+  return uniqueByLink(stories);
 }
 
 async function loadLatestStories(){
@@ -1725,21 +1711,21 @@ function parseShelfItemsFromHtml(htmlText){
 
   const rows = [
     ...doc.querySelectorAll('tr[id^="review_"]'),
-    ...doc.querySelectorAll(".bookalike.review"),
-    ...doc.querySelectorAll(".elementList")
+    ...doc.querySelectorAll('.bookalike.review'),
+    ...doc.querySelectorAll('.elementList')
   ];
 
   const books = rows.map(row => {
     const titleLink =
       row.querySelector('[id^="review_title_"] .value a') ||
-      row.querySelector("td.field.title .value a") ||
-      row.querySelector("a.bookTitle") ||
+      row.querySelector('td.field.title .value a') ||
+      row.querySelector('a.bookTitle') ||
       row.querySelector('a[href*="/book/show/"]');
 
     const authorLink =
       row.querySelector('[id^="review_author_"] .value a') ||
-      row.querySelector("td.field.author .value a") ||
-      row.querySelector("a.authorName");
+      row.querySelector('td.field.author .value a') ||
+      row.querySelector('a.authorName');
 
     const title = titleLink?.textContent?.trim() || "";
     const author = authorLink?.textContent?.trim() || "";
