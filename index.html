@@ -49,17 +49,7 @@ body{
   -moz-osx-font-smoothing:grayscale;
 }
 
-/* top icons */
-
-.top-actions{
-  position:fixed;
-  top:22px;
-  right:22px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  z-index:20;
-}
+/* shared icons */
 
 .icon-link,
 .icon-link:visited,
@@ -336,73 +326,40 @@ h1{
   }
 }
 
-/* links: scoped so top icons do not turn pink */
+/* links */
 
-.content a:not(.btn):not(.icon-link),
-.content a:not(.btn):not(.icon-link):visited{
+.content a:not(.icon-link),
+.content a:not(.icon-link):visited{
   color:var(--accent);
   text-decoration:none;
 }
 
-.content a:not(.btn):not(.icon-link):hover,
-.content a:not(.btn):not(.icon-link):visited:hover{
+.content a:not(.icon-link):hover,
+.content a:not(.icon-link):visited:hover{
   color:var(--accent-hover);
 }
 
-/* buttons */
+/* bottom icon row replacing buttons */
 
-.buttons{
+.action-row{
   display:flex;
-  gap:12px;
+  align-items:center;
+  gap:18px;
   flex-wrap:wrap;
   margin-top:22px;
 }
 
-.btn{
-  min-width:128px;
-  padding:12px 24px;
-  border:1px solid var(--accent);
-  border-radius:0;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-family:"Merriweather",serif;
-  font-size:.92rem;
-  font-weight:400;
-  line-height:1;
-  letter-spacing:.01em;
-  text-decoration:none;
-  transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+.action-row .icon-link,
+.action-row .theme-toggle{
+  width:24px;
+  height:24px;
+  font-size:1.05rem;
 }
 
-.btn:hover{
-  transform:translateY(-1px);
-}
-
-.btn.primary,
-.btn.primary:visited{
-  background:var(--accent);
-  color:#ffffff;
-}
-
-.btn.primary:hover,
-.btn.primary:visited:hover{
-  background:var(--accent-hover);
-  border-color:var(--accent-hover);
-  color:#ffffff;
-}
-
-.btn.secondary,
-.btn.secondary:visited{
-  background:transparent;
-  color:var(--accent);
-}
-
-.btn.secondary:hover,
-.btn.secondary:visited:hover{
-  background:rgba(255,63,103,.06);
-  color:var(--accent-hover);
-  border-color:var(--accent-hover);
+.action-row .icon-link::before,
+.action-row .theme-toggle::before{
+  width:40px;
+  height:40px;
 }
 
 /* main content transition when about is open */
@@ -526,25 +483,6 @@ h1{
 /* mobile */
 
 @media (max-width:640px){
-  .top-actions{
-    top:18px;
-    right:18px;
-    gap:12px;
-  }
-
-  .icon-link,
-  .theme-toggle{
-    width:20px;
-    height:20px;
-    font-size:.96rem;
-  }
-
-  .icon-link::before,
-  .theme-toggle::before{
-    width:36px;
-    height:36px;
-  }
-
   .page{
     align-items:flex-start;
     padding:100px 22px 40px;
@@ -583,13 +521,22 @@ h1{
     line-height:1.5;
   }
 
-  .buttons{
-    flex-direction:column;
-    gap:10px;
+  .action-row{
+    gap:16px;
+    margin-top:20px;
   }
 
-  .btn{
-    width:100%;
+  .action-row .icon-link,
+  .action-row .theme-toggle{
+    width:22px;
+    height:22px;
+    font-size:1rem;
+  }
+
+  .action-row .icon-link::before,
+  .action-row .theme-toggle::before{
+    width:38px;
+    height:38px;
   }
 
   .about-panel.open{
@@ -607,50 +554,6 @@ h1{
 </head>
 
 <body>
-
-<div class="top-actions">
-  <a
-    class="icon-link"
-    href="mailto:me@krispearcey.com"
-    aria-label="Email Kris"
-  >
-    <i class="fa-regular fa-envelope"></i>
-  </a>
-
-  <a
-    class="icon-link"
-    href="https://github.com/krispearcey"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="GitHub profile"
-  >
-    <i class="fa-brands fa-github"></i>
-  </a>
-
-  <a
-    class="icon-link"
-    href="https://www.chess.com/member/krisper"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Chess.com profile"
-  >
-    <i class="fa-solid fa-chess-rook"></i>
-  </a>
-
-  <a
-    class="icon-link"
-    href="https://www.goodreads.com/user/show/134250743"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Goodreads profile"
-  >
-    <i class="fa-brands fa-goodreads"></i>
-  </a>
-
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
-    <i id="themeIcon" class="fa-regular fa-moon"></i>
-  </button>
-</div>
 
 <main class="page">
   <section class="content" id="contentWrap">
@@ -756,19 +659,48 @@ h1{
 
       <p class="build-line">Feel free to poke around, or come learn more <a href="#about">about me</a>.</p>
 
-      <div class="buttons">
+      <div class="action-row" aria-label="Site links">
         <a
-          class="btn primary"
+          class="icon-link"
+          href="mailto:me@krispearcey.com"
+          aria-label="Email Kris"
+        >
+          <i class="fa-regular fa-envelope"></i>
+        </a>
+
+        <a
+          class="icon-link"
           href="https://github.com/krispearcey"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="GitHub profile"
         >
-          My Github
+          <i class="fa-brands fa-github"></i>
         </a>
 
-        <a class="btn secondary" href="mailto:me@krispearcey.com">
-          Contact Me
+        <a
+          class="icon-link"
+          href="https://www.chess.com/member/krisper"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chess.com profile"
+        >
+          <i class="fa-solid fa-chess-rook"></i>
         </a>
+
+        <a
+          class="icon-link"
+          href="https://www.goodreads.com/user/show/134250743"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Goodreads profile"
+        >
+          <i class="fa-brands fa-goodreads"></i>
+        </a>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+          <i id="themeIcon" class="fa-regular fa-moon"></i>
+        </button>
       </div>
     </div>
 
